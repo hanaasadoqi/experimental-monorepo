@@ -49,6 +49,7 @@
     "./utils": "./src/utils/index.ts",
     "./components": "./src/components/index.ts",
     "./store": "./src/store/index.ts",
-    "./persistence": "./src/persistence/index.ts"
+    "./persistence": "./src/persistence/index.ts",
+    "./runtime": "./src/runtime/index.ts"
   }
 }
