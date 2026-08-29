@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises"
 import { createRequire } from "node:module"
 import path from "node:path"
 
+import tailwindPostcss from "@tailwindcss/postcss"
+import postcss from "postcss"
 import { compile } from "tailwindcss"
 import { describe, expect, it } from "vitest"
 
@@ -129,5 +131,43 @@ describe("Tailwind design-system adapter", () => {
 
     expect(css).toContain(".dark")
     expect(css).toMatch(/\[data-theme="?dark"?\]/)
+  })
+
+  it("maps font families and radii to design-system variables", async () => {
+    const compiler = await compile(stylesheet, {
+      base: import.meta.dirname,
+      loadStylesheet,
+    })
+    const css = compiler.build([
+      "font-sans",
+      "font-heading",
+      "font-mono",
+      "rounded-lg",
+      "rounded-4xl",
+    ])
+
+    expect(css).toContain("font-family: var(--font-family-sans)")
+    expect(css).toContain(
+      "font-family: var(--font-family-heading, var(--font-family-serif))"
+    )
+    expect(css).toContain("font-family: var(--font-family-mono)")
+    expect(css).toContain("border-radius: var(--ds-radius-lg)")
+    expect(css).toContain("border-radius: var(--ds-radius-4xl)")
+  })
+
+  it("processes app-style composition and detects reusable component sources", async () => {
+    const fixturePath = path.join(import.meta.dirname, "app-composition.css")
+    const fixture = `
+      @import "./index.css";
+      @import "../../components/src/base/styles/shadcn.css";
+      @source "../../components/src/**/*.{ts,tsx}";
+    `
+    const result = await postcss([tailwindPostcss()]).process(fixture, {
+      from: fixturePath,
+    })
+
+    expect(result.css).toContain(".\\@container\\/card-header")
+    expect(result.css).toContain("font-family: var(--font-family-heading")
+    expect(result.css).toContain(":where(:root)")
   })
 })
