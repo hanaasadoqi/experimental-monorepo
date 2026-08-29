@@ -13,12 +13,10 @@
     "test": "vitest run"
   },
   "exports": {
-    "./index.css": "./src/index.css",
+    "./index.css": "./src/styles/index.css",
     "./tokens": "./src/tokens/index.ts",
     "./colors": "./src/tokens/colors.ts",
-    "./typography": "./src/tokens/typography.ts",
-    "./spacing": "./src/tokens/spacing.ts",
-    "./shadows": "./src/tokens/shadows.ts"
+    "./typography": "./src/tokens/typography.ts"
   },
   "dependencies": {
     "react": "^19.2.4",

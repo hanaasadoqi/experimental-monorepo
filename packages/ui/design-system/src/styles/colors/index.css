@@ -1,3 +1,0 @@
-@import "./default.css";
-
-@custom-variant dark (&:where([data-theme="dark"], .dark *))

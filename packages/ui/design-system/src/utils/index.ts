@@ -1,2 +1,2 @@
-export { flattenTokens } from "./flatten-tokens"
-export { convertTokensToCSS } from "./convert-tokens-to-css"
+export { convertObjToTokens, convertTokensToCSS } from "./conversion"
+export { applyToHtml } from "./apply"

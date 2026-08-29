@@ -1,0 +1,35 @@
+:root {
+  --font-family-mono: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace";
+  --font-family-sans: "system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji";
+  --font-family-serif: "Georgia, Cambria, Times New Roman, Times, serif";
+
+  /* Typography-Font Size */
+  --font-size-base: 1rem;
+  --font-size-scale-min: 0.75;
+  --font-size-scale-max: 1.5;
+  --font-size-scale-preference: 1;
+
+  --font-size-scale: clamp(var(--font-size-scale-min),
+      var(--font-size-scale-preference),
+      var(--font-size-scale-max));
+
+  /* Typography-Line Height */
+  --font-line-height-scale-min: 0.9;
+  --font-line-height-scale-max: 1.2;
+  --font-line-height-scale-preference: 1;
+
+  --font-line-height-scale: clamp(var(--font-line-height-scale-min),
+      var(--font-line-height-scale-preference),
+      var(--font-line-height-scale-max));
+
+  /* Typography-Letter Spacing */
+  --font-letter-spacing-scale-min: 0;
+  --font-letter-spacing-scale-max: 1.5;
+  --font-letter-spacing-scale-preference: 1;
+
+  --font-letter-spacing-scale: clamp(var(--font-letter-spacing-scale-min),
+      var(--font-letter-spacing-scale-preference),
+      var(--font-letter-spacing-scale-max));
+
+  --radius: 0.625rem;
+}

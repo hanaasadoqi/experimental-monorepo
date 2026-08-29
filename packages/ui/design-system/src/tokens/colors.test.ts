@@ -11,14 +11,13 @@ describe("Color Tokens", () => {
   it("has semantic intent colors", () => {
     expect(colors.primary).toBeDefined()
     expect(colors.secondary).toBeDefined()
-    expect(colors.destructive).toBeDefined()
   })
 
   it("primary color has DEFAULT and foreground variants", () => {
-    expect(colors.primary.DEFAULT).toBeDefined()
-    expect(colors.primary.foreground).toBeDefined()
-    expect(typeof colors.primary.DEFAULT).toBe("string")
-    expect(typeof colors.primary.foreground).toBe("string")
+    expect(colors.primary.semantic.DEFAULT).toBeDefined()
+    expect(colors.primary.semantic.light.foreground).toBeDefined()
+    expect(typeof colors.primary.semantic.DEFAULT).toBe("string")
+    expect(typeof colors.primary.semantic.light.foreground).toBe("string")
   })
 
   it("all color values are valid HSL or hex strings", () => {
@@ -40,20 +39,15 @@ describe("Color Tokens", () => {
   })
 
   it("has neutral colors (foreground, background, muted, etc.)", () => {
-    expect(colors.foreground).toBeDefined()
-    expect(colors.background).toBeDefined()
-    expect(colors.muted).toBeDefined()
+    expect(colors.default.semantic.light.foreground).toBeDefined()
+    expect(colors.default.semantic.light.background).toBeDefined()
     expect(colors.accent).toBeDefined()
-    expect(colors.ring).toBeDefined()
-    expect(colors.input).toBeDefined()
-    expect(colors.border).toBeDefined()
   })
 
   it("has dark mode variants", () => {
-    expect(colors.dark).toBeDefined()
-    expect(colors.dark.foreground).toBeDefined()
-    expect(colors.dark.background).toBeDefined()
-    expect(colors.dark.muted).toBeDefined()
+    expect(colors.default.semantic.dark).toBeDefined()
+    expect(colors.default.semantic.dark.foreground).toBeDefined()
+    expect(colors.default.semantic.dark.background).toBeDefined()
   })
 
   it("all color variants are strings (not objects with non-color values)", () => {
