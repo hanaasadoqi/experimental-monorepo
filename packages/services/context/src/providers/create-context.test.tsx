@@ -1,22 +1,20 @@
 import { describe, expect, it } from "vitest"
 import { render, screen } from "@testing-library/react"
 
-import { createContext } from "./create-context";
+import { createContext } from "./create-context"
 
 describe("createContext", () => {
   it("creates a context with provider and hook", () => {
-    const { Provider, useContext: useTestContext } = createContext<string>(
-      "TestContext"
-    )
+    const { Provider, useContext: useTestContext } =
+      createContext<string>("TestContext")
 
     expect(Provider).toBeDefined()
     expect(useTestContext).toBeDefined()
   })
 
   it("provides value to consumer component", () => {
-    const { Provider, useContext: useTestContext } = createContext<string>(
-      "TestContext"
-    )
+    const { Provider, useContext: useTestContext } =
+      createContext<string>("TestContext")
 
     const Consumer = () => {
       const value = useTestContext()
@@ -33,9 +31,7 @@ describe("createContext", () => {
   })
 
   it("throws error when useContext is called outside provider", () => {
-    const { useContext: useTestContext } = createContext<string>(
-      "TestContext"
-    )
+    const { useContext: useTestContext } = createContext<string>("TestContext")
 
     const Consumer = () => {
       try {
@@ -51,9 +47,7 @@ describe("createContext", () => {
 
     render(<Consumer />)
 
-    expect(
-      screen.getByText(/TestContext context not found/)
-    ).toBeDefined()
+    expect(screen.getByText(/TestContext context not found/)).toBeDefined()
   })
 
   it("works with complex state objects", () => {
@@ -84,9 +78,8 @@ describe("createContext", () => {
   })
 
   it("supports multiple consumers", () => {
-    const { Provider, useContext: useTestContext } = createContext<string>(
-      "TestContext"
-    )
+    const { Provider, useContext: useTestContext } =
+      createContext<string>("TestContext")
 
     const Consumer1 = () => {
       const value = useTestContext()

@@ -4,12 +4,16 @@ import { baseConfig } from "@repo/foundation-vitest-config/base"
 
 export default mergeConfig(baseConfig, {
   test: {
-    include: ["src/**/*.test.ts", "src/**/*.test.tsx", "@testing-library/react"],
+    include: [
+      "src/**/*.test.ts",
+      "src/**/*.test.tsx",
+      "@testing-library/react",
+    ],
     globals: {
       browser: true,
-      node: false
+      node: false,
     },
     environment: "jsdom",
-    setupFiles: ["./vitest.setup.ts"]
+    setupFiles: ["./vitest.setup.ts"],
   },
 })

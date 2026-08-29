@@ -31,9 +31,7 @@ export const createContext = <T,>(
     return context
   }
 
-  const Provider = (
-    props: ContextProviderProps & { value: T }
-  ): ReactNode => {
+  const Provider = (props: ContextProviderProps & { value: T }): ReactNode => {
     return (
       <Context.Provider value={props.value}>{props.children}</Context.Provider>
     )
