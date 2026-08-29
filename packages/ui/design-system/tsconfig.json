@@ -4,8 +4,9 @@
     "target": "es2022",
     "lib": ["es2022", "dom"],
     "module": "esnext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "types": ["node"],
   },
-  "include": ["src"],
+  "include": ["src", "@types/node"],
   "exclude": ["node_modules", "dist"]
 }

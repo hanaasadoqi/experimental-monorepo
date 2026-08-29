@@ -785,6 +785,9 @@ importers:
       '@repo/foundation-vitest-utils':
         specifier: workspace:*
         version: link:../../foundation/testing/vitest-utils
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
       '@types/react':
         specifier: ^19.2.18
         version: 19.2.18

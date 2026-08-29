@@ -1,7 +1,7 @@
-import { baseConfig } from "@repo/foundation-eslint-config/base"
+import { minimalConfig } from "@repo/foundation-eslint-config/base"
 
 export default [
-  ...baseConfig,
+  ...minimalConfig,
   {
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
