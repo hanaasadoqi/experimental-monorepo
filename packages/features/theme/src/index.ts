@@ -33,6 +33,8 @@ export {
   applyColorScheme,
   getAppliedColorScheme,
   synchronizeAppearance,
+  generateBootstrapScript,
+  resolveServerColorScheme,
 } from "./runtime"
 
 // Store factory (new, public, for advanced use)

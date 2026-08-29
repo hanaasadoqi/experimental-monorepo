@@ -6,7 +6,13 @@
   "sideEffects": false,
   "peerDependencies": {
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "next": "^16.0.0"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@repo/services-zustand": "workspace:*",
@@ -26,6 +32,7 @@
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
     "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.4.3",
     "@types/node": "^26.4.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
@@ -50,6 +57,7 @@
     "./components": "./src/components/index.ts",
     "./store": "./src/store/index.ts",
     "./persistence": "./src/persistence/index.ts",
-    "./runtime": "./src/runtime/index.ts"
+    "./runtime": "./src/runtime/index.ts",
+    "./server": "./src/server/index.ts"
   }
 }

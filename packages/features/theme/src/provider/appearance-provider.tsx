@@ -1,14 +1,9 @@
-import React, {
-  ReactNode,
-  createContext,
-  useEffect,
-  useRef,
-} from 'react'
-import { StoreApi } from 'zustand'
-import { AppearanceState, AppearancePreference } from '../types'
-import { createAppearanceStore } from '../store/appearance-store'
-import { AppearancePersistenceAdapter } from '../persistence'
-import { synchronizeAppearance } from '../runtime'
+import React, { ReactNode, createContext, useEffect, useRef } from "react"
+import { StoreApi } from "zustand"
+import { AppearanceState, AppearancePreference } from "../types"
+import { createAppearanceStore } from "../store/appearance-store"
+import { AppearancePersistenceAdapter } from "../persistence"
+import { synchronizeAppearance } from "../runtime"
 
 export interface AppearanceProviderProps {
   children: ReactNode
@@ -20,9 +15,8 @@ export interface AppearanceProviderProps {
 /**
  * Context carrying the Appearance store for this provider tree.
  */
-export const AppearanceContext = createContext<StoreApi<AppearanceState> | null>(
-  null
-)
+export const AppearanceContext =
+  createContext<StoreApi<AppearanceState> | null>(null)
 
 /**
  * Provider that owns an isolated Appearance store and its lifecycle.
@@ -30,7 +24,7 @@ export const AppearanceContext = createContext<StoreApi<AppearanceState> | null>
 export function AppearanceProvider({
   children,
   adapter,
-  defaultPreference = 'system',
+  defaultPreference = "system",
   initialPreference,
 }: AppearanceProviderProps) {
   const storeRef = useRef<StoreApi<AppearanceState> | null>(null)
@@ -39,11 +33,12 @@ export function AppearanceProvider({
   // Create or retrieve store (once per provider instance)
   if (!storeRef.current) {
     const persistedPreference = adapter.read() || undefined
-    const effectivePreference = initialPreference || persistedPreference || defaultPreference
+    const effectivePreference =
+      initialPreference || persistedPreference || defaultPreference
 
     storeRef.current = createAppearanceStore(
       effectivePreference,
-      'light' // systemScheme will be resolved at runtime
+      "light" // systemScheme will be resolved at runtime
     )
   }
 
@@ -77,7 +72,7 @@ export function useAppearanceStore(): StoreApi<AppearanceState> {
   const store = React.useContext(AppearanceContext)
   if (!store) {
     throw new Error(
-      'useAppearanceStore must be used within an AppearanceProvider'
+      "useAppearanceStore must be used within an AppearanceProvider"
     )
   }
   return store
