@@ -17,18 +17,12 @@
   "exports": {
     "./index.css": "./src/styles/index.css"
   },
-  "dependencies": {
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
-  },
   "devDependencies": {
     "@repo/foundation-eslint-config": "workspace:*",
     "@repo/foundation-prettier-config": "workspace:*",
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5",
     "@types/node": "^26.4.0",
     "eslint": "^9.39.5",
     "@eslint/js": "^10.0.1",
@@ -37,13 +31,10 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^7.9.0",
     "vitest": "^4.1.11",
-    "@vitest/coverage-v8": "^4.1.11"
+    "@vitest/coverage-v8": "^4.1.11",
+    "postcss": "^8.5.26"
   },
   "peerDependencies": {
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5",
     "@types/node": "^26.4.0",
     "eslint": "^9.39.5",
     "@eslint/js": "^10.0.1",
