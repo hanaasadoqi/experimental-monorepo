@@ -1,1 +1,1 @@
-import "@repo/foundation-vitest-utils/setup";
+import "@repo/foundation-vitest-utils/setup"
