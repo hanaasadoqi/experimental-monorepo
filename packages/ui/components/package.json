@@ -60,7 +60,6 @@
     "./lib/*": "./src/lib/*.ts",
     "./base": "./src/base/index.ts",
     "./base/*": "./src/base/*.tsx",
-    "./hooks/*": "./src/hooks/*.ts",
-    "./*": "./src/components/*.tsx"
+    "./hooks/*": "./src/hooks/*.ts"
   }
 }

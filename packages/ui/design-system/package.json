@@ -15,7 +15,6 @@
   "exports": {
     "./index.css": "./src/index.css",
     "./tokens": "./src/tokens/index.ts",
-    "./tokens/*": "./src/tokens/*.ts",
     "./colors": "./src/tokens/colors.ts",
     "./typography": "./src/tokens/typography.ts",
     "./spacing": "./src/tokens/spacing.ts",

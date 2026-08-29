@@ -1,2 +1,1 @@
-import * as setup from "@repo/foundation-vitest-utils/setup"
-export default setup
+import "@repo/foundation-vitest-utils/setup"
