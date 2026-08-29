@@ -806,6 +806,55 @@ importers:
         specifier: ^4.1.11
         version: 4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0))
 
+  packages/ui/tailwind-config:
+    dependencies:
+      '@repo/ui-design-system':
+        specifier: workspace:*
+        version: link:../design-system
+      '@tailwindcss/postcss':
+        specifier: ^4
+        version: 4.3.3
+      shadcn:
+        specifier: ^4.19.0
+        version: 4.19.0(supports-color@7.2.0)(typescript@6.0.3)
+      tailwindcss:
+        specifier: ^4
+        version: 4.3.3
+      tw-animate-css:
+        specifier: ^1.4.0
+        version: 1.4.0
+    devDependencies:
+      '@repo/foundation-eslint-config':
+        specifier: workspace:*
+        version: link:../../foundation/tooling/eslint-config
+      '@repo/foundation-prettier-config':
+        specifier: workspace:*
+        version: link:../../foundation/tooling/prettier-config
+      '@repo/foundation-typescript-config':
+        specifier: workspace:*
+        version: link:../../foundation/tooling/typescript-config
+      '@repo/foundation-vitest-config':
+        specifier: workspace:*
+        version: link:../../foundation/testing/vitest-config
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
+      '@vitest/coverage-v8':
+        specifier: ^4.1.11
+        version: 4.1.11(vitest@4.1.11)
+      eslint:
+        specifier: ^9.39.5
+        version: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
+      prettier:
+        specifier: ^3.8.3
+        version: 3.9.6
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.11
+        version: 4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0))
+
 packages:
 
   '@acemir/cssom@0.9.31':
