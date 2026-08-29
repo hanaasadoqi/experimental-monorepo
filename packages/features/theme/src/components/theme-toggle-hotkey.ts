@@ -25,8 +25,8 @@ export function ThemeToggleHotkey() {
         return
       }
 
-      const newTheme = isDark ? "light" : "dark";
-      setTheme(newTheme);
+      const newTheme = isDark ? "light" : "dark"
+      setTheme(newTheme)
     }
 
     window.addEventListener("keydown", onKeyDown)

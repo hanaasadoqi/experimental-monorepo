@@ -12,6 +12,7 @@ export function isTypingTarget(
     new Set([...defaultTagNames, ...normalizedTagNames])
   )
 
-  const finalValue = finalTagNames.includes(target.tagName) || target.isContentEditable
+  const finalValue =
+    finalTagNames.includes(target.tagName) || target.isContentEditable
   return finalValue
 }
