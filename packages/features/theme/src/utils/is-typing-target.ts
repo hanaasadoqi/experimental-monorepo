@@ -1,7 +1,7 @@
 export function isTypingTarget(
   target: EventTarget | null,
   tagNames: string[] = []
-) {
+): boolean {
   if (!(target instanceof HTMLElement)) {
     return false
   }
@@ -12,7 +12,7 @@ export function isTypingTarget(
     new Set([...defaultTagNames, ...normalizedTagNames])
   )
 
-  const finalValue =
-    finalTagNames.includes(target.tagName) || target.isContentEditable
-  return finalValue
+  return (
+    finalTagNames.includes(target.tagName) || (target.isContentEditable ?? false)
+  )
 }
