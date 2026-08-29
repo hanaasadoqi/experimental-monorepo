@@ -12,22 +12,31 @@ CSS-authoritative design system token definitions. This package provides the sin
 ## Token Categories
 
 ### Colors (`./colors`)
+
 Semantic color tokens (primary, secondary, destructive) and their variations. Includes dark mode variants.
 
 ### Spacing (`./spacing`)
+
 8px base unit spacing scale for padding, margins, gaps, and width fractions.
 
 ### Typography (`./typography`)
+
 Font sizes with line heights, font weights, families, letter spacing, and line height utilities.
 
 ### Shadows (`./shadows`)
+
 Elevation shadows for depth and emphasis (sm, md, lg, xl, 2xl).
 
 ## Usage
 
 ```typescript
 // Import specific tokens
-import { colors, spacing, typography, shadows } from "@repo/ui-design-system/tokens"
+import {
+  colors,
+  spacing,
+  typography,
+  shadows,
+} from "@repo/ui-design-system/tokens"
 
 // Or import specific categories
 import { colors } from "@repo/ui-design-system/colors"
@@ -50,6 +59,7 @@ const buttonStyles = {
 ## Architecture
 
 Design system tokens are intentionally separate from Tailwind configuration. This allows:
+
 - Porting tokens to other frameworks (styled-components, emotion, etc.)
 - Sharing token values with non-web platforms
 - Independent evolution of design system vs. CSS framework

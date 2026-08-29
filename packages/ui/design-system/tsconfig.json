@@ -5,7 +5,7 @@
     "lib": ["es2022", "dom"],
     "module": "esnext",
     "moduleResolution": "bundler",
-    "types": ["node"],
+    "types": ["node"]
   },
   "include": ["src", "@types/node"],
   "exclude": ["node_modules", "dist"]
