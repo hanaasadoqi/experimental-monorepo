@@ -24,9 +24,7 @@
       "dependsOn": ["^test"]
     },
     "test:run": {
-      "dependsOn": ["^test:run"],
-      "cache": false,
-      "persistent": false
+      "outputs": ["coverage/**"]
     },
     "typecheck": {
       "dependsOn": ["^typecheck"]
