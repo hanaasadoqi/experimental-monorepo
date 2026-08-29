@@ -48,6 +48,7 @@
     "./provider": "./src/provider/index.ts",
     "./utils": "./src/utils/index.ts",
     "./components": "./src/components/index.ts",
-    "./store": "./src/store/index.ts"
+    "./store": "./src/store/index.ts",
+    "./persistence": "./src/persistence/index.ts"
   }
 }
