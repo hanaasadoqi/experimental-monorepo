@@ -1,14 +1,9 @@
 {
   "extends": "@repo/foundation-typescript-config/nextjs.json",
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "paths": {
-      "@/*": ["./src/*"],
-      "@repo/ui-components/base": ["../../packages/ui/components/src/base/ui/index.ts"],
-      "@repo/ui-components/base/*": ["../../packages/ui/components/src/base/*.tsx"],
-      "@repo/ui-components/lib/*": ["../../packages/ui/components/src/lib/*.ts"],
-      "@repo/ui-components/hooks/*": ["../../packages/ui/components/src/hooks/*.ts"],
-      "@repo/ui-components/globals.css": ["../../packages/ui/components/src/styles/globals.css"],
-      "@repo/ui-components/*": ["../../packages/ui/components/src/components/*.tsx"]
+      "@/*": ["./src/*"]
     },
     "plugins": [
       {
@@ -20,7 +15,6 @@
     "src",
     "next-env.d.ts",
     "next.config.ts",
-    "**/*.mts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],

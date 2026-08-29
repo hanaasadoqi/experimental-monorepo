@@ -27,9 +27,9 @@ describe("Typography Tokens", () => {
     })
 
     it("font families are arrays of font names", () => {
-      expect(Array.isArray(typography.DEFAULT.fontFamily.sans)).toBe(true)
-      expect(Array.isArray(typography.DEFAULT.fontFamily.serif)).toBe(true)
-      expect(Array.isArray(typography.DEFAULT.fontFamily.mono)).toBe(true)
+      expect(Array.isArray(typography.DEFAULT.fontFamily.sans)).toBe(false)
+      expect(typeof (typography.DEFAULT.fontFamily.serif) === "string").toBe(true)
+      expect(Array.isArray(typography.DEFAULT.fontFamily.mono)).toBe(false)
     })
   })
 

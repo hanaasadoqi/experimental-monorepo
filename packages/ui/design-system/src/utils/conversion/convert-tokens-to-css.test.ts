@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { convertTokensToCSS } from "./convert-tokens-to-css"
-import { flattenTokens } from "./flatten-tokens"
+import { flattenTokens } from "../normalize/flatten-tokens"
 
 describe("convertTokensToCSS", () => {
   it("converts simple token objects to CSS", () => {
