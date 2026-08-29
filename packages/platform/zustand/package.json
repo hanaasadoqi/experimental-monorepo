@@ -1,0 +1,38 @@
+{
+  "name": "@repo/platform-zustand",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "test:run": "vitest run --coverage",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "@repo/foundation-eslint-config": "workspace:*",
+    "@repo/foundation-prettier-config": "workspace:*",
+    "@repo/foundation-typescript-config": "workspace:*",
+    "@repo/foundation-vitest-config": "workspace:*",
+    "@repo/foundation-vitest-utils": "workspace:*",
+    "@types/node": "^26.4.0",
+    "eslint": "^9.39.5",
+    "@eslint/js": "^10.0.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^15.2.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^7.9.0",
+    "vitest": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.11"
+  },
+  "exports": {
+    "./store": "./src/store/index.ts",
+    "./hooks": "./src/hooks/index.ts",
+    "./types": "./src/types/index.ts"
+  }
+}
