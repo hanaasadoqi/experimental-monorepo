@@ -11,8 +11,8 @@ describe("applyToHtml", () => {
     mockElement = {
       style: {
         setProperty: mockSetProperty,
-      } as any,
-    } as HTMLElement
+      },
+    } as unknown as HTMLElement
   })
 
   describe("with ref to specific element", () => {
@@ -22,7 +22,10 @@ describe("applyToHtml", () => {
 
       applyToHtml(variables, ref)
 
-      expect(mockSetProperty).toHaveBeenCalledWith("--primary", "hsl(217, 91%, 60%)")
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--primary",
+        "hsl(217, 91%, 60%)"
+      )
       expect(mockSetProperty).toHaveBeenCalledTimes(1)
     })
 
@@ -36,9 +39,18 @@ describe("applyToHtml", () => {
 
       applyToHtml(variables, ref)
 
-      expect(mockSetProperty).toHaveBeenCalledWith("--primary", "hsl(217, 91%, 60%)")
-      expect(mockSetProperty).toHaveBeenCalledWith("--secondary", "hsl(217, 32%, 17%)")
-      expect(mockSetProperty).toHaveBeenCalledWith("--destructive", "hsl(0, 84%, 60%)")
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--primary",
+        "hsl(217, 91%, 60%)"
+      )
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--secondary",
+        "hsl(217, 32%, 17%)"
+      )
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--destructive",
+        "hsl(0, 84%, 60%)"
+      )
       expect(mockSetProperty).toHaveBeenCalledTimes(3)
     })
 
@@ -52,9 +64,15 @@ describe("applyToHtml", () => {
 
       applyToHtml(variables, ref)
 
-      expect(mockSetProperty).toHaveBeenCalledWith("--color", "rgb(51, 176, 255)")
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--color",
+        "rgb(51, 176, 255)"
+      )
       expect(mockSetProperty).toHaveBeenCalledWith("--spacing", "1rem")
-      expect(mockSetProperty).toHaveBeenCalledWith("--shadow", "0 1px 2px 0 rgba(0, 0, 0, 0.05)")
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--shadow",
+        "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
+      )
     })
 
     it("handles empty variables object", () => {
@@ -74,8 +92,16 @@ describe("applyToHtml", () => {
       applyToHtml(variables1, ref)
       applyToHtml(variables2, ref)
 
-      expect(mockSetProperty).toHaveBeenNthCalledWith(1, "--primary", "hsl(217, 91%, 60%)")
-      expect(mockSetProperty).toHaveBeenNthCalledWith(2, "--primary", "hsl(0, 84%, 60%)")
+      expect(mockSetProperty).toHaveBeenNthCalledWith(
+        1,
+        "--primary",
+        "hsl(217, 91%, 60%)"
+      )
+      expect(mockSetProperty).toHaveBeenNthCalledWith(
+        2,
+        "--primary",
+        "hsl(0, 84%, 60%)"
+      )
     })
 
     it("preserves other CSS variables when applying new ones", () => {
@@ -86,8 +112,14 @@ describe("applyToHtml", () => {
       applyToHtml(variables1, ref)
       applyToHtml(variables2, ref)
 
-      expect(mockSetProperty).toHaveBeenCalledWith("--primary", "hsl(217, 91%, 60%)")
-      expect(mockSetProperty).toHaveBeenCalledWith("--secondary", "hsl(217, 32%, 17%)")
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--primary",
+        "hsl(217, 91%, 60%)"
+      )
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--secondary",
+        "hsl(217, 32%, 17%)"
+      )
       expect(mockSetProperty).toHaveBeenCalledTimes(2)
     })
 
@@ -104,7 +136,10 @@ describe("applyToHtml", () => {
         "--gradient",
         "linear-gradient(to right, #ff0000, #0000ff)"
       )
-      expect(mockSetProperty).toHaveBeenCalledWith("--calc", "calc(100% - 10px)")
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--calc",
+        "calc(100% - 10px)"
+      )
     })
   })
 
@@ -132,7 +167,10 @@ describe("applyToHtml", () => {
 
       applyToHtml(variables)
 
-      expect(mockSetProperty).toHaveBeenCalledWith("--primary", "hsl(217, 91%, 60%)")
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--primary",
+        "hsl(217, 91%, 60%)"
+      )
     })
 
     it("applies variables to document.documentElement when ref is undefined", () => {
@@ -140,7 +178,10 @@ describe("applyToHtml", () => {
 
       applyToHtml(variables)
 
-      expect(mockSetProperty).toHaveBeenCalledWith("--primary", "hsl(217, 91%, 60%)")
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--primary",
+        "hsl(217, 91%, 60%)"
+      )
     })
 
     it("applies multiple variables to document.documentElement", () => {
@@ -151,8 +192,14 @@ describe("applyToHtml", () => {
 
       applyToHtml(variables)
 
-      expect(mockSetProperty).toHaveBeenCalledWith("--primary", "hsl(217, 91%, 60%)")
-      expect(mockSetProperty).toHaveBeenCalledWith("--secondary", "hsl(217, 32%, 17%)")
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--primary",
+        "hsl(217, 91%, 60%)"
+      )
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--secondary",
+        "hsl(217, 32%, 17%)"
+      )
       expect(mockSetProperty).toHaveBeenCalledTimes(2)
     })
   })
@@ -214,7 +261,10 @@ describe("applyToHtml", () => {
 
       applyToHtml(variables, ref)
 
-      expect(mockSetProperty).toHaveBeenCalledWith("--spaced", "value with spaces")
+      expect(mockSetProperty).toHaveBeenCalledWith(
+        "--spaced",
+        "value with spaces"
+      )
     })
 
     it("applies whitespace-only values", () => {
