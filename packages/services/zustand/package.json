@@ -1,5 +1,5 @@
 {
-  "name": "@repo/platform-zustand",
+  "name": "@repo/services-zustand",
   "version": "0.0.0",
   "type": "module",
   "private": true,

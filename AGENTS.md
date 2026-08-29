@@ -10,7 +10,7 @@
 ## Ownership boundaries
 
 - Applications are composition roots; packages never import from `apps`.
-- Runtime direction is `shared` → `platform` and `ui` → `features` → `apps`.
+- Runtime direction is `shared` → `services` and `ui` → `features` → `apps`.
 - Feature-specific schemas, types, utilities, components, and hooks remain feature-owned until multiple legitimate owners justify extraction.
 - `packages/tooling` and `packages/testing` are development-only support planes.
 - `@workspace/design-system` is CSS-authoritative and independent of Tailwind and React.
@@ -25,7 +25,7 @@ Run `pnpm check:boundaries` after changing package manifests.
 - Use strict TypeScript, semantic names, small focused modules, and composition.
 - Preserve accessible HTML semantics, keyboard behavior, focus states, and reduced-motion preferences.
 - Declare dependencies in the workspace that imports them; use `workspace:*` internally and `catalog:` for cataloged external packages.
-- Do not create speculative shared, platform, or feature packages.
+- Do not create speculative shared, services, or feature packages.
 - Never put secrets, dependency trees, caches, or generated build output in `.docs` or `.archives`.
 
 ## Deletion Policy

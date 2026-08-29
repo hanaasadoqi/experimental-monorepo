@@ -15,9 +15,11 @@ describe("createUseSelector", () => {
       name: "test",
     }))
 
-    const useSelector = createUseSelector(store)
-    expect(useSelector((state) => state.count)).toBe(0)
-    expect(useSelector((state) => state.name)).toBe("test")
+    const useSelector = createUseSelector<State>(store)
+    const countSelector = (state: State) => state.count
+    const nameSelector = (state: State) => state.name
+    expect(useSelector(countSelector)).toBe(0)
+    expect(useSelector(nameSelector)).toBe("test")
   })
 
   it("selects specific state properties", () => {
@@ -31,7 +33,7 @@ describe("createUseSelector", () => {
       timestamp: Date.now(),
     }))
 
-    const useSelector = createUseSelector(store)
+    const useSelector = createUseSelector<State>(store)
     const userId = useSelector((state: State) => state.user.id)
     const userName = useSelector((state: State) => state.user.name)
 
@@ -50,7 +52,7 @@ describe("createUseSelector", () => {
       sum: (items: number[]) => items.reduce((a, b) => a + b, 0),
     }))
 
-    const useSelector = createUseSelector(store)
+    const useSelector = createUseSelector<State>(store)
     const total = useSelector((state: State) => state.sum(state.items))
 
     expect(total).toBe(15)
@@ -73,7 +75,7 @@ describe("createUseSelector", () => {
       })
     )
 
-    const useSelector = createUseSelector(store)
+    const useSelector = createUseSelector<State>(store)
 
     expect(useSelector((state: State) => state.count)).toBe(0)
 
@@ -107,7 +109,7 @@ describe("createUseSelector", () => {
       },
     }))
 
-    const useSelector = createUseSelector(store)
+    const useSelector = createUseSelector<State>(store)
     const email = useSelector((state: State) => state.app.user.profile.email)
 
     expect(email).toBe("john@example.com")

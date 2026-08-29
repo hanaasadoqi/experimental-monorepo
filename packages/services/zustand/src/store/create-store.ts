@@ -1,6 +1,6 @@
 import { create } from "zustand"
 
-import type { Store } from "../types"
+import type { Store } from "../types/index.ts"
 
 export const createStore = <T>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -372,7 +372,7 @@ importers:
 
   packages/foundation/tooling/typescript-config: {}
 
-  packages/platform/zustand:
+  packages/services/zustand:
     dependencies:
       zustand:
         specifier: ^4.5.2

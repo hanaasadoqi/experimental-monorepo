@@ -1,4 +1,4 @@
-# @repo/platform-zustand
+# @repo/services-zustand
 
 State management infrastructure for Zustand-based stores. Provides typed store creation utilities and selector patterns.
 
@@ -7,7 +7,7 @@ State management infrastructure for Zustand-based stores. Provides typed store c
 ### Creating a Store
 
 ```typescript
-import { createStore } from "@repo/platform-zustand/store"
+import { createStore } from "@repo/services-zustand/store"
 
 interface AppState {
   count: number
@@ -39,7 +39,7 @@ const unsubscribe = useAppStore.subscribe(
 ### Selectors
 
 ```typescript
-import { createUseSelector } from "@repo/platform-zustand/hooks"
+import { createUseSelector } from "@repo/services-zustand/hooks"
 
 const useSelector = createUseSelector(useAppStore)
 
@@ -64,4 +64,4 @@ const incremented = useSelector((state) => state.count + 1)
 ## When NOT to Use
 
 - Simple component-local state (use React hooks)
-- Props drilling avoidance alone (use Context, see `@repo/platform-context`)
+- Props drilling avoidance alone (use Context, see `@repo/services-context`)
