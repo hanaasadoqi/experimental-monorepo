@@ -1,30 +1,44 @@
 "use client"
 
 import * as React from "react"
-import { ThemeProvider } from "../provider/theme-provider"
+import { AppearanceProvider } from "../provider/appearance-provider"
+import { useResolvedColorScheme } from "../hooks/use-appearance"
 import { ThemeToggleHotkey } from "./theme-toggle-hotkey"
-import { useTheme } from "../hooks"
+import { createLocalStorageAppearanceAdapter } from "../persistence/local-storage-adapter"
 
 interface ThemeWrapperProps {
   children: React.ReactNode
 }
 
-function ThemeWrapper({ children }: ThemeWrapperProps) {
-  const theme = useTheme().theme
+function ThemeWrapperContent({ children }: ThemeWrapperProps) {
+  const resolvedColorScheme = useResolvedColorScheme()
 
   React.useEffect(() => {
-    if (theme === "dark") {
+    if (resolvedColorScheme === "dark") {
       document.documentElement.classList.add("dark")
     } else {
       document.documentElement.classList.remove("dark")
     }
-  }, [theme])
+  }, [resolvedColorScheme])
 
   return (
-    <ThemeProvider defaultTheme="system">
+    <>
       <ThemeToggleHotkey />
       {children}
-    </ThemeProvider>
+    </>
+  )
+}
+
+function ThemeWrapper({ children }: ThemeWrapperProps) {
+  const adapter = React.useMemo(
+    () => createLocalStorageAppearanceAdapter(),
+    []
+  )
+
+  return (
+    <AppearanceProvider adapter={adapter} defaultPreference="system">
+      <ThemeWrapperContent>{children}</ThemeWrapperContent>
+    </AppearanceProvider>
   )
 }
 

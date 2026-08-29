@@ -1,11 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { useTheme } from "../hooks"
+import { useResolvedColorScheme, useSetAppearancePreference } from "../hooks"
 import { isTypingTarget } from "../utils/is-typing-target"
 
 export function ThemeToggleHotkey() {
-  const { setTheme, isDark } = useTheme()
+  const resolvedColorScheme = useResolvedColorScheme()
+  const setPreference = useSetAppearancePreference()
 
   React.useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -25,15 +26,15 @@ export function ThemeToggleHotkey() {
         return
       }
 
-      const newTheme = isDark ? "light" : "dark"
-      setTheme(newTheme)
+      const newPreference = resolvedColorScheme === "dark" ? "light" : "dark"
+      setPreference(newPreference)
     }
 
     window.addEventListener("keydown", onKeyDown)
     return () => {
       window.removeEventListener("keydown", onKeyDown)
     }
-  }, [isDark, setTheme])
+  }, [resolvedColorScheme, setPreference])
 
   return null
 }

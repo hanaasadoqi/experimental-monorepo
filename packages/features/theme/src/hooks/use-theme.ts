@@ -1,22 +1,24 @@
-import { themeStore } from "../store/theme-store"
-import type { Theme, ThemeContextValue } from "../types"
+"use client"
 
-export const useTheme = (): ThemeContextValue => {
-  return themeStore((state) => ({
-    theme: state.theme,
-    isDark: state.isDark,
-    setTheme: state.setTheme,
-  }))
-}
+import {
+  useAppearancePreference,
+  useSetAppearancePreference,
+} from "./use-appearance"
+import type { AppearancePreference } from "../types"
 
-export const useSetTheme = (): ((theme: Theme) => void) => {
-  return themeStore((state) => state.setTheme)
-}
+/**
+ * Legacy compatibility hook — delegates to useAppearance.
+ * Use useAppearance, useAppearancePreference, etc. in new code.
+ */
+export function useTheme(): {
+  preference: AppearancePreference
+  setTheme: (preference: AppearancePreference) => void
+} {
+  const preference = useAppearancePreference()
+  const setPreference = useSetAppearancePreference()
 
-export const useCurrentTheme = (): Theme => {
-  return themeStore((state) => state.theme)
-}
-
-export const useIsDark = (): boolean => {
-  return themeStore((state) => state.isDark)
+  return {
+    preference,
+    setTheme: setPreference,
+  }
 }
