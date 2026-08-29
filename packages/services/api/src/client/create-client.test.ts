@@ -51,7 +51,9 @@ describe("createApiClient", () => {
   })
 
   it("makes POST requests", async () => {
-    const mockPost = vi.fn().mockResolvedValue({ data: { id: 1, name: "Test" } })
+    const mockPost = vi
+      .fn()
+      .mockResolvedValue({ data: { id: 1, name: "Test" } })
     vi.mocked(axios.create).mockReturnValue({
       post: mockPost,
     } as any)
@@ -64,7 +66,9 @@ describe("createApiClient", () => {
   })
 
   it("makes PUT requests", async () => {
-    const mockPut = vi.fn().mockResolvedValue({ data: { id: 1, name: "Updated" } })
+    const mockPut = vi
+      .fn()
+      .mockResolvedValue({ data: { id: 1, name: "Updated" } })
     vi.mocked(axios.create).mockReturnValue({
       put: mockPut,
     } as any)
@@ -72,7 +76,11 @@ describe("createApiClient", () => {
     const client = createApiClient()
     const result = await client.put("/users/1", { name: "Updated" })
 
-    expect(mockPut).toHaveBeenCalledWith("/users/1", { name: "Updated" }, undefined)
+    expect(mockPut).toHaveBeenCalledWith(
+      "/users/1",
+      { name: "Updated" },
+      undefined
+    )
     expect(result).toEqual({ id: 1, name: "Updated" })
   })
 

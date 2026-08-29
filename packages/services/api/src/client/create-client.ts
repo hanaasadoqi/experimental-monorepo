@@ -8,9 +8,7 @@ interface CreateClientOptions {
   timeout?: number
 }
 
-export const createApiClient = (
-  options?: CreateClientOptions
-): ApiClient => {
+export const createApiClient = (options?: CreateClientOptions): ApiClient => {
   const instance: AxiosInstance = axios.create({
     baseURL: options?.baseURL || "/api",
     timeout: options?.timeout || 10000,
@@ -37,10 +35,7 @@ export const createApiClient = (
       const response = await instance.put<T>(url, data, config)
       return response.data
     },
-    async delete<T = unknown>(
-      url: string,
-      config?: RequestConfig
-    ): Promise<T> {
+    async delete<T = unknown>(url: string, config?: RequestConfig): Promise<T> {
       const response = await instance.delete<T>(url, config)
       return response.data
     },
