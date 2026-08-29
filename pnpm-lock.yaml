@@ -151,6 +151,9 @@ importers:
       '@repo/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui/components
+      '@repo/ui-design-system':
+        specifier: workspace:*
+        version: link:../../packages/ui/design-system
       next:
         specifier: 16.2.6
         version: 16.2.6(@babel/core@7.29.7(supports-color@7.2.0))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -423,6 +426,9 @@ importers:
       '@repo/shared-utils':
         specifier: workspace:*
         version: link:../../shared/utils
+      '@repo/ui-design-system':
+        specifier: workspace:*
+        version: link:../design-system
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -508,6 +514,61 @@ importers:
       tailwindcss:
         specifier: ^4
         version: 4.3.3
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      typescript-eslint:
+        specifier: ^7.9.0
+        version: 7.18.0(eslint@9.39.5(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      vitest:
+        specifier: ^4.1.11
+        version: 4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0))
+
+  packages/ui/design-system:
+    dependencies:
+      react:
+        specifier: ^19.2.4
+        version: 19.2.8
+      react-dom:
+        specifier: ^19.2.4
+        version: 19.2.8(react@19.2.8)
+    devDependencies:
+      '@eslint/js':
+        specifier: ^10.0.1
+        version: 10.0.1(eslint@9.39.5(supports-color@7.2.0))
+      '@repo/foundation-eslint-config':
+        specifier: workspace:*
+        version: link:../../foundation/tooling/eslint-config
+      '@repo/foundation-prettier-config':
+        specifier: workspace:*
+        version: link:../../foundation/tooling/prettier-config
+      '@repo/foundation-typescript-config':
+        specifier: workspace:*
+        version: link:../../foundation/tooling/typescript-config
+      '@repo/foundation-vitest-config':
+        specifier: workspace:*
+        version: link:../../foundation/testing/vitest-config
+      '@repo/foundation-vitest-utils':
+        specifier: workspace:*
+        version: link:../../foundation/testing/vitest-utils
+      '@types/react':
+        specifier: ^19.2.18
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: ^19.2.5
+        version: 19.2.5(@types/react@19.2.18)
+      '@vitest/coverage-v8':
+        specifier: ^4.1.11
+        version: 4.1.11(vitest@4.1.11)
+      eslint:
+        specifier: ^9.39.5
+        version: 9.39.5(supports-color@7.2.0)
+      eslint-config-prettier:
+        specifier: ^10.1.8
+        version: 10.1.8(eslint@9.39.5(supports-color@7.2.0))
+      globals:
+        specifier: ^15.2.0
+        version: 15.15.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -2579,8 +2640,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.415:
-    resolution: {integrity: sha512-958V+Kbhtgz+SxXeEVKBjrlKRBIDAYvUJfwhjxMZ5S6ut9jAl7l9ZKBkBrvjyjZE36PabLUo2L8kEeV5O4vgJg==}
+  electron-to-chromium@1.5.416:
+    resolution: {integrity: sha512-K6bvB2BjnNrugtIih6ewlbBI9DXa976jIdiIlRLHhBoEI9a4JaQjjHyF+A1IQI543aQYR4LnmOrT/K5fZj0aPA==}
 
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
@@ -6670,7 +6731,7 @@ snapshots:
     dependencies:
       baseline-browser-mapping: 2.11.20
       caniuse-lite: 1.0.30001810
-      electron-to-chromium: 1.5.415
+      electron-to-chromium: 1.5.416
       node-releases: 2.0.54
       update-browserslist-db: 1.3.2(browserslist@4.28.8)
 
@@ -6913,7 +6974,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.415: {}
+  electron-to-chromium@1.5.416: {}
 
   emoji-regex@10.6.0: {}
 
