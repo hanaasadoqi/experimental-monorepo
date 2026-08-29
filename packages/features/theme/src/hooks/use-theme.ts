@@ -1,5 +1,5 @@
-import { themeStore } from "../store/theme-store.js"
-import type { Theme, ThemeContextValue } from "../types/index.js"
+import { themeStore } from "../store/theme-store";
+import type { Theme, ThemeContextValue } from "../types";
 
 export const useTheme = (): ThemeContextValue => {
   const state = themeStore.getState()

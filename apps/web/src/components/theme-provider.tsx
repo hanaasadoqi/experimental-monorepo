@@ -1,44 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes"
+import { ThemeProvider as FeatureThemeProvider } from "@repo/feature-theme"
+import { useTheme } from "@repo/feature-theme"
 
-function ThemeProvider({
-  children,
-  ...props
-}: React.ComponentProps<typeof NextThemesProvider>) {
-  return (
-    <NextThemesProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-      {...props}
-    >
-      <ThemeHotkey />
-      {children}
-    </NextThemesProvider>
-  )
+interface ThemeProviderProps {
+  children: React.ReactNode
 }
 
-function isTypingTarget(target: EventTarget | null, tagNames: string[] = []) {
-  if (!(target instanceof HTMLElement)) {
-    return false
-  }
-
-  const defaultTagNames = ["INPUT", "TEXTAREA", "SELECT"]
-
-  const normalizedTagNames = tagNames?.map((tag) => tag.toUpperCase())
-
-  const finalTagNames = Array.from(
-    new Set([...defaultTagNames, ...normalizedTagNames])
-  )
-
-  return finalTagNames.includes(target.tagName) || target.isContentEditable
-}
-
-function ThemeHotkey() {
-  const { resolvedTheme, setTheme } = useTheme()
+function ThemeToggleHotkey() {
+  const { setTheme, isDark } = useTheme()
 
   React.useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -58,17 +29,39 @@ function ThemeHotkey() {
         return
       }
 
-      setTheme(resolvedTheme === "dark" ? "light" : "dark")
+      setTheme(isDark ? "light" : "dark")
     }
 
     window.addEventListener("keydown", onKeyDown)
-
     return () => {
       window.removeEventListener("keydown", onKeyDown)
     }
-  }, [resolvedTheme, setTheme])
+  }, [isDark, setTheme])
 
   return null
+}
+
+function isTypingTarget(target: EventTarget | null, tagNames: string[] = []) {
+  if (!(target instanceof HTMLElement)) {
+    return false
+  }
+
+  const defaultTagNames = ["INPUT", "TEXTAREA", "SELECT"]
+  const normalizedTagNames = tagNames?.map((tag) => tag.toUpperCase())
+  const finalTagNames = Array.from(
+    new Set([...defaultTagNames, ...normalizedTagNames])
+  )
+
+  return finalTagNames.includes(target.tagName) || target.isContentEditable
+}
+
+function ThemeProvider({ children }: ThemeProviderProps) {
+  return (
+    <FeatureThemeProvider defaultTheme="system">
+      <ThemeToggleHotkey />
+      {children}
+    </FeatureThemeProvider>
+  )
 }
 
 export { ThemeProvider }

@@ -3,4 +3,4 @@ export {
   useSetTheme,
   useCurrentTheme,
   useIsDark,
-} from "./use-theme.js"
+} from "./use-theme"

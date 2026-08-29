@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach } from "vitest"
 
-import { useTheme, useSetTheme, useCurrentTheme, useIsDark } from "./use-theme.js"
-import { themeStore } from "../store/theme-store.js"
+import { useTheme, useSetTheme, useCurrentTheme, useIsDark } from "./use-theme"
+import { themeStore } from "../store/theme-store"
 
 describe("Theme hooks", () => {
   beforeEach(() => {

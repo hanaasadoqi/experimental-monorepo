@@ -1,6 +1,6 @@
 import { createStore } from "@repo/services-zustand/store"
 
-import type { Theme, ThemeContextValue } from "../types/index.js"
+import type { Theme, ThemeContextValue } from "../types"
 
 interface ThemeStoreState extends ThemeContextValue {
   setTheme: (theme: Theme) => void
