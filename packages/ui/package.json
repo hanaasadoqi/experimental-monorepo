@@ -29,6 +29,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@foundation/tooling-eslint-config": "workspace:*",
+    "@foundation/tooling-prettier-config": "workspace:*",
     "@foundation/tooling-typescript-config": "workspace:*",
     "eslint": "^9.39.5",
     "@eslint/js": "^10.0.1",

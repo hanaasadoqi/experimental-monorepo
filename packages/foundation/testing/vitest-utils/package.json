@@ -8,7 +8,7 @@
     "./setup": "./src/setup.ts"
   },
   "scripts": {
-    "lint": "echo 'Linting skipped for test utilities'",
+    "lint": "eslint .",
     "check-types": "tsc -p tsconfig.json"
   },
   "dependencies": {

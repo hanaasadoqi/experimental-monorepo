@@ -1,3 +1,4 @@
+import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardHeader,
@@ -24,7 +25,9 @@ export default function Page() {
             </p>
           </CardContent>
           <CardFooter>
-            <CardAction>Click Me</CardAction>
+            <CardAction>
+              <Button>Click Me</Button>
+            </CardAction>
           </CardFooter>
         </Card>
         ``

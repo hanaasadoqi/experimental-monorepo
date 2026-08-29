@@ -9,7 +9,7 @@
     "./storage": "./src/storage.ts"
   },
   "scripts": {
-    "lint": "echo 'Linting skipped for test mocks'",
+    "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest run",
     "check-types": "tsc -p tsconfig.json"

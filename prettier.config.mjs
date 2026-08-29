@@ -1,8 +1,3 @@
-import baseConfig from '@foundation/tooling-prettier-config'
+import tailwindConfig from '@foundation/tooling-prettier-config/tailwind'
 
-export default {
-  ...baseConfig,
-  plugins: ['prettier-plugin-tailwindcss'],
-  tailwindStylesheet: 'packages/ui/src/styles/globals.css',
-  tailwindFunctions: ['cn', 'cva'],
-}
+export default tailwindConfig;
