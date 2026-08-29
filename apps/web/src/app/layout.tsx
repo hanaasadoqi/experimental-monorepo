@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google"
 
 import "@repo/ui-components/globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeWrapper } from "@repo/feature-theme/components"
 import { cn } from "@repo/ui-components/lib/utils"
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" })
@@ -31,7 +31,7 @@ export default function RootLayout({
       )}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeWrapper>{children}</ThemeWrapper>
       </body>
     </html>
   )

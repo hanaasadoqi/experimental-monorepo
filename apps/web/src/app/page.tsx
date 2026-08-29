@@ -1,3 +1,8 @@
+"use client";
+
+import { Moon, Sun } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useTheme } from "@repo/feature-theme/hooks";
 import { Button } from "@repo/ui-components/base/button"
 import {
   Card,
@@ -10,6 +15,8 @@ import {
 } from "@repo/ui-components/base/card"
 
 export default function Page() {
+  const { isDark, setTheme } = useTheme()
+  const Icon = isDark ? Sun : Moon;
   return (
     <div className="flex min-h-svh p-6">
       <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
@@ -26,11 +33,10 @@ export default function Page() {
           </CardContent>
           <CardFooter>
             <CardAction>
-              <Button>Click Me</Button>
+              <Button onClick={() => setTheme(isDark ? "light" : "dark")}><HugeiconsIcon icon={Icon} /></Button>
             </CardAction>
           </CardFooter>
         </Card>
-        ``
       </div>
     </div>
   )
