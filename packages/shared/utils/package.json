@@ -21,6 +21,7 @@
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
+    "@repo/shared-contracts": "workspace:*",
     "eslint": "^9.39.5",
     "prettier": "^3.9.6",
     "typescript": "^6.0.3",
@@ -34,7 +35,7 @@
   "exports": {
     "./classnames": "./src/classnames.ts",
     ".": "./src//index.ts",
-    "./*": "./src/*",
+    "./*": "./src/*.ts",
     "./server/*": "./src/server/*.ts",
     "./server": "./src/server/index.ts"
   }
