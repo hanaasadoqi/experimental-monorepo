@@ -1,4 +1,4 @@
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@repo/ui-components/button"
 import {
   Card,
   CardHeader,
@@ -7,7 +7,7 @@ import {
   CardTitle,
   CardDescription,
   CardAction,
-} from "@workspace/ui/components/card"
+} from "@repo/ui-components/card"
 
 export default function Page() {
   return (
