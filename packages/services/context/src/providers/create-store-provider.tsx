@@ -6,7 +6,7 @@ import {
   useContext,
   useRef,
 } from "react"
-import type { Store } from "@repo/services-zustand"
+import type { Store } from "@repo/services-zustand/types"
 
 import type { ContextProviderProps } from "../types"
 
