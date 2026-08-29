@@ -1,15 +1,15 @@
 {
   "extends": "@repo/foundation-typescript-config/test.json",
   "compilerOptions": {
-    "target": "es2025",
-    "lib": ["es2025", "dom", "DOM.Iterable", "DOM.AsyncIterable"],
+    "target": "es2022",
+    "lib": ["es2022", "dom", "DOM.Iterable"],
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler",
     "paths": {
       "@repo/ui-components/*": ["./src/*"]
     },
-    "types": ["react", "react-dom", "vitest/globals", "node"]
+    "types": ["react", "react-dom", "vitest/globals", "@testing-library/jest-dom/vitest", "node"]
   },
   "include": ["src", "@types/**/*.d.ts"],
   "exclude": ["node_modules", "dist"]
