@@ -6,5 +6,6 @@ export default mergeConfig(baseConfig, {
   test: {
     include: ["src/**/*.test.ts"],
     globals: true,
+    setupFiles: ["./vitest.setup.ts"],
   },
 })

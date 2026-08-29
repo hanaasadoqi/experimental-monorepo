@@ -1,8 +1,12 @@
 {
-  "extends": "@repo/foundation-typescript-config/base.json",
+  "extends": "@repo/foundation-typescript-config/react-library.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "jsx": "react-jsx",
+    "module": "preserve",
+    "moduleResolution": "bundler"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

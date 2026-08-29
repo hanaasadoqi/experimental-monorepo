@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 
-import { createStore } from "../store/index.ts"
-import { createUseSelector } from "./use-store-selector.ts"
+import { createStore } from "../store/index.js"
+import { createUseSelector } from "./use-store-selector.js"
 
 describe("createUseSelector", () => {
   it("creates a selector hook for a store", () => {

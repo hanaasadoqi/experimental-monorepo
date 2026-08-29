@@ -9,11 +9,12 @@
     "react-dom": "^19.2.0"
   },
   "scripts": {
-    "lint": "eslint",
+    "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "test:run": "vitest run --coverage",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@repo/foundation-eslint-config": "workspace:*",
@@ -21,6 +22,7 @@
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^26.4.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",

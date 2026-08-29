@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { createStore } from "./create-store.ts"
+import { createStore } from "./create-store.js"
 
 describe("createStore", () => {
   it("creates a typed store with initial state", () => {
