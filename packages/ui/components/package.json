@@ -10,7 +10,8 @@
   "scripts": {
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "test:run": "vitest run --coverage"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -29,21 +30,26 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@turbo/gen": "^2.9.15",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/node": "^26.4.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
     "@repo/foundation-eslint-config": "workspace:*",
     "@repo/foundation-prettier-config": "workspace:*",
     "@repo/foundation-typescript-config": "workspace:*",
+    "@repo/foundation-vitest-config": "workspace:*",
+    "@repo/foundation-vitest-utils": "workspace:*",
     "eslint": "^9.39.5",
     "@eslint/js": "^10.0.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^15.2.0",
+    "jsdom": "^27.0.0",
     "tailwindcss": "^4",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^7.9.0"
+    "typescript-eslint": "^7.9.0",
+    "vitest": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.11"
   },
   "exports": {
     "./globals.css": "./src/styles/globals.css",
