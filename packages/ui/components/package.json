@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "imports": {
     "#base/lib/*": "./src/base/lib/*.ts"
   },
@@ -56,6 +58,7 @@
   },
   "exports": {
     "./globals.css": "./src/styles/globals.css",
+    "./theme.css": "./src/base/styles/shadcn.css",
     "./postcss.config": "./postcss.config.mjs",
     "./lib/*": "./src/lib/*.ts",
     "./base": "./src/base/ui/index.ts",
