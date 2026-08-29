@@ -1,17 +1,17 @@
 import type { AppearancePreference } from "../types"
-import { readCookie } from "@repo/shared-utils/server";
+import { readCookie } from "@repo/shared-utils/server"
 
 const APPEARANCE_COOKIE_NAME = "appearance-preference"
 
 export async function readAppearanceCookie(): Promise<
-      AppearancePreference | undefined
+  AppearancePreference | undefined
 > {
-  const appearanceCookie = await readCookie(APPEARANCE_COOKIE_NAME).then((value) => {
-    if(!value) return undefined ;
-    if (["light", "dark", "system"].includes(value)) {
-      return value as AppearancePreference
-    }
-  })
+  const value = await readCookie(APPEARANCE_COOKIE_NAME)
 
-  return appearanceCookie;
-};
+  if (!value) return undefined
+  if (["light", "dark", "system"].includes(value)) {
+    return value as AppearancePreference
+  }
+
+  return undefined
+}

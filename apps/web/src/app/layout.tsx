@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeWrapper } from "@repo/feature-theme/components"
 import { generateBootstrapScript } from "@repo/feature-theme/runtime"
-import { readAppearanceCookie } from "@repo/feature-theme/server";
+import { readAppearanceCookie } from "@repo/feature-theme/server"
 import { cn } from "@repo/ui-components/lib/utils"
 
 const geist = Geist({
