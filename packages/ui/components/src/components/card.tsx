@@ -1,6 +1,6 @@
 import type * as React from "react"
 
-import { cn } from "@workspace/ui/lib/utils"
+import { cn } from "@repo/ui-components/lib/utils"
 
 function Card({
   className,

@@ -1,8 +1,12 @@
 {
-  "name": "@workspace/ui",
+  "name": "@repo/ui-components",
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "sideEffects": false,
+  "imports": {
+    "#base/lib/*": "./src/base/lib/*.ts"
+  },
   "scripts": {
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
@@ -28,9 +32,9 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@foundation/tooling-eslint-config": "workspace:*",
-    "@foundation/tooling-prettier-config": "workspace:*",
-    "@foundation/tooling-typescript-config": "workspace:*",
+    "@repo/foundation-eslint-config": "workspace:*",
+    "@repo/foundation-prettier-config": "workspace:*",
+    "@repo/foundation-typescript-config": "workspace:*",
     "eslint": "^9.39.5",
     "@eslint/js": "^10.0.1",
     "eslint-config-prettier": "^10.1.8",
@@ -45,7 +49,9 @@
     "./globals.css": "./src/styles/globals.css",
     "./postcss.config": "./postcss.config.mjs",
     "./lib/*": "./src/lib/*.ts",
-    "./components/*": "./src/components/*.tsx",
-    "./hooks/*": "./src/hooks/*.ts"
+    "./base": "./src/base/components/index.ts",
+    "./base/*": "./src/base/components/*.tsx",
+    "./hooks/*": "./src/hooks/*.ts",
+    "./*": "./src/components/*.tsx"
   }
 }
