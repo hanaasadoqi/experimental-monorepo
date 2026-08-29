@@ -1,4 +1,5 @@
 import { describe, expect, it, beforeEach } from "vitest"
+import { renderHook, act } from "@testing-library/react"
 
 import { useTheme, useSetTheme, useCurrentTheme, useIsDark } from "./use-theme"
 import { themeStore } from "../store/theme-store"
@@ -11,73 +12,93 @@ describe("Theme hooks", () => {
 
   describe("useTheme", () => {
     it("returns current theme state", () => {
-      const theme = useTheme()
+      const { result } = renderHook(() => useTheme())
 
-      expect(theme).toHaveProperty("theme")
-      expect(theme).toHaveProperty("isDark")
-      expect(theme).toHaveProperty("setTheme")
+      expect(result.current).toHaveProperty("theme")
+      expect(result.current).toHaveProperty("isDark")
+      expect(result.current).toHaveProperty("setTheme")
     })
 
     it("includes setTheme function", () => {
-      const theme = useTheme()
-      expect(typeof theme.setTheme).toBe("function")
+      const { result } = renderHook(() => useTheme())
+      expect(typeof result.current.setTheme).toBe("function")
     })
   })
 
   describe("useSetTheme", () => {
     it("returns setTheme function", () => {
-      const setTheme = useSetTheme()
-      expect(typeof setTheme).toBe("function")
+      const { result } = renderHook(() => useSetTheme())
+      expect(typeof result.current).toBe("function")
     })
 
     it("can set theme to dark", () => {
-      const setTheme = useSetTheme()
-      setTheme("dark")
+      const { result: setThemeResult } = renderHook(() => useSetTheme())
+      const { result: currentThemeResult } = renderHook(() => useCurrentTheme())
+      const { result: isDarkResult } = renderHook(() => useIsDark())
 
-      expect(useCurrentTheme()).toBe("dark")
-      expect(useIsDark()).toBe(true)
+      act(() => {
+        setThemeResult.current("dark")
+      })
+
+      expect(currentThemeResult.current).toBe("dark")
+      expect(isDarkResult.current).toBe(true)
     })
 
     it("can set theme to light", () => {
-      const setTheme = useSetTheme()
-      setTheme("light")
+      const { result: setThemeResult } = renderHook(() => useSetTheme())
+      const { result: currentThemeResult } = renderHook(() => useCurrentTheme())
+      const { result: isDarkResult } = renderHook(() => useIsDark())
 
-      expect(useCurrentTheme()).toBe("light")
-      expect(useIsDark()).toBe(false)
+      act(() => {
+        setThemeResult.current("light")
+      })
+
+      expect(currentThemeResult.current).toBe("light")
+      expect(isDarkResult.current).toBe(false)
     })
   })
 
   describe("useCurrentTheme", () => {
     it("returns current theme value", () => {
-      const theme = useCurrentTheme()
-      expect(typeof theme).toBe("string")
+      const { result } = renderHook(() => useCurrentTheme())
+      expect(typeof result.current).toBe("string")
     })
 
     it("reflects theme changes", () => {
-      const setTheme = useSetTheme()
+      const { result: setThemeResult } = renderHook(() => useSetTheme())
+      const { result: currentThemeResult } = renderHook(() => useCurrentTheme())
 
-      setTheme("dark")
-      expect(useCurrentTheme()).toBe("dark")
+      act(() => {
+        setThemeResult.current("dark")
+      })
+      expect(currentThemeResult.current).toBe("dark")
 
-      setTheme("light")
-      expect(useCurrentTheme()).toBe("light")
+      act(() => {
+        setThemeResult.current("light")
+      })
+      expect(currentThemeResult.current).toBe("light")
     })
   })
 
   describe("useIsDark", () => {
     it("returns boolean dark state", () => {
-      const isDark = useIsDark()
-      expect(typeof isDark).toBe("boolean")
+      const { result } = renderHook(() => useIsDark())
+      expect(typeof result.current).toBe("boolean")
     })
 
     it("updates when theme changes", () => {
-      const setTheme = useSetTheme()
+      const { result: setThemeResult } = renderHook(() => useSetTheme())
+      const { result: isDarkResult } = renderHook(() => useIsDark())
 
-      setTheme("dark")
-      expect(useIsDark()).toBe(true)
+      act(() => {
+        setThemeResult.current("dark")
+      })
+      expect(isDarkResult.current).toBe(true)
 
-      setTheme("light")
-      expect(useIsDark()).toBe(false)
+      act(() => {
+        setThemeResult.current("light")
+      })
+      expect(isDarkResult.current).toBe(false)
     })
   })
 })

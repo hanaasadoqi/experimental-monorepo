@@ -12,7 +12,7 @@
     "@repo/services-zustand": "workspace:*"
   },
   "scripts": {
-    "lint": "eslint",
+    "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "test:run": "vitest run --coverage",
@@ -43,6 +43,10 @@
   "exports": {
     ".": "./src/index.ts",
     "./hooks": "./src/hooks/index.ts",
-    "./types": "./src/types/index.ts"
+    "./types": "./src/types/index.ts",
+    "./provider": "./src/provider/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./components": "./src/components/index.ts",
+    "./store": "./src/store/index.ts"
   }
 }

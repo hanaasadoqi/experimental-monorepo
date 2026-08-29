@@ -1,6 +1,1 @@
-export {
-  useTheme,
-  useSetTheme,
-  useCurrentTheme,
-  useIsDark,
-} from "./use-theme"
+export { useTheme, useSetTheme, useCurrentTheme, useIsDark } from "./use-theme"

@@ -7,15 +7,17 @@ interface ThemeStoreState extends ThemeContextValue {
 }
 
 export const createThemeStore = () => {
-  return createStore<ThemeStoreState>((set: any) => ({
-    theme: "system" as Theme,
-    isDark: false,
-    setTheme: (theme: Theme) =>
-      set((state: ThemeStoreState) => ({
-        theme,
-        isDark: theme === "dark" || (theme === "system" && isSystemDark()),
-      })),
-  }))
+  return createStore<ThemeStoreState>(
+    (set: (fn: (state: ThemeStoreState) => Partial<ThemeStoreState>) => void) => ({
+      theme: "system" as Theme,
+      isDark: false,
+      setTheme: (theme: Theme) =>
+        set(() => ({
+          theme,
+          isDark: theme === "dark" || (theme === "system" && isSystemDark()),
+        })),
+    })
+  )
 }
 
 const isSystemDark = (): boolean => {
