@@ -4,9 +4,7 @@ import type { AppearancePersistenceAdapter } from "./types"
 
 const STORAGE_KEY = "appearance-preference"
 
-function isAppearancePreference(
-  value: unknown
-): value is AppearancePreference {
+function isAppearancePreference(value: unknown): value is AppearancePreference {
   return (
     typeof value === "string" &&
     (APPEARANCE_PREFERENCES as readonly string[]).includes(value)
@@ -70,7 +68,10 @@ export function createLocalStorageAppearanceAdapter(): AppearancePersistenceAdap
     subscribe(
       listener: (preference: AppearancePreference) => void
     ): () => void {
-      if (typeof window === "undefined" || typeof window.addEventListener !== "function") {
+      if (
+        typeof window === "undefined" ||
+        typeof window.addEventListener !== "function"
+      ) {
         return () => {}
       }
 

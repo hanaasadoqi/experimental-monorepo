@@ -33,9 +33,7 @@ const DEFAULT_SAME_SITE = "Lax"
 
 function detectHttps(): boolean {
   try {
-    return (
-      typeof location !== "undefined" && location.protocol === "https:"
-    )
+    return typeof location !== "undefined" && location.protocol === "https:"
   } catch {
     return false
   }
@@ -53,9 +51,7 @@ function resolveOptions(
   }
 }
 
-function isAppearancePreference(
-  value: unknown
-): value is AppearancePreference {
+function isAppearancePreference(value: unknown): value is AppearancePreference {
   return (
     typeof value === "string" &&
     (APPEARANCE_PREFERENCES as readonly string[]).includes(value)

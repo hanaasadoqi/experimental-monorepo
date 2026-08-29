@@ -46,7 +46,8 @@ import { createStore } from "./create-store.js"
     user: { name: "John", age: 30 },
     settings: { theme: "light" },
     setUser: (user) => set({ user }),
-    updateTheme: (theme) => set((state) => ({ settings: { ...state.settings, theme } })),
+    updateTheme: (theme) =>
+      set((state) => ({ settings: { ...state.settings, theme } })),
   })
 
   const store = createStore<ComplexState>(complexCreator)
@@ -150,4 +151,3 @@ import { createStore } from "./create-store.js"
     },
   })
 }
-

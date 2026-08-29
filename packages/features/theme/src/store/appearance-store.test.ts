@@ -5,10 +5,7 @@ import {
   resolveColorScheme,
   themeStore,
 } from "./appearance-store"
-import type {
-  AppearancePreference,
-  ResolvedColorScheme,
-} from "../types"
+import type { AppearancePreference, ResolvedColorScheme } from "../types"
 
 describe("resolveColorScheme", () => {
   it("resolves 'light' preference to 'light' regardless of system scheme", () => {
