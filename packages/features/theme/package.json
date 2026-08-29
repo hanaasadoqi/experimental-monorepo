@@ -9,7 +9,8 @@
     "react-dom": "^19.2.0"
   },
   "dependencies": {
-    "@repo/services-zustand": "workspace:*"
+    "@repo/services-zustand": "workspace:*",
+    "zustand": "^4.5.2"
   },
   "scripts": {
     "lint": "eslint .",
