@@ -1,3 +1,3 @@
-import tailwindConfig from '@repo/foundatio-prettier-config/tailwind'
+import tailwindConfig from "@repo/foundation-prettier-config/tailwind"
 
-export default tailwindConfig;
+export default tailwindConfig
