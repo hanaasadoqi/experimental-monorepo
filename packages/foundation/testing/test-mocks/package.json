@@ -1,0 +1,28 @@
+{
+  "name": "@foundation/testing-mocks",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./browser": "./src/browser.ts",
+    "./storage": "./src/storage.ts"
+  },
+  "scripts": {
+    "lint": "echo 'Linting skipped for test mocks'",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "check-types": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@foundation/tooling-typescript-config": "workspace:*",
+    "@foundation/tooling-vitest-config": "workspace:*",
+    "@foundation/tooling-eslint-config": "workspace:*",
+    "vitest": "^4.1.11",
+    "eslint": "^9.39.5",
+    "@eslint/js": "^10.0.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^15.2.0",
+    "@typescript-eslint/parser": "^6.7.1"
+  }
+}

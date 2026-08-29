@@ -1,0 +1,10 @@
+{
+  "extends": "@foundation/tooling-typescript-config/base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "types": ["node"]
+  },
+  "include": ["src", "@types/node"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -13,12 +13,23 @@
     "format": {
       "dependsOn": ["^format"]
     },
-    "typecheck": {
-      "dependsOn": ["^typecheck"]
+    "check-types": {
+      "dependsOn": ["^check-types"]
     },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "test": {
+      "dependsOn": ["^test"]
+    },
+    "test:run": {
+      "dependsOn": ["^test:run"],
+      "cache": false,
+      "persistent": false
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
     }
   }
 }

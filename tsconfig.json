@@ -1,4 +1,5 @@
 {
-  "extends": "@workspace/typescript-config/base.json"
+  "extends": "@foundation/tooling-typescript-config/base.json",
+  "exclude": ["node_modules", "dist", ".archives", ".docs", ".github", ".history", ".remember", "//serena", ".turbo"]
 }
 

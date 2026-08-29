@@ -28,11 +28,17 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@workspace/eslint-config": "workspace:*",
-    "@workspace/typescript-config": "workspace:*",
-    "eslint": "^9",
+    "@foundation/tooling-eslint-config": "workspace:*",
+    "@foundation/tooling-typescript-config": "workspace:*",
+    "eslint": "^9.39.5",
+    "@eslint/js": "^10.0.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^15.2.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^7.9.0"
   },
   "exports": {
     "./globals.css": "./src/styles/globals.css",

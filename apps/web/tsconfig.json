@@ -1,8 +1,8 @@
 {
-  "extends": "@workspace/typescript-config/nextjs.json",
+  "extends": "@foundation/tooling-typescript-config/nextjs.json",
   "compilerOptions": {
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./src/*"],
       "@workspace/ui/*": ["../../packages/ui/src/*"]
     },
     "plugins": [
@@ -20,5 +20,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", ".next", ".turbo"]
 }

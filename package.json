@@ -3,22 +3,50 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "turbo format",
-    "typecheck": "turbo typecheck"
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "format:check": "turbo run format -- --check",
+    "typecheck": "turbo run check-types",
+    "type-check": "turbo run check-types",
+    "check": "turbo run lint && turbo run check-types",
+    "check:boundaries": "turbo boundaries",
+    "ui:add": "pnpm dlx shadcn@latest add -c apps/web",
+    "deps:check": "ncu --workspaces --root --packageManager pnpm --enginesNode",
+    "deps:update": "ncu --workspaces --root --packageManager pnpm --enginesNode -u",
+    "deps:safe-update": "pnpm update -r && git diff -- package.json '**/package.json' pnpm-lock.yaml",
+    "deps:check:all": "pnpm outdated -r ",
+    "prepare": "husky",
+    "test": "turbo run test",
+    "test:run": "turbo run test:run",
+    "clean": "pnpm clean --lockfile"
   },
   "devDependencies": {
-    "@workspace/eslint-config": "workspace:*",
-    "@workspace/typescript-config": "workspace:*",
+    "@foundation/tooling-eslint-config": "workspace:*",
+    "@foundation/tooling-typescript-config": "workspace:*",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "^2.9.18",
-    "typescript": "^5"
+    "typescript": "^6.0.3",
+    "husky": "9.1.7",
+    "lint-staged": "17.3.0"
   },
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@12.0.0",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.20.0",
+      "onFail": "download"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.0.0",
+      "onFail": "download"
+    }
+  },
   "engines": {
-    "node": ">=20"
+    "node": ">=24 <25",
+    "pnpm": ">=12 <13"
   }
 }

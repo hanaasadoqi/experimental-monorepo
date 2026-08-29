@@ -1,0 +1,29 @@
+{
+  "name": "@foundation/tooling-eslint-config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./base": "./base.mjs",
+    "./next-js": "./next.mjs",
+    "./react": "./react.mjs",
+    "./storybook": "./storybook.mjs"
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint-config-next": "^16.3.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-storybook": "^0.6.10",
+    "eslint-plugin-turbo": "^1.7.0",
+    "globals": "^15.2.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.1",
+    "@typescript-eslint/parser": "^6.7.1"
+  },
+  "peerDependencies": {
+    "eslint": "^10.9.0"
+  }
+}
