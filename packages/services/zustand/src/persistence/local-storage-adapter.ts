@@ -1,14 +1,22 @@
-import type { PersistenceAdapter } from "./types"
+import type { PersistenceAdapter } from "../types/index.ts"
+import { isBrowser, isLocalStorageAvailable } from "../utils/ssr.ts"
 
 /**
  * Create a localStorage persistence adapter.
+ * Safe for SSR - returns undefined on read if localStorage unavailable.
+ *
  * @param key The localStorage key
+ * @throws Nothing - fails gracefully in SSR/non-browser environments
  */
 export const createLocalStorageAdapter = <T>(
   key: string
 ): PersistenceAdapter<T> => {
   return {
     read(): T | undefined {
+      if (!isBrowser() || !isLocalStorageAvailable()) {
+        return undefined
+      }
+
       try {
         const item = localStorage.getItem(key)
         if (!item) return undefined
@@ -19,6 +27,10 @@ export const createLocalStorageAdapter = <T>(
     },
 
     write(state: T): void {
+      if (!isBrowser() || !isLocalStorageAvailable()) {
+        return
+      }
+
       try {
         localStorage.setItem(key, JSON.stringify(state))
       } catch {
@@ -27,6 +39,11 @@ export const createLocalStorageAdapter = <T>(
     },
 
     subscribe(listener: () => void): () => void {
+      if (!isBrowser()) {
+        // Return no-op unsubscribe in non-browser environments
+        return () => {}
+      }
+
       const handler = (e: StorageEvent) => {
         if (e.key === key) {
           listener()

@@ -1,4 +1,5 @@
-import type { PersistenceAdapter } from "./types"
+import type { PersistenceAdapter } from "../types/index.js"
+import { isBrowser, isCookieAvailable } from "../utils/ssr.js"
 
 export interface CookieAdapterOptions {
   /**
@@ -9,8 +10,11 @@ export interface CookieAdapterOptions {
 
 /**
  * Create a cookie-based persistence adapter.
+ * Safe for SSR - read/write operations gracefully skip in non-browser environments.
+ *
  * Note: Read operations happen synchronously via document.cookie parsing.
  * Writes are deferred to avoid layout thrashing.
+ *
  * @param key The cookie name
  * @param options Cookie options
  */
@@ -21,6 +25,10 @@ export const createCookieAdapter = <T>(
   const maxAge = options.maxAge ?? 365 * 24 * 60 * 60 // 1 year
 
   const parseValue = (): T | undefined => {
+    if (!isBrowser() || !isCookieAvailable()) {
+      return undefined
+    }
+
     try {
       const match = document.cookie
         .split("; ")
@@ -28,7 +36,10 @@ export const createCookieAdapter = <T>(
 
       if (!match) return undefined
 
-      const value = decodeURIComponent(match.split("=")[1])
+      const encodedValue = match.split("=")[1]
+      if (!encodedValue) return undefined
+
+      const value = decodeURIComponent(encodedValue)
       return JSON.parse(value) as T
     } catch {
       return undefined
@@ -43,6 +54,10 @@ export const createCookieAdapter = <T>(
     },
 
     write(state: T): void {
+      if (!isBrowser() || !isCookieAvailable()) {
+        return
+      }
+
       // Defer write to avoid layout thrashing
       if (writeTimeout) clearTimeout(writeTimeout)
       writeTimeout = setTimeout(() => {

@@ -1,1 +1,1 @@
-export { createUseSelector } from "./use-store-selector.ts"
+export { createUseSelector, type Selector } from "./use-store-selector.js"
