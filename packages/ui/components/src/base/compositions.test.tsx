@@ -176,11 +176,7 @@ describe("Component Compositions", () => {
       act(() =>
         createRoot(container!).render(
           <form>
-            <Input
-              type="email"
-              aria-invalid
-              aria-describedby="email-error"
-            />
+            <Input type="email" aria-invalid aria-describedby="email-error" />
             <span id="email-error">Invalid email</span>
             <Button disabled>Submit</Button>
           </form>

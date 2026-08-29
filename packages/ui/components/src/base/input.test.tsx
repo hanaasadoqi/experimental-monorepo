@@ -120,7 +120,9 @@ describe("Input", () => {
     it("merges custom className with base styles", () => {
       container = document.createElement("div")
       document.body.append(container)
-      act(() => createRoot(container!).render(<Input className="custom-class" />))
+      act(() =>
+        createRoot(container!).render(<Input className="custom-class" />)
+      )
 
       const input = container.querySelector("input")
       expect(input?.className).toContain("h-7")
@@ -130,7 +132,9 @@ describe("Input", () => {
     it("supports placeholder attribute", () => {
       container = document.createElement("div")
       document.body.append(container)
-      act(() => createRoot(container!).render(<Input placeholder="Enter email" />))
+      act(() =>
+        createRoot(container!).render(<Input placeholder="Enter email" />)
+      )
 
       const input = container.querySelector("input") as HTMLInputElement
       expect(input?.placeholder).toBe("Enter email")
