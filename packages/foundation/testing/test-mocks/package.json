@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest run",
-    "check-types": "tsc -p tsconfig.json"
+    "check-types": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
     "@foundation/tooling-typescript-config": "workspace:*",

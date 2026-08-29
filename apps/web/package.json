@@ -29,6 +29,7 @@
     "@foundation/tooling-prettier-config": "workspace:*",
     "@foundation/tooling-typescript-config": "workspace:*",
     "eslint": "^9",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "prettier-plugin-tailwindcss": "^0.8.1"
   }
 }
