@@ -3,7 +3,12 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
-      "@repo/ui-components/*": ["../../packages/ui/components/src/base/*"]
+      "@repo/ui-components/base": ["../../packages/ui/components/src/base/index.ts"],
+      "@repo/ui-components/base/*": ["../../packages/ui/components/src/base/*.tsx"],
+      "@repo/ui-components/lib/*": ["../../packages/ui/components/src/lib/*.ts"],
+      "@repo/ui-components/hooks/*": ["../../packages/ui/components/src/hooks/*.ts"],
+      "@repo/ui-components/globals.css": ["../../packages/ui/components/src/styles/globals.css"],
+      "@repo/ui-components/*": ["../../packages/ui/components/src/components/*.tsx"]
     },
     "plugins": [
       {
