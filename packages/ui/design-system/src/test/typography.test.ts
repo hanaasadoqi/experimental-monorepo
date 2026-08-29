@@ -3,7 +3,7 @@ import path from "node:path"
 
 import { describe, expect, it } from "vitest"
 
-import { declarationsFor } from "./css-tokens"
+import { declarationsFor } from "../utils/declarations"
 
 const sizes = [
   "xs",
@@ -23,6 +23,15 @@ const sizes = [
 ]
 
 describe("design-system typography", () => {
+  it("keeps root defaults lower-specificity than application font classes", async () => {
+    const css = await readFile(
+      path.join(import.meta.dirname, "../styles/typography.css"),
+      "utf8"
+    )
+
+    expect(css).toMatch(/:where\(\s*:root\s*\)\s*\{/)
+  })
+
   it("defines valid stacks and approved runtime bounds", async () => {
     const css = await readFile(
       path.join(import.meta.dirname, "../styles/typography.css"),

@@ -3,7 +3,7 @@ import path from "node:path"
 
 import { describe, expect, it } from "vitest"
 
-import { declarationsFor } from "./css-tokens"
+import { declarationsFor } from "../utils/declarations"
 
 describe("design-system radius", () => {
   it("defines canonical radius values", async () => {

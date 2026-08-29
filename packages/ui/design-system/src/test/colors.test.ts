@@ -3,7 +3,7 @@ import path from "node:path"
 
 import { describe, expect, it } from "vitest"
 
-import { contrastRatio, declarationsFor, resolveToken } from "./css-tokens"
+import { contrastRatio, declarationsFor, resolveToken } from "../utils"
 
 const scales = ["default", "primary", "secondary", "accent"]
 const steps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]

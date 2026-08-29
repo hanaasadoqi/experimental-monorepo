@@ -1,65 +1,66 @@
 # @repo/ui-design-system
 
-CSS-authoritative design system token definitions. This package provides the single source of truth for colors, spacing, typography, and shadows used across all UI components and applications.
-
-## Purpose
-
-- **Centralized tokens**: All design decisions live in one place
-- **CSS-first**: Independent of Tailwind or React frameworks
-- **Type-safe**: Exported TypeScript types for consumers
-- **Single source of truth**: Eliminates duplication across components
-
-## Token Categories
-
-### Colors (`./colors`)
-
-Semantic color tokens (primary, secondary, destructive) and their variations. Includes dark mode variants.
-
-### Spacing (`./spacing`)
-
-8px base unit spacing scale for padding, margins, gaps, and width fractions.
-
-### Typography (`./typography`)
-
-Font sizes with line heights, font weights, families, letter spacing, and line height utilities.
-
-### Shadows (`./shadows`)
-
-Elevation shadows for depth and emphasis (sm, md, lg, xl, 2xl).
+Framework-independent CSS tokens for the workspace. This package owns the
+canonical color, typography, radius, and theme values; it does not configure
+Tailwind, PostCSS, React, or application state.
 
 ## Usage
 
-```typescript
-// Import specific tokens
-import {
-  colors,
-  spacing,
-  typography,
-  shadows,
-} from "@repo/ui-design-system/tokens"
+Import the public stylesheet from a composition root or framework adapter:
 
-// Or import specific categories
-import { colors } from "@repo/ui-design-system/colors"
-import { spacing } from "@repo/ui-design-system/spacing"
-
-// Use in code
-const buttonStyles = {
-  backgroundColor: colors.primary.DEFAULT,
-  padding: spacing[4],
-  fontSize: typography.fontSize.base,
-}
+```css
+@import "@repo/ui-design-system/index.css";
 ```
 
-## Consumers
+Most applications should import `@repo/ui-tailwind-config` instead, because the
+Tailwind adapter already imports this stylesheet.
 
-- **@repo/tailwind-config**: Consumes tokens to generate Tailwind utilities
-- **@repo/ui-components**: Uses tokens for component styling
-- **Applications**: Direct access to tokens for custom styling
+## Color contract
 
-## Architecture
+The `default`, `primary`, `secondary`, and `accent` primitive palettes expose
+steps `50` through `950` in `:root`. Semantic roles use the collision-resistant
+`--ds-color-*` namespace, including background, foreground, surface, primary,
+secondary, muted, accent, destructive, border, input, and ring pairs.
 
-Design system tokens are intentionally separate from Tailwind configuration. This allows:
+Light values are the default. Both `.light` and `[data-theme="light"]` select
+the explicit light theme; `.dark` and `[data-theme="dark"]` select the explicit
+dark theme. When no explicit selector exists, the system color-scheme preference
+provides the dark fallback.
 
-- Porting tokens to other frameworks (styled-components, emotion, etc.)
-- Sharing token values with non-web platforms
-- Independent evolution of design system vs. CSS framework
+## Runtime typography scaling
+
+Set a unitless preference on the document root:
+
+```typescript
+document.documentElement.style.setProperty(
+  "--font-size-scale-preference",
+  String(scale)
+)
+```
+
+The effective font-size scale is clamped between `0.75` and `2`, with `1` as the
+default. Text sizes `xs` through `9xl` are computed from `--font-size-base` and
+the effective scale. The root font size and unrelated `rem`-based geometry do
+not change.
+
+Line-height and letter-spacing use independent correction preferences:
+
+- `--font-line-height-scale-preference`: clamped from `0.9` to `1.2`.
+- `--font-letter-spacing-scale-preference`: clamped from `0` to `1.5`.
+
+Their unitless and `em` values already follow the computed font size, so leave
+both preferences at `1` unless a theme needs an optical correction.
+
+## Radius contract
+
+`--radius` is the canonical base radius. Derived `--ds-radius-sm` through
+`--ds-radius-4xl` values are ordinary CSS variables mapped into Tailwind by the
+adapter.
+
+## Archived token tooling
+
+The former TypeScript token objects, generator, conversion/normalization
+utilities, HTML application helpers, and their tests are preserved locally at
+`.archives/design-system/2026-08-29-token-tooling/`. Its `ARCHIVE.md` records the
+original paths, archival revision, known stale tests, and restoration steps for
+a future theme form or theme library.
