@@ -1,3 +1,3 @@
-import { nextJsConfig } from '@foundation/tooling-eslint-config/next-js'
+import { nextJsConfig } from '@repo/foundation-eslint-config/next-js'
 
 export default nextJsConfig

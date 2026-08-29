@@ -1,5 +1,5 @@
 {
-  "name": "@foundation/testing-mocks",
+  "name": "@repo/foundation-test-mocks",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,19 +10,30 @@
   },
   "scripts": {
     "lint": "eslint .",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
     "test": "vitest",
     "test:run": "vitest run",
     "check-types": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
-    "@foundation/tooling-typescript-config": "workspace:*",
-    "@foundation/tooling-vitest-config": "workspace:*",
-    "@foundation/tooling-eslint-config": "workspace:*",
+    "@repo/foundation-typescript-config": "workspace:*",
+    "@repo/foundation-vitest-config": "workspace:*",
+    "@repo/foundation-eslint-config": "workspace:*",
+    "@repo/foundation-prettier-config": "workspace:*",
     "vitest": "^4.1.11",
     "eslint": "^9.39.5",
     "@eslint/js": "^10.0.1",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^15.2.0",
-    "@typescript-eslint/parser": "^6.7.1"
+    "@typescript-eslint/parser": "^6.7.1",
+    "prettier": "^3.9.6"
+  },
+  "peerDependencies": {
+    "vitest": "^4.1.11",
+    "@eslint/js": "^10.0.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^15.2.0",
+    "@typescript-eslint/parser": "^6.7.1",
+    "prettier": "^3.9.6"
   }
 }

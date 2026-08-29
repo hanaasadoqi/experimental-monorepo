@@ -1,5 +1,5 @@
 {
-  "name": "@foundation/tooling-typescript-config",
+  "name": "@repo/foundation-typescript-config",
   "version": "0.1.0",
   "private": true,
   "type": "module",

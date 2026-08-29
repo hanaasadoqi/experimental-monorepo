@@ -1,5 +1,2 @@
-export default [
-  {
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**'],
-  },
-]
+import { baseConfig } from "@repo/foundation-eslint-config/base";
+export default baseConfig;

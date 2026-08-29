@@ -28,6 +28,18 @@ Run `pnpm check:boundaries` after changing package manifests.
 - Do not create speculative shared, platform, or feature packages.
 - Never put secrets, dependency trees, caches, or generated build output in `.docs` or `.archives`.
 
+## Deletion Policy
+
+Never delete without asking, except:
+- Generated files (dist/, .next/, node_modules/)
+- Cache directories (.turbo/, coverage/)
+- Files explicitly marked for removal in git
+
+For everything else:
+- Ask first if unsure
+- Archive to .archives/ instead of deleting
+- Preserve untracked files that might be in-progress work
+
 ## Preservation and documentation
 
 - Prefer archiving code, files, folders, implementations over deleting them.
@@ -43,7 +55,7 @@ Before claiming completion, run the checks that prove the affected behavior. For
 ```bash
 pnpm format:check
 pnpm lint
-pnpm type-check
+pnpm typecheck
 pnpm test:run
 pnpm check:boundaries
 pnpm build

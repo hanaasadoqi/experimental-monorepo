@@ -1,8 +1,3 @@
-import baseConfig from '@foundation/tooling-prettier-config'
+import tailwindConfig from '@repo/foundation-prettier-config/tailwind'
 
-const webConfig = {
-  ...baseConfig,
-  tailwindStylesheet: '../../packages/ui/src/styles/globals.css',
-};
-
-export default webConfig;
+export default tailwindConfig;

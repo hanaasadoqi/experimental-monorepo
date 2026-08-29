@@ -1,5 +1,5 @@
 {
-  "extends": "@foundation/tooling-typescript-config/react-library.json",
+  "extends": "@repo/foundation-typescript-config/react-library.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist"

@@ -19,13 +19,12 @@
     "deps:check:all": "pnpm outdated -r ",
     "prepare": "husky",
     "test": "turbo run test",
-    "test:run": "turbo run test:run",
-    "clean": "pnpm clean --lockfile"
+    "test:run": "turbo run test:run"
   },
   "devDependencies": {
-    "@foundation/tooling-eslint-config": "workspace:*",
-    "@foundation/tooling-prettier-config": "workspace:*",
-    "@foundation/tooling-typescript-config": "workspace:*",
+    "@repo/foundation-eslint-config": "workspace:*",
+    "@repo/foundation-prettier-config": "workspace:*",
+    "@repo/foundation-typescript-config": "workspace:*",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "^2.9.18",

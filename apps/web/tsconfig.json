@@ -1,9 +1,9 @@
 {
-  "extends": "@foundation/tooling-typescript-config/nextjs.json",
+  "extends": "@repo/foundation-typescript-config/nextjs.json",
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
-      "@workspace/ui/*": ["../../packages/ui/src/*"]
+      "@repo/ui-components/*": ["../../packages/ui/components/src/*"]
     },
     "plugins": [
       {
@@ -12,10 +12,9 @@
     ]
   },
   "include": [
+    "src",
     "next-env.d.ts",
     "next.config.ts",
-    "**/*.ts",
-    "**/*.tsx",
     "**/*.mts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"

@@ -1,15 +1,16 @@
 {
-  "name": "@foundation/testing-vitest-utils",
+  "name": "@repo/foundation-vitest-utils",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "exports": {
-    "./react": "./src/react.tsx",
+    "./react": "./src/react/index.ts",
     "./setup": "./src/setup.ts"
   },
   "scripts": {
     "lint": "eslint .",
-    "check-types": "tsc -p tsconfig.json"
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "check-types": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
@@ -19,8 +20,9 @@
   "devDependencies": {
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
-    "@foundation/tooling-typescript-config": "workspace:*",
-    "@foundation/tooling-eslint-config": "workspace:*",
+    "@repo/foundation-typescript-config": "workspace:*",
+    "@repo/foundation-eslint-config": "workspace:*",
+    "@repo/foundation-prettier-config": "workspace:*",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "vitest": "^4.1.11",
@@ -28,12 +30,18 @@
     "@eslint/js": "^10.0.1",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^15.2.0",
-    "@typescript-eslint/parser": "^6.7.1"
+    "@typescript-eslint/parser": "^6.7.1",
+    "prettier": "^3.9.6"
   },
   "peerDependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "vitest": "^4.1.0",
-    "eslint": "^9.39.5"
+    "eslint": "^9.39.5",
+    "@eslint/js": "^10.0.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^15.2.0",
+    "@typescript-eslint/parser": "^6.7.1",
+    "prettier": "^3.9.6"
   }
 }

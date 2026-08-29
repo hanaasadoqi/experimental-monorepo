@@ -1,8 +1,10 @@
 {
-  "extends": "@foundation/tooling-typescript-config/react-library.json",
+  "extends": "@repo/foundation-typescript-config/react-library.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", ".turbo"]

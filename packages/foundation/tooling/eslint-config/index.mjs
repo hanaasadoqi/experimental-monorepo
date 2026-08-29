@@ -1,10 +1,9 @@
 import js from '@eslint/js'
 import prettierConfig from 'eslint-config-prettier'
-import turboPlugin from 'eslint-plugin-turbo'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
-export const baseConfig = [
+const sharedConfig = [
   js.configs.recommended,
   prettierConfig,
   ...tseslint.configs.recommended,
@@ -26,14 +25,32 @@ export const baseConfig = [
     },
   },
   {
-    plugins: {
-      turbo: turboPlugin,
-    },
-    rules: {
-      'turbo/no-undeclared-env-vars': 'warn',
-    },
-  },
-  {
-    ignores: ['dist/**', '.next/**', '**/.turbo/**', '**/coverage/**'],
+    ignores: ['**/dist/**', '**/.next/**', '**/.turbo/**', '**/coverage/**', "**/node_modules/**"],
   },
 ]
+
+export const minimalConfig = sharedConfig
+
+let turboPluginModule = null
+let turboPluginError = null
+
+try {
+  turboPluginModule = await import('eslint-plugin-turbo')
+} catch (e) {
+  turboPluginError = e
+}
+
+export const baseConfig = turboPluginModule
+  ? [
+      ...sharedConfig.slice(0, -1),
+      {
+        plugins: {
+          turbo: turboPluginModule.default,
+        },
+        rules: {
+          'turbo/no-undeclared-env-vars': 'warn',
+        },
+      },
+      sharedConfig[sharedConfig.length - 1],
+    ]
+  : sharedConfig

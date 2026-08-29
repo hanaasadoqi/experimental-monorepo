@@ -1,5 +1,5 @@
 {
-  "name": "@foundation/tooling-vitest-config",
+  "name": "@repo/foundation-vitest-config",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,17 +9,22 @@
   },
   "scripts": {
     "lint": "eslint .",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
     "check-types": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
-    "@foundation/tooling-typescript-config": "workspace:*",
+    "@repo/foundation-typescript-config": "workspace:*",
+    "@repo/foundation-eslint-config": "workspace:*",
+    "@repo/foundation-prettier-config": "workspace:*",
     "vitest": "^4.1.0",
     "@types/node": "^26.4.0",
     "eslint": "^9.39.5",
-    "@eslint/js": "^10.0.1"
+    "@eslint/js": "^10.0.1",
+    "prettier": "^3.9.6"
   },
   "peerDependencies": {
     "vitest": "^4.1.0",
-    "eslint": "^9.39.5"
+    "eslint": "^9.39.5",
+    "prettier": "^3.9.6"
   }
 }
