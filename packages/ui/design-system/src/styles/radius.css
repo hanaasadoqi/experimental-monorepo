@@ -1,0 +1,10 @@
+:root {
+  --radius: 0.625rem;
+  --ds-radius-sm: calc(var(--radius) * 0.6);
+  --ds-radius-md: calc(var(--radius) * 0.8);
+  --ds-radius-lg: var(--radius);
+  --ds-radius-xl: calc(var(--radius) * 1.4);
+  --ds-radius-2xl: calc(var(--radius) * 1.8);
+  --ds-radius-3xl: calc(var(--radius) * 2.2);
+  --ds-radius-4xl: calc(var(--radius) * 2.6);
+}
