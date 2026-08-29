@@ -58,8 +58,8 @@
     "./globals.css": "./src/styles/globals.css",
     "./postcss.config": "./postcss.config.mjs",
     "./lib/*": "./src/lib/*.ts",
-    "./base": "./src/base/index.ts",
-    "./base/*": "./src/base/*.tsx",
+    "./base": "./src/base/ui/index.ts",
+    "./base/*": "./src/base/ui/*.tsx",
     "./hooks/*": "./src/hooks/*.ts"
   }
 }

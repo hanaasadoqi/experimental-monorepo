@@ -9,7 +9,7 @@
     "paths": {
       "@repo/ui-components/*": ["./src/*"]
     },
-    "types": ["react", "react-dom", "vitest/globals", "@testing-library/jest-dom/vitest", "node"]
+    "types": ["react", "react-dom", "vitest/globals", "node"]
   },
   "include": ["src", "@types/**/*.d.ts"],
   "exclude": ["node_modules", "dist"]

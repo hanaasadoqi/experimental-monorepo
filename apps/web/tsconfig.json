@@ -3,7 +3,7 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
-      "@repo/ui-components/base": ["../../packages/ui/components/src/base/index.ts"],
+      "@repo/ui-components/base": ["../../packages/ui/components/src/base/ui/index.ts"],
       "@repo/ui-components/base/*": ["../../packages/ui/components/src/base/*.tsx"],
       "@repo/ui-components/lib/*": ["../../packages/ui/components/src/lib/*.ts"],
       "@repo/ui-components/hooks/*": ["../../packages/ui/components/src/hooks/*.ts"],

@@ -3,7 +3,7 @@
 import { Moon, Sun } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useTheme } from "@repo/feature-theme/hooks"
-import { Button } from "@repo/ui-components/base/button"
+import { Button } from "@repo/ui-components/base/ui/button"
 import {
   Card,
   CardHeader,
@@ -12,7 +12,7 @@ import {
   CardTitle,
   CardDescription,
   CardAction,
-} from "@repo/ui-components/base/card"
+} from "@repo/ui-components/base/ui/card"
 
 export default function Page() {
   const { isDark, setTheme } = useTheme()
