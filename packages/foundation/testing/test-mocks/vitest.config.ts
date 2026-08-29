@@ -1,9 +1,9 @@
-import { mergeConfig } from 'vitest/config'
+import { mergeConfig } from "vitest/config"
 
-import { baseConfig } from '@foundation/tooling-vitest-config/base'
+import { baseConfig } from "@repo/foundation-vitest-config/base"
 
 export default mergeConfig(baseConfig, {
   test: {
-    include: ['src/**/*.test.ts'],
+    include: ["src/**/*.test.ts"],
   },
 })

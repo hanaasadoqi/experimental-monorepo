@@ -1,6 +1,8 @@
-import { MemoryStorage } from './storage.js'
+import { MemoryStorage } from "./storage.js"
 
-export function createMatchMedia(matches = false): (query: string) => MediaQueryList {
+export function createMatchMedia(
+  matches = false
+): (query: string) => MediaQueryList {
   return (query: string): MediaQueryList =>
     ({
       addEventListener: () => undefined,
@@ -22,7 +24,7 @@ class MockResizeObserver {
 
 class MockIntersectionObserver {
   readonly root = null
-  readonly rootMargin = '0px'
+  readonly rootMargin = "0px"
   readonly thresholds = [0]
 
   disconnect(): void {}
