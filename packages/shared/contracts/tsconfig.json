@@ -1,0 +1,11 @@
+{
+  "extends": "@repo/foundation-typescript-config/base.json",
+  "compilerOptions": {
+    "target": "es2025",
+    "lib": ["es2025"],
+    "module": "esnext",
+    "moduleResolution": "bundler"
+  },
+  "include": ["src", "vitest/globals"],
+  "exclude": ["node_modules", "dist"]
+}
