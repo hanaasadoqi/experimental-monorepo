@@ -5,16 +5,13 @@ import {
   ReactNode,
   useContext,
   useRef,
-  useEffect,
 } from "react"
 import type { Store } from "@repo/services-zustand"
 
 import type { ContextProviderProps } from "../types"
 
 interface CreateStoreProviderResult<T> {
-  Provider: (
-    props: ContextProviderProps & { children: ReactNode }
-  ) => ReactNode
+  Provider: (props: ContextProviderProps & { children: ReactNode }) => ReactNode
   useStore: () => Store<T>
 }
 

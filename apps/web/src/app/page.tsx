@@ -2,7 +2,10 @@
 
 import { Moon, Sun } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useResolvedColorScheme, useSetAppearancePreference } from "@repo/feature-theme/hooks"
+import {
+  useResolvedColorScheme,
+  useSetAppearancePreference,
+} from "@repo/feature-theme/hooks"
 import { Button } from "@repo/ui-components/base/button"
 import {
   Card,

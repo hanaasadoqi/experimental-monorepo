@@ -25,11 +25,17 @@
     "prettier": "^3.9.6",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11",
-    "@vitest/coverage-v8": "^4.1.11"
+    "@vitest/coverage-v8": "^4.1.11",
+    "next": "^16.3.3"
+  },
+  "peerDependencies": {
+    "next": "^16.3.3"
   },
   "exports": {
     "./classnames": "./src/classnames.ts",
     ".": "./src//index.ts",
-    "./*": "./src/*"
+    "./*": "./src/*",
+    "./server/*": "./src/server/*.ts",
+    "./server": "./src/server/index.ts"
   }
 }

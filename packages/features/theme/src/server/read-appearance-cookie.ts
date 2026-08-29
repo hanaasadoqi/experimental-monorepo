@@ -1,21 +1,17 @@
-"use server"
-
-import { cookies } from "next/headers"
 import type { AppearancePreference } from "../types"
+import { readCookie } from "@repo/shared-utils/server";
 
-const COOKIE_NAME = "appearance-preference"
+const APPEARANCE_COOKIE_NAME = "appearance-preference"
 
 export async function readAppearanceCookie(): Promise<
-  AppearancePreference | undefined
+      AppearancePreference | undefined
 > {
-  const cookieStore = await cookies()
-  const value = cookieStore.get(COOKIE_NAME)?.value
+  const appearanceCookie = await readCookie(APPEARANCE_COOKIE_NAME).then((value) => {
+    if(!value) return undefined ;
+    if (["light", "dark", "system"].includes(value)) {
+      return value as AppearancePreference
+    }
+  })
 
-  if (!value) return undefined
-
-  if (["light", "dark", "system"].includes(value)) {
-    return value as AppearancePreference
-  }
-
-  return undefined
-}
+  return appearanceCookie;
+};

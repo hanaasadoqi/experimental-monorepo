@@ -5,4 +5,7 @@ export {
   createLocalStorageAdapter,
   createCookieAdapter,
 } from "./persistence/index.ts"
-export type { PersistenceAdapter, CookieAdapterOptions } from "./persistence/index.ts"
+export type {
+  PersistenceAdapter,
+  CookieAdapterOptions,
+} from "./persistence/index.ts"
