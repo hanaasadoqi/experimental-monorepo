@@ -61,11 +61,9 @@ describe("getSystemColorScheme", () => {
   })
 
   it("returns 'light' when the media query does not match", () => {
-    window.matchMedia = vi
-      .fn()
-      .mockReturnValue({
-        matches: false,
-      }) as unknown as typeof window.matchMedia
+    window.matchMedia = vi.fn().mockReturnValue({
+      matches: false,
+    }) as unknown as typeof window.matchMedia
     expect(getSystemColorScheme()).toBe("light")
   })
 
