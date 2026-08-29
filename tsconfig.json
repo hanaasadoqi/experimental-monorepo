@@ -1,5 +1,5 @@
 {
-  "extends": "@repo/foundation-typescript-config/base.json",
+  "extends": "./packages/foundation/tooling/typescript-config/base.json",
   "exclude": ["node_modules", "dist", ".archives", ".docs", ".github", ".history", ".remember", "//serena", ".turbo"]
 }
 

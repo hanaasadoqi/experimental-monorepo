@@ -28,7 +28,9 @@ describe("browser mocks", () => {
       const result = matchMedia("(min-width: 100px)")
 
       expect(result.addEventListener("change", () => undefined)).toBeUndefined()
-      expect(result.removeEventListener("change", () => undefined)).toBeUndefined()
+      expect(
+        result.removeEventListener("change", () => undefined)
+      ).toBeUndefined()
       expect(result.addListener(() => undefined)).toBeUndefined()
       expect(result.removeListener(() => undefined)).toBeUndefined()
       expect(result.dispatchEvent(new Event("change"))).toBe(true)
@@ -78,7 +80,8 @@ describe("browser mocks", () => {
 
       installBrowserMocks(target)
 
-      const ResizeObserverMock = target.ResizeObserver as new () => ResizeObserver
+      const ResizeObserverMock =
+        target.ResizeObserver as new () => ResizeObserver
       const observer = new ResizeObserverMock()
 
       expect(observer.observe({} as Element)).toBeUndefined()
@@ -91,7 +94,8 @@ describe("browser mocks", () => {
 
       installBrowserMocks(target)
 
-      const IntersectionObserverMock = target.IntersectionObserver as new () => IntersectionObserver
+      const IntersectionObserverMock =
+        target.IntersectionObserver as new () => IntersectionObserver
       const observer = new IntersectionObserverMock()
 
       expect(observer.root).toBeNull()

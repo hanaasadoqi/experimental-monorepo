@@ -11,7 +11,8 @@
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
-    "test:run": "vitest run --coverage"
+    "test:run": "vitest run --coverage",
+    "test": "vitest run"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -55,8 +56,8 @@
     "./globals.css": "./src/styles/globals.css",
     "./postcss.config": "./postcss.config.mjs",
     "./lib/*": "./src/lib/*.ts",
-    "./base": "./src/base/components/index.ts",
-    "./base/*": "./src/base/components/*.tsx",
+    "./base": "./src/base/index.ts",
+    "./base/*": "./src/base/*.tsx",
     "./hooks/*": "./src/hooks/*.ts",
     "./*": "./src/components/*.tsx"
   }

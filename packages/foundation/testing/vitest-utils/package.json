@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "check-types": "tsc -p tsconfig.json --noEmit",
-    "test:run": "vitest run --coverage"
+    "test:run": "vitest run --coverage",
+    "test": "vitest run"
   },
   "dependencies": {
     "@testing-library/dom": "^10.4.1",

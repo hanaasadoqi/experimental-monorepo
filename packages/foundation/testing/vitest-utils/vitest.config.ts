@@ -10,6 +10,6 @@ export default mergeConfig(baseConfig, {
       node: true,
     },
     environment: "jsdom",
-    setupFiles: ["./vitest.setup.ts"]
+    setupFiles: ["./vitest.setup.ts"],
   },
 })

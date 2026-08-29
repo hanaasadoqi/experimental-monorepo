@@ -1,9 +1,9 @@
-import { screen } from "@testing-library/react";
-import type { ReactNode } from "react";
-import { describe, expect, it } from "vitest";
+import { screen } from "@testing-library/react"
+import type { ReactNode } from "react"
+import { describe, expect, it } from "vitest"
 
-import { createTestRender } from "./create-test-render.tsx";
-import { renderUi } from "./render-ui.tsx";
+import { createTestRender } from "./create-test-render.tsx"
+import { renderUi } from "./render-ui.tsx"
 
 describe("createTestRender", () => {
   it("passes provider options to the wrapper", () => {
@@ -23,7 +23,9 @@ describe("createTestRender", () => {
     )
   })
   it("forwards render options to Testing Library", () => {
-    const renderWithProviders = createTestRender((children: ReactNode) => (<>{children}</>))
+    const renderWithProviders = createTestRender((children: ReactNode) => (
+      <>{children}</>
+    ))
 
     const container = document.createElement("main")
     document.body.append(container)
@@ -33,7 +35,6 @@ describe("createTestRender", () => {
     expect(result.container).toBe(container)
     expect(container).toHaveTextContent("Content")
   })
-
 })
 
 describe("renderUi", () => {
@@ -43,4 +44,3 @@ describe("renderUi", () => {
     expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument()
   })
 })
-
