@@ -15,8 +15,10 @@
     }
   },
   "dependencies": {
+    "@repo/services-persistence": "workspace:*",
     "@repo/shared-contracts": "workspace:*",
     "@repo/services-zustand": "workspace:*",
+    "@repo/feature-preferences": "workspace:*",
     "zustand": "^4.5.2"
   },
   "scripts": {
@@ -53,14 +55,10 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./hooks": "./src/hooks/index.ts",
-    "./types": "./src/types/index.ts",
-    "./provider": "./src/provider/index.ts",
-    "./utils": "./src/utils/index.ts",
-    "./components": "./src/components/index.ts",
-    "./store": "./src/store/index.ts",
-    "./persistence": "./src/persistence/index.ts",
-    "./runtime": "./src/runtime/index.ts",
-    "./server": "./src/server/index.ts"
+    "./types": "./src/model/index.ts",
+    "./react": "./src/react/index.ts",
+    "./resolution": "./src/resolution/index.ts",
+    "./runtime": "./src/runtime/index.ts"
+
   }
 }

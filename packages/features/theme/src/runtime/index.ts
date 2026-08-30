@@ -1,11 +1,7 @@
 export {
-  resolveColorScheme,
-  getSystemColorScheme,
-} from "./resolve-color-scheme"
-export { applyColorScheme, getAppliedColorScheme } from "./apply-color-scheme"
-export { synchronizeAppearance } from "./synchronize-appearance"
+  applyAppearance,
+} from "./apply-appearance"
+
 export {
   generateBootstrapCode,
-  generateBootstrapScript,
-  resolveServerColorScheme,
-} from "./appearance-bootstrap"
+} from "./generate-bootstrap-code"
