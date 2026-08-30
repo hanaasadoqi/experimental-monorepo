@@ -4,6 +4,12 @@
  */
 
 export {
+  appearancePreferenceSchema,
+  preferencesStateSchema,
+  type PreferencesState,
+  type AppearancePreference,
+} from "./preferences"
+export {
   themeAppearanceSchema,
   themeOklchColorSchema,
   themeFormSchema,
@@ -11,11 +17,11 @@ export {
   type ThemeAppearance,
   type ThemeOklchColor,
   type Theme,
-} from "./theme.js"
-export { loginFormSchema, type LoginForm } from "./auth.js"
+} from "./theme"
+export { loginFormSchema, type LoginForm } from "./auth"
 export {
   validateSchema,
   parseSchema,
   tryParseSchema,
   type ValidationError,
-} from "../utils/schema-utils.js"
+} from "../utils/schema-utils"

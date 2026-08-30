@@ -5,13 +5,20 @@
 
 // Re-export all types
 export type {
+  AppearancePreference,
+  PreferencesState,
   Theme,
   ThemeForm,
   ThemeAppearance,
   ThemeOklchColor,
   LoginForm,
   ValidationError,
-} from "./types/index.js"
+} from "./types/index"
 
 // Re-export all schemas
-export * from "./schemas/index.js"
+export {
+  themeFormSchema,
+  themeOklchColorSchema,
+  appearancePreferenceSchema,
+  preferencesStateSchema
+} from "./schemas/index"

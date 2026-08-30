@@ -1,7 +1,12 @@
 import { z } from "zod"
-import { OKLCH_REGEX } from "../defaults/theme.js"
+import { OKLCH_REGEX } from "../defaults/theme"
+import {
+  appearancePreferenceSchema,
+  type AppearancePreference,
+} from "./preferences"
 
-export const themeAppearanceSchema = z.enum(["light", "dark", "system"])
+/** @deprecated Use `appearancePreferenceSchema`. */
+export const themeAppearanceSchema = appearancePreferenceSchema
 
 export const themeOklchColorSchema = z.string().regex(OKLCH_REGEX)
 
@@ -13,7 +18,8 @@ export const themeFormSchema = z.object({
   accentColor: themeOklchColorSchema,
 })
 
-export type ThemeAppearance = z.infer<typeof themeAppearanceSchema>
+/** @deprecated Use `AppearancePreference`. */
+export type ThemeAppearance = AppearancePreference
 export type ThemeOklchColor = z.infer<typeof themeOklchColorSchema>
 export type ThemeForm = z.infer<typeof themeFormSchema>
 export type Theme = z.infer<typeof themeFormSchema>

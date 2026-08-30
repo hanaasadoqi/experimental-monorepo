@@ -18,13 +18,11 @@ export function createMatchMedia(
     }) as MediaQueryList
 }
 
-export function createMatchMediaMock(
-  initialMatches: boolean
-): {
+export function createMatchMediaMock(initialMatches: boolean): {
   matchMedia: typeof window.matchMedia
   fireChange: (matches: boolean) => void
   listenerCount: () => number
-  } {
+} {
   let matches = initialMatches
   const changeListeners = new Set<(event: MediaQueryListEvent) => void>()
 
@@ -33,18 +31,24 @@ export function createMatchMediaMock(
       return matches
     },
     media: "(prefers-color-scheme: dark)",
-    addEventListener(type: string, listener: (event: MediaQueryListEvent) => void) {
+    addEventListener(
+      type: string,
+      listener: (event: MediaQueryListEvent) => void
+    ) {
       if (type === "change") {
         changeListeners.add(listener)
       }
     },
-    removeEventListener(type: string, listener: (event: MediaQueryListEvent) => void) {
+    removeEventListener(
+      type: string,
+      listener: (event: MediaQueryListEvent) => void
+    ) {
       if (type === "change") {
         changeListeners.delete(listener)
       }
     },
-    addListener() { },
-    removeListener() { },
+    addListener() {},
+    removeListener() {},
     onchange: null,
     dispatchEvent() {
       return true
