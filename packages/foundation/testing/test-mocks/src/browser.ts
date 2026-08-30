@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { MemoryStorage } from "./storage.js"
 
 export function createMatchMedia(
@@ -14,6 +16,55 @@ export function createMatchMedia(
       removeEventListener: () => undefined,
       removeListener: () => undefined,
     }) as MediaQueryList
+}
+
+export function createMatchMediaMock(
+  initialMatches: boolean
+): {
+  matchMedia: typeof window.matchMedia
+  fireChange: (matches: boolean) => void
+  listenerCount: () => number
+  } {
+  let matches = initialMatches
+  const changeListeners = new Set<(event: MediaQueryListEvent) => void>()
+
+  const mql: MediaQueryList = {
+    get matches() {
+      return matches
+    },
+    media: "(prefers-color-scheme: dark)",
+    addEventListener(type: string, listener: (event: MediaQueryListEvent) => void) {
+      if (type === "change") {
+        changeListeners.add(listener)
+      }
+    },
+    removeEventListener(type: string, listener: (event: MediaQueryListEvent) => void) {
+      if (type === "change") {
+        changeListeners.delete(listener)
+      }
+    },
+    addListener() { },
+    removeListener() { },
+    onchange: null,
+    dispatchEvent() {
+      return true
+    },
+  } as unknown as MediaQueryList
+
+  const matchMediaFn = (() => mql) as unknown as typeof window.matchMedia
+
+  return {
+    matchMedia: matchMediaFn,
+    fireChange(nextMatches: boolean) {
+      matches = nextMatches
+      for (const listener of [...changeListeners]) {
+        listener({ matches: nextMatches } as MediaQueryListEvent)
+      }
+    },
+    listenerCount() {
+      return changeListeners.size
+    },
+  }
 }
 
 class MockResizeObserver {

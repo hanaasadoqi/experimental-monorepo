@@ -63,7 +63,7 @@ describe("synchronizeAppearance", () => {
   })
 
   it("updates the DOM and persists via the adapter when the store preference changes", () => {
-    const { matchMedia } = createMatchMediaMock(false, { fn: vi.fn })
+    const { matchMedia } = createMatchMediaMock(false)
     window.matchMedia = matchMedia
 
     const dispose = synchronizeAppearance(store, adapter, element)
@@ -80,7 +80,7 @@ describe("synchronizeAppearance", () => {
   })
 
   it("updates the DOM when system media changes and preference is 'system'", () => {
-    const { matchMedia, fireChange } = createMatchMediaMock(false, { fn: vi.fn })
+    const { matchMedia, fireChange } = createMatchMediaMock(false)
     window.matchMedia = matchMedia
 
     const dispose = synchronizeAppearance(store, adapter, element)
@@ -97,7 +97,7 @@ describe("synchronizeAppearance", () => {
   })
 
   it("does not update the DOM from system media changes when preference is not 'system'", () => {
-    const { matchMedia, fireChange } = createMatchMediaMock(false, { fn: vi.fn })
+    const { matchMedia, fireChange } = createMatchMediaMock(false)
     window.matchMedia = matchMedia
 
     const localStore = createAppearanceStore("light", "light")
@@ -114,7 +114,7 @@ describe("synchronizeAppearance", () => {
   })
 
   it("updates the store when the adapter reports an external preference change", () => {
-    const { matchMedia } = createMatchMediaMock(false, { fn: vi.fn })
+    const { matchMedia } = createMatchMediaMock(false)
     window.matchMedia = matchMedia
 
     const dispose = synchronizeAppearance(store, adapter, element)
@@ -340,7 +340,7 @@ describe("synchronizeAppearance", () => {
   })
 
   it("correctly updates DOM when system media matches changes with system preference", () => {
-    const { matchMedia, fireChange } = createMatchMediaMock(false, { fn: vi.fn })
+    const { matchMedia, fireChange } = createMatchMediaMock(false)
     window.matchMedia = matchMedia
 
     // Create store with system preference

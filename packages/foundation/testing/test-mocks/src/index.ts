@@ -1,4 +1,4 @@
-export { createMatchMedia, installBrowserMocks } from "./browser.js"
+export { createMatchMedia, createMatchMediaMock, installBrowserMocks } from "./browser.js"
 export type { MemoryStorage } from "./storage.js"
 export type {
   BasicState,
