@@ -1,0 +1,20 @@
+{
+  "name": "@repo/services-cookies",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "test": "vitest run",
+    "test:run": "vitest run --coverage"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "devDependencies": {
+    "@repo/foundation-vitest-config": "workspace:*",
+    "@repo/foundation-vitest-utils": "workspace:*",
+    "vitest": "^4.1.11"
+  }
+}

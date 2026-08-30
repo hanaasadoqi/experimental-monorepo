@@ -1,13 +1,19 @@
 import type { AppearancePreference } from "@repo/feature-preferences"
 
-import { APPEARANCE_PREFERENCE_COOKIE } from "./cookie-policy"
+import {
+  serializeCookie,
+} from "@repo/services-cookies"
+
+import {
+  appearanceCookie,
+} from "./cookie-policy"
 
 export function persistAppearancePreference(
   preference: AppearancePreference
 ): void {
-  document.cookie = [
-    `${APPEARANCE_PREFERENCE_COOKIE}=${encodeURIComponent(preference)}`,
-    "Path=/",
-    "SameSite=Lax",
-  ].join("; ")
+  document.cookie =
+    serializeCookie(
+      appearanceCookie,
+      preference,
+    )
 }
