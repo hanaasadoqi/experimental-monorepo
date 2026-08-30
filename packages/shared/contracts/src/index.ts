@@ -3,14 +3,14 @@
  * Combines schemas, types, defaults, and utilities into a single entry point.
  */
 
-// All types
+// All types (includes domain types and schema-inferred types)
 export * from "./types"
 
-// All schemas
-export * from "./schemas"
+// Export schemas
+export { themeFormSchema, themeOklchColorSchema, appearancePreferenceSchema, preferencesStateSchema, loginFormSchema } from "./schemas"
 
-// All defaults
-export * from "./defaults"
+// Export defaults
+export { OKLCH_REGEX, DEFAULT_THEME, DEFAULT_APPEARANCE_MODE, OKLCH_CONSTRAINTS } from "./defaults/theme"
 
-// All utilities
-export * from "./utils"
+// Export utilities
+export { validateSchema, parseSchema, tryParseSchema } from "./utils/schema-utils.js"

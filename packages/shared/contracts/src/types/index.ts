@@ -19,9 +19,6 @@ export type {
 // Form types
 export type { LoginForm } from "./forms.js"
 
-// Schema-inferred types (for backwards compatibility and detailed imports)
-export type { ThemeOklchColor, PreferencesState } from "../schemas/index.js"
-
 // Utility types
 export type { ValidationError } from "../utils/schema-utils.js"
 
