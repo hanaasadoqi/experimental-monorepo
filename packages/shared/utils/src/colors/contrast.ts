@@ -1,6 +1,4 @@
 import { luminance, tryLuminance } from "./luminance"
-import { parseOklch } from "./parse-oklch"
-import { MAX_LIGHTNESS, MIN_LIGHTNESS } from "./types"
 export { CONTRAST_THRESHOLDS } from "./types"
 
 /**

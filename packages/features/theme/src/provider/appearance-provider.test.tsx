@@ -99,7 +99,9 @@ describe("AppearanceProvider", () => {
         </AppearanceProvider>
       )
 
-      expect(document.documentElement.classList.contains("dark")).toBe(false)
+      expect(document.documentElement.classList.contains("dark")).toBe(true)
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark")
+      expect(document.documentElement.style.colorScheme).toBe("dark")
     })
 
     it("persists preference changes through the adapter", () => {

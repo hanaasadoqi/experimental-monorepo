@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest"
-import { DEFAULT_THEME } from "./theme.js"
 import { OKLCH_REGEX } from "../schemas/colors.js"
 
 describe("OKLCH_REGEX", () => {

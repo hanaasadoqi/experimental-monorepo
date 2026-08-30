@@ -325,7 +325,7 @@ describe("adjustContrastByLightness", () => {
     const result = adjustContrastByLightness(original, "oklch(100% 0 0)", 4.5)
     expect(result).not.toBeNull()
     if (result) {
-      const originalRatio = contrastRatio(original, "oklch(100% 0 0)")
+      const _originalRatio = contrastRatio(original, "oklch(100% 0 0)")
       const adjustedRatio = contrastRatio(result, "oklch(100% 0 0)")
       expect(adjustedRatio).toBeGreaterThanOrEqual(4)
     }

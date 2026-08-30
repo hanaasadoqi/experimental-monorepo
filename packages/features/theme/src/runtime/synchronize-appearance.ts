@@ -1,6 +1,6 @@
 import type { StoreApi } from "zustand"
 
-import { applyColorScheme } from "./apply-color-scheme"
+import { applyColorScheme, getAppliedColorScheme } from "./apply-color-scheme"
 import { resolveColorScheme } from "./resolve-color-scheme"
 import type { AppearancePersistenceAdapter } from "../persistence/types"
 import type { AppearanceState } from "../types"
@@ -70,7 +70,7 @@ export function synchronizeAppearance(
     }
   }
 
-  // 1. Initialize: apply current store state to DOM and sync resolved scheme.
+  // 1. Initialize: apply current store preference to DOM and sync resolved scheme.
   const { preference, resolvedColorScheme } = store.getState()
   const initialScheme = resolveColorScheme(preference, systemMatches)
   applyColorScheme(element, initialScheme)

@@ -332,7 +332,7 @@ describe("synchronizeAppearance", () => {
     }).not.toThrow()
 
     // Should still have valid DOM state
-    expect(element.getAttribute("data-theme")?.[0]).toMatch(/^(light|dark)$/)
+    expect(element.getAttribute("data-theme")).toMatch(/^(light|dark)$/)
 
     dispose()
     window.matchMedia = originalMatchMedia

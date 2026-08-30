@@ -1,10 +1,7 @@
 import { create, type StoreApi } from "zustand"
 
 import type { AppearancePreference, PreferencesState } from "../types"
-import {
-  DEFAULT_APPEARANCE_PREFERENCE,
-  DEFAULT_PREFERENCES_STATE,
-} from "@repo/shared-contracts/defaults"
+import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/shared-contracts/defaults"
 
 export type PreferencesActions = {
   setAppearance: (appearance: AppearancePreference) => void

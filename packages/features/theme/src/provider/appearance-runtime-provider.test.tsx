@@ -44,7 +44,7 @@ describe("AppearanceRuntimeProvider", () => {
     )
 
     expect(screen.getByRole("button").textContent).toBe("dark:dark")
-    expect(document.documentElement.classList.contains("dark")).toBe(false)
+    expect(document.documentElement.classList.contains("dark")).toBe(true)
     expect(document.documentElement.dataset.theme).toBe("dark")
     expect(document.documentElement.style.colorScheme).toBe("dark")
   })

@@ -60,8 +60,8 @@ export {
 export {
   DEFAULT_APPEARANCE_PREFERENCE,
   DEFAULT_PREFERENCES_STATE,
-} from "./defaults//preferences.js"
-export type { DEFAULT_THEME } from "./defaults/theme.js"
+} from "./defaults/preferences.js"
+export { DEFAULT_THEME } from "./defaults/theme.js"
 // Utility types
 export type { ValidationError } from "./utils/schema-utils.js"
 export {

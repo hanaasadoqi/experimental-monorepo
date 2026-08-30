@@ -28,7 +28,7 @@ describe("preferencesStateSchema", () => {
   it("accepts a valid preferences state", () => {
     const validState = {
       appearance: "light",
-      setAppearance: (preference: AppearancePreference) => undefined,
+      setAppearance: (_preference: AppearancePreference) => undefined,
     }
 
     const result = preferencesStateSchema.safeParse(validState)
@@ -39,7 +39,7 @@ describe("preferencesStateSchema", () => {
   it("rejects an invalid preferences state", () => {
     const invalidState = {
       appearance: "automatic", // Invalid value
-      setAppearance: (preference: AppearancePreference) => undefined,
+      setAppearance: (_preference: AppearancePreference) => undefined,
     }
 
     const result = preferencesStateSchema.safeParse(invalidState)
