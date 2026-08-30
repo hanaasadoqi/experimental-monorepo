@@ -1,29 +1,34 @@
 # @repo/services-context
 
-React Context API infrastructure for simple or local state patterns.
+Tiny React Context infrastructure.
 
-## Exports
+This package standardizes only two semantics:
 
-- **`./providers`** — Context + Provider factory utilities
-- **`./hooks`** — Safe consumer hooks with error handling
-- **`./types`** — Context type patterns
+- **required context**: absence is a programming/configuration error;
+- **optional context**: absence is a valid state.
 
-## Key Features
+It deliberately does not know about Zustand, features, repositories, or providers' lifecycle rules.
 
-- Factory for creating Context + Provider combos
-- Type-safe consumer hooks
-- Error handling for missing providers
-- Provider composition patterns
-- No business logic — infrastructure only
+## Required context
 
-## When to Use
+```tsx
+const {
+  Provider: ThemeStoreContextProvider,
+  useValue: useThemeStoreApi,
+} = createRequiredContext<ThemeStoreApi>("ThemeStoreContext")
+```
 
-- Local feature state
-- Avoiding prop drilling in component trees
-- Simple state that doesn't need global management
+## Optional context
 
-## When NOT to Use
+Use when a missing parent is meaningful, such as resolving an optional parent scope.
 
-- Complex global state (use Zustand, see `@repo/services-zustand`)
-- Cross-feature state sharing (feature-owned + services-zustand)
-- Performance-critical re-render avoidance (context triggers all subscribers)
+```tsx
+const {
+  Provider: ThemeScopeContextProvider,
+  useValue: useParentThemeScope,
+} = createOptionalContext<ThemeScope>("ThemeScopeContext")
+```
+
+## Boundary
+
+Feature-owned providers create and own feature instances. This package only supplies dependency discovery through the React tree.
