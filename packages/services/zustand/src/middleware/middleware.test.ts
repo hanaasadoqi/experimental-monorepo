@@ -15,7 +15,7 @@ describe("Middleware", () => {
       decrement: () => void
     }
 
-    it("should apply single middleware", () => {
+    it("apply single middleware", async () => {
       const trackingCalls: string[] = []
 
       const trackingMiddleware: Middleware<TestState> =
@@ -36,7 +36,7 @@ describe("Middleware", () => {
       expect(store.getState().count).toBe(0)
     })
 
-    it("should compose multiple middleware in correct order", () => {
+    it("compose multiple middleware in correct order", async () => {
       const executionOrder: string[] = []
 
       const middleware1: Middleware<TestState> = (next) => (set, get, api) => {
@@ -68,7 +68,7 @@ describe("Middleware", () => {
       expect(executionOrder[1]).toBe("middleware1-enter")
     })
 
-    it("should compose empty middleware list", () => {
+    it("compose empty middleware list", async () => {
       const store = create<any>(
         composeMiddleware<TestState>()((set) => ({
           count: 0,
@@ -89,7 +89,7 @@ describe("Middleware", () => {
       setValue: (v: number) => void
     }
 
-    it("should apply middleware when condition is true", () => {
+    it("apply middleware when condition is true", async () => {
       const mockSet = vi.fn()
       const mockMiddleware: Middleware<TestState> =
         (next) => (set, get, api) => {
@@ -109,7 +109,7 @@ describe("Middleware", () => {
       expect(mockSet.mock.calls.length).toBeGreaterThanOrEqual(0)
     })
 
-    it("should skip middleware when condition is false", () => {
+    it("skip middleware when condition is false", async () => {
       let middlewareApplied = false
 
       const mockMiddleware: Middleware<TestState> = (next) => {
@@ -129,7 +129,7 @@ describe("Middleware", () => {
       expect(middlewareApplied).toBe(false)
     })
 
-    it("should evaluate dynamic condition function", () => {
+    it("evaluate dynamic condition function", async () => {
       const shouldApply = false
 
       const mockMiddleware: Middleware<TestState> =
@@ -190,7 +190,7 @@ describe("Middleware", () => {
       expect(state2?.text).toBe("hello")
     })
 
-    it("should rehydrate state from adapter on initialization", () => {
+    it("rehydrate state from adapter on initialization", async () => {
       const initialState: TestState = {
         count: 42,
         text: "persisted",
@@ -215,7 +215,7 @@ describe("Middleware", () => {
       expect(store.getState().text).toBe("persisted")
     })
 
-    it("should call onRehydrate hook after rehydration", () => {
+    it("call onRehydrate hook after rehydration", async () => {
       const onRehydrate = vi.fn()
 
       adapter.write?.("test-persist", {
@@ -243,7 +243,7 @@ describe("Middleware", () => {
       )
     })
 
-    it("should call onError hook on rehydration failure", () => {
+    it("call onError hook on rehydration failure", async () => {
       const onError = vi.fn()
 
       const failingAdapter: PersistenceAdapter<TestState> = {
@@ -271,7 +271,7 @@ describe("Middleware", () => {
       expect(onError).toHaveBeenCalledWith(expect.any(Error))
     })
 
-    it("should use custom merge strategy", () => {
+    it("use custom merge strategy", async () => {
       const persisted: Partial<TestState> = { count: 99 }
       adapter.write?.("test-persist", persisted as TestState)
 
@@ -299,7 +299,7 @@ describe("Middleware", () => {
       expect(store.getState().text).toBe("initial")
     })
 
-    it("should handle update functions in set", () => {
+    it("handle update functions in set", async () => {
       const store = create<any>(
         persistMiddleware({
           adapter,
@@ -317,7 +317,7 @@ describe("Middleware", () => {
       expect(state?.count).toBe(6)
     })
 
-    it("should handle partial state updates", () => {
+    it("handle partial state updates", async () => {
       const store = create<any>(
         persistMiddleware({
           adapter,
@@ -565,7 +565,7 @@ describe("Middleware", () => {
       setValue: (v: string) => void
     }
 
-    it("should sync external storage changes when syncExternal is true", () => {
+    it("sync external storage changes when syncExternal is true", async () => {
       let externalSubscriber: (() => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
@@ -601,7 +601,7 @@ describe("Middleware", () => {
       expect(store.getState().value).toBe("external-update")
     })
 
-    it("should not sync external changes when syncExternal is false", () => {
+    it("not sync external changes when syncExternal is false", async () => {
       let subscribeCalled = false
 
       const adapter: PersistenceAdapter<TestState> = {
@@ -626,7 +626,7 @@ describe("Middleware", () => {
       expect(subscribeCalled).toBe(false)
     })
 
-    it("should attach cleanup function to store API", () => {
+    it("attach cleanup function to store API", async () => {
       const unsubscribeSpy = vi.fn(() => {})
 
       const adapter: PersistenceAdapter<TestState> = {
@@ -651,7 +651,7 @@ describe("Middleware", () => {
       expect(cleanup).toBe(unsubscribeSpy)
     })
 
-    it("should handle errors in external subscription callback", () => {
+    it("handle errors in external subscription callback", async () => {
       const onError = vi.fn()
       let externalSubscriber: (() => void) | null = null
 
@@ -685,7 +685,7 @@ describe("Middleware", () => {
       expect(onError).toHaveBeenCalledWith(expect.any(Error))
     })
 
-    it("should filter functions when applying external changes", () => {
+    it("filter functions when applying external changes", async () => {
       let externalSubscriber: (() => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
@@ -720,7 +720,7 @@ describe("Middleware", () => {
       expect(store.getState().value).toBe("updated")
     })
 
-    it("should use custom merge with external changes", () => {
+    it("use custom merge with external changes", async () => {
       const customMerge = (
         persisted: Partial<TestState>,
         initial: TestState
@@ -766,7 +766,7 @@ describe("Middleware", () => {
       expect(store.getState().value).toBe("updated-external")
     })
 
-    it("should call onRehydrate after external sync", () => {
+    it("call onRehydrate after external sync", async () => {
       const onRehydrate = vi.fn()
       let externalSubscriber: (() => void) | null = null
 
@@ -803,7 +803,7 @@ describe("Middleware", () => {
       expect(onRehydrate.mock.calls.length).toBeGreaterThan(initialCallCount)
     })
 
-    it("should handle errors in write operations", () => {
+    it("handle errors in write operations", async () => {
       const onError = vi.fn()
 
       const adapter: PersistenceAdapter<TestState> = {
@@ -829,7 +829,7 @@ describe("Middleware", () => {
       expect(onError).toHaveBeenCalledWith(expect.any(Error))
     })
 
-    it("should continue updating state even if write fails", () => {
+    it("continue updating state even if write fails", async () => {
       const adapter: PersistenceAdapter<TestState> = {
         read: async () => ({ value: "initial", setValue: () => {} }),
         write: async () => {
@@ -853,7 +853,7 @@ describe("Middleware", () => {
       expect(store.getState().value).toBe("updated")
     })
 
-    it("should handle non-Error thrown values as errors", () => {
+    it("handle non-Error thrown values as errors", async () => {
       const onError = vi.fn()
 
       const adapter: PersistenceAdapter<TestState> = {
@@ -877,7 +877,7 @@ describe("Middleware", () => {
       expect(onError).toHaveBeenCalledWith(expect.any(Error))
     })
 
-    it("should handle update function with objects containing functions", () => {
+    it("handle update function with objects containing functions", async () => {
       const persistedValues: Partial<TestState> = {}
 
       const adapter: PersistenceAdapter<TestState> = {
