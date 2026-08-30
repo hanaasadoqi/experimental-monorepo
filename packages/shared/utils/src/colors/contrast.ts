@@ -100,7 +100,7 @@ export function adjustContrastByLightness(
 ): string | null {
   try {
     const fgRegexMatch = foreground.match(/^oklch\(([\d.]+)(%?)?\s+([\d.]+)\s+([\d.]+)\)$/)
-    if (!fgRegexMatch) return null
+    if (!fgRegexMatch || !fgRegexMatch[1] || !fgRegexMatch[3] || !fgRegexMatch[4]) return null
 
     const chroma = fgRegexMatch[3]
     const hue = fgRegexMatch[4]
