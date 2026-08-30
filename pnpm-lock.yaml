@@ -148,6 +148,9 @@ importers:
       '@hugeicons/react':
         specifier: ^1.1.10
         version: 1.1.10(react@19.2.4)
+      '@repo/feature-preferences':
+        specifier: workspace:*
+        version: link:../../packages/features/preferences
       '@repo/feature-theme':
         specifier: workspace:*
         version: link:../../packages/features/theme
@@ -176,6 +179,18 @@ importers:
       '@repo/foundation-typescript-config':
         specifier: workspace:*
         version: link:../../packages/foundation/tooling/typescript-config
+      '@repo/foundation-vitest-config':
+        specifier: workspace:*
+        version: link:../../packages/foundation/testing/vitest-config
+      '@repo/foundation-vitest-utils':
+        specifier: workspace:*
+        version: link:../../packages/foundation/testing/vitest-utils
+      '@repo/shared-contracts':
+        specifier: workspace:*
+        version: link:../../packages/shared/contracts
+      '@testing-library/react':
+        specifier: ^16.3.3
+        version: 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@types/node':
         specifier: ^26.4.0
         version: 26.4.0
@@ -185,6 +200,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.5
         version: 19.2.5(@types/react@19.2.18)
+      '@vitest/coverage-v8':
+        specifier: ^4.1.11
+        version: 4.1.11(vitest@4.1.11)
       eslint:
         specifier: ^9
         version: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
@@ -194,12 +212,82 @@ importers:
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
+      vitest:
+        specifier: ^4.1.11
+        version: 4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0))
+
+  packages/features/preferences:
+    dependencies:
+      '@repo/shared-contracts':
+        specifier: workspace:*
+        version: link:../../shared/contracts
+      '@repo/shared-utils':
+        specifier: workspace:*
+        version: link:../../shared/utils
+      next:
+        specifier: ^16.0.0
+        version: 16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/node@26.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      zustand:
+        specifier: ^4.5.2
+        version: 4.5.7(@types/react@19.2.18)(react@19.2.8)
+    devDependencies:
+      '@repo/foundation-eslint-config':
+        specifier: workspace:*
+        version: link:../../foundation/tooling/eslint-config
+      '@repo/foundation-prettier-config':
+        specifier: workspace:*
+        version: link:../../foundation/tooling/prettier-config
+      '@repo/foundation-test-mocks':
+        specifier: workspace:*
+        version: link:../../foundation/testing/test-mocks
+      '@repo/foundation-typescript-config':
+        specifier: workspace:*
+        version: link:../../foundation/tooling/typescript-config
+      '@repo/foundation-vitest-config':
+        specifier: workspace:*
+        version: link:../../foundation/testing/vitest-config
+      '@repo/foundation-vitest-utils':
+        specifier: workspace:*
+        version: link:../../foundation/testing/vitest-utils
+      '@testing-library/react':
+        specifier: ^16.3.3
+        version: 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
+      '@types/react':
+        specifier: ^19.2.18
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: ^19.2.5
+        version: 19.2.5(@types/react@19.2.18)
+      '@vitest/coverage-v8':
+        specifier: ^4.1.11
+        version: 4.1.11(vitest@4.1.11)
+      eslint:
+        specifier: ^9.39.5
+        version: 9.39.5(jiti@2.7.0)(supports-color@7.2.0)
+      react:
+        specifier: ^19.2.4
+        version: 19.2.8
+      react-dom:
+        specifier: ^19.2.4
+        version: 19.2.8(react@19.2.8)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.11
+        version: 4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0))
 
   packages/features/theme:
     dependencies:
       '@repo/services-zustand':
         specifier: workspace:*
         version: link:../../services/zustand
+      '@repo/shared-contracts':
+        specifier: workspace:*
+        version: link:../../shared/contracts
       next:
         specifier: ^16.0.0
         version: 16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/node@26.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -6813,6 +6901,16 @@ snapshots:
       redent: 3.0.0
     optionalDependencies:
       vitest: 4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0))
+
+  '@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@testing-library/dom': 10.4.1
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+    optionalDependencies:
+      '@types/react': 19.2.18
+      '@types/react-dom': 19.2.5(@types/react@19.2.18)
 
   '@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:

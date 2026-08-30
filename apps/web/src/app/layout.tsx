@@ -2,10 +2,11 @@ import { Geist, Geist_Mono, Inter } from "next/font/google"
 import Script from "next/script"
 
 import "./globals.css"
-import { ThemeWrapper } from "@repo/feature-theme/components"
+import { readAppearancePreferenceCookie } from "@repo/feature-preferences/server"
 import { generateBootstrapCode } from "@repo/feature-theme/runtime"
-import { readAppearanceCookie } from "@repo/feature-theme/server"
 import { cn } from "@repo/ui-components/lib/utils"
+
+import { ApplicationProviders } from "../components"
 
 const geist = Geist({
   subsets: ["latin"],
@@ -27,7 +28,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const preference = await readAppearanceCookie()
+  const preference = await readAppearancePreferenceCookie()
   const effectivePreference = preference ?? "system"
   const explicitColorScheme =
     effectivePreference === "system" ? undefined : effectivePreference
@@ -63,7 +64,13 @@ export default async function RootLayout({
           }}
           suppressHydrationWarning
         />
-        <ThemeWrapper initialPreference={preference}>{children}</ThemeWrapper>
+        <ApplicationProviders
+          {...(preference === undefined
+            ? {}
+            : { initialPreference: preference })}
+        >
+          {children}
+        </ApplicationProviders>
       </body>
     </html>
   )

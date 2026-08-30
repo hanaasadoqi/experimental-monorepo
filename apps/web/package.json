@@ -9,13 +9,16 @@
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json}\"",
-    "check-types": "tsc --noEmit -p tsconfig.json"
+    "check-types": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:run": "vitest run --coverage"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.3.0",
     "@hugeicons/react": "^1.1.10",
     "@repo/ui-components": "workspace:*",
     "@repo/ui-tailwind-config": "workspace:*",
+    "@repo/feature-preferences": "workspace:*",
     "@repo/feature-theme": "workspace:*",
     "next": "16.2.6",
     "react": "19.2.4",
@@ -28,8 +31,14 @@
     "@repo/foundation-eslint-config": "workspace:*",
     "@repo/foundation-prettier-config": "workspace:*",
     "@repo/foundation-typescript-config": "workspace:*",
+    "@repo/foundation-vitest-config": "workspace:*",
+    "@repo/foundation-vitest-utils": "workspace:*",
+    "@repo/shared-contracts": "workspace:*",
+    "@testing-library/react": "^16.3.3",
+    "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9",
     "typescript": "^6.0.3",
-    "prettier-plugin-tailwindcss": "^0.8.1"
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "vitest": "^4.1.11"
   }
 }
