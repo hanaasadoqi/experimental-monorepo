@@ -671,7 +671,7 @@ describe("Middleware", () => {
 
       // Trigger subscriber callback with error
       if (externalSubscriber && typeof externalSubscriber === "function") {
-        (externalSubscriber as () => void)()
+        ; (externalSubscriber as () => void)()
       }
 
       expect(onError).toHaveBeenCalledWith(expect.any(Error))
@@ -704,7 +704,7 @@ describe("Middleware", () => {
 
       // Trigger external change
       if (externalSubscriber && typeof externalSubscriber === "function") {
-        (externalSubscriber as () => void)()
+        ; (externalSubscriber as () => void)()
       }
 
       // setValue should still be a function
@@ -752,7 +752,7 @@ describe("Middleware", () => {
 
       // Trigger external change
       if (externalSubscriber && typeof externalSubscriber === "function") {
-        (externalSubscriber as () => void)()
+        ; (externalSubscriber as () => void)()
       }
 
       expect(store.getState().value).toBe("updated-external")
@@ -789,7 +789,7 @@ describe("Middleware", () => {
 
       // Trigger external change
       if (externalSubscriber && typeof externalSubscriber === "function") {
-        (externalSubscriber as () => void)()
+        ; (externalSubscriber as () => void)()
       }
 
       expect(onRehydrate.mock.calls.length).toBeGreaterThan(initialCallCount)

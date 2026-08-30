@@ -23,7 +23,7 @@ describe("readCookie", () => {
         return undefined
       }),
     }
-      ; (cookies as any).mockResolvedValue(mockCookieStore)
+    ;(cookies as any).mockResolvedValue(mockCookieStore)
 
     const result = await readCookie("test-cookie")
     expect(result).toBe("test-value")

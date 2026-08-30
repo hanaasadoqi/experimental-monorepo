@@ -126,9 +126,7 @@ describe("theme schemas", () => {
 
       boundaryColors.forEach((color) => {
         const result = themeOklchColorSchema.safeParse(color)
-        expect(result.success).toBe(
-          true
-        )
+        expect(result.success).toBe(true)
       })
     })
 

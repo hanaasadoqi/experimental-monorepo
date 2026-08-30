@@ -118,9 +118,7 @@ describe("OKLCH_REGEX", () => {
       ]
 
       formats.forEach((format) => {
-        expect(OKLCH_REGEX.test(format)).toBe(
-          false
-        )
+        expect(OKLCH_REGEX.test(format)).toBe(false)
       })
     })
 
@@ -203,9 +201,7 @@ describe("OKLCH_REGEX", () => {
       ]
 
       formats.forEach((format) => {
-        expect(OKLCH_REGEX.test(format)).toBe(
-          false
-        )
+        expect(OKLCH_REGEX.test(format)).toBe(false)
       })
     })
   })

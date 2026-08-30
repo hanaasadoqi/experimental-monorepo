@@ -32,7 +32,8 @@ describe("Logger Middleware", () => {
         loggerMiddleware()((set) => ({
           count: 0,
           name: "",
-          increment: () => set((s: number) => ({ count: (s as any).count + 1 })),
+          increment: () =>
+            set((s: number) => ({ count: (s as any).count + 1 })),
           setName: (n: string) => set({ name: n }),
         }))
       )
@@ -58,7 +59,8 @@ describe("Logger Middleware", () => {
         loggerMiddleware({ prefix: "MyStore" })((set) => ({
           count: 0,
           name: "",
-          increment: () => set((s: number) => ({ count: (s as any).count + 1 })),
+          increment: () =>
+            set((s: number) => ({ count: (s as any).count + 1 })),
           setName: (n: string) => set({ name: n }),
         }))
       )
@@ -75,7 +77,8 @@ describe("Logger Middleware", () => {
         loggerMiddleware({ logDiff: true })((set) => ({
           count: 0,
           name: "initial",
-          increment: () => set((s: number) => ({ count: (s as any).count + 1 })),
+          increment: () =>
+            set((s: number) => ({ count: (s as any).count + 1 })),
           setName: (n: string) => set({ name: n }),
         }))
       )
@@ -98,7 +101,8 @@ describe("Logger Middleware", () => {
         loggerMiddleware({ logDiff: true })((set) => ({
           count: 0,
           name: "",
-          increment: () => set((s: number) => ({ count: (s as any).count + 1 })),
+          increment: () =>
+            set((s: number) => ({ count: (s as any).count + 1 })),
           setName: (n: string) => set({ name: n }),
         }))
       )
@@ -115,7 +119,10 @@ describe("Logger Middleware", () => {
           count: 0,
           name: "",
           increment: () =>
-            set((s: number) => ({ count: (s as any).count + 1, name: "updated" })),
+            set((s: number) => ({
+              count: (s as any).count + 1,
+              name: "updated",
+            })),
           setName: (n: string) => set({ name: n }),
         }))
       )
@@ -136,7 +143,8 @@ describe("Logger Middleware", () => {
         loggerMiddleware({ logState: false })((set) => ({
           count: 0,
           name: "",
-          increment: () => set((s: number) => ({ count: (s as any).count + 1 })),
+          increment: () =>
+            set((s: number) => ({ count: (s as any).count + 1 })),
           setName: (n: string) => set({ name: n }),
         }))
       )
@@ -157,7 +165,8 @@ describe("Logger Middleware", () => {
         loggerMiddleware({ useGrouping: false })((set) => ({
           count: 0,
           name: "",
-          increment: () => set((s: number) => ({ count: (s as any).count + 1 })),
+          increment: () =>
+            set((s: number) => ({ count: (s as any).count + 1 })),
           setName: (n: string) => set({ name: n }),
         }))
       )
@@ -186,7 +195,8 @@ describe("Logger Middleware", () => {
         loggerMiddleware({ filter })((set) => ({
           count: 0,
           name: "",
-          increment: () => set((s: number) => ({ count: (s as any).count + 1 })),
+          increment: () =>
+            set((s: number) => ({ count: (s as any).count + 1 })),
           setName: (n: string) => set({ name: n }),
         }))
       )
@@ -208,7 +218,8 @@ describe("Logger Middleware", () => {
         loggerMiddleware({ filter })((set) => ({
           count: 0,
           name: "",
-          increment: () => set((s: number) => ({ count: (s as any).count + 1 })),
+          increment: () =>
+            set((s: number) => ({ count: (s as any).count + 1 })),
           setName: (n: string) => set({ name: n }),
         }))
       )
@@ -229,7 +240,8 @@ describe("Logger Middleware", () => {
         loggerMiddleware()((set) => ({
           count: 0,
           name: "",
-          increment: () => set((s: number) => ({ count: (s as any).count + 1 })),
+          increment: () =>
+            set((s: number) => ({ count: (s as any).count + 1 })),
           setName: (n: string) => set({ name: n }),
         }))
       )
@@ -247,7 +259,8 @@ describe("Logger Middleware", () => {
         loggerMiddleware({ useGrouping: false })((set) => ({
           count: 0,
           name: "",
-          increment: () => set((s: number) => ({ count: (s as any).count + 1 })),
+          increment: () =>
+            set((s: number) => ({ count: (s as any).count + 1 })),
           setName: (n: string) => set({ name: n }),
         }))
       )
@@ -284,7 +297,8 @@ describe("Logger Middleware", () => {
         })((set) => ({
           count: 0,
           name: "test",
-          increment: () => set((s: number) => ({ count: (s as any).count + 1 })),
+          increment: () =>
+            set((s: number) => ({ count: (s as any).count + 1 })),
           setName: (n: string) => set({ name: n }),
         }))
       )

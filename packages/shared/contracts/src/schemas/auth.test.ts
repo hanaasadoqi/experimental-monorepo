@@ -131,9 +131,7 @@ describe("auth schemas", () => {
 
         validPasswords.forEach((password) => {
           const result = loginFormSchema.safeParse({ ...validForm, password })
-          expect(result.success).toBe(
-            true
-          )
+          expect(result.success).toBe(true)
         })
       })
 
@@ -147,9 +145,7 @@ describe("auth schemas", () => {
 
         shortPasswords.forEach((password) => {
           const result = loginFormSchema.safeParse({ ...validForm, password })
-          expect(result.success).toBe(
-            false
-          )
+          expect(result.success).toBe(false)
         })
       })
 
@@ -182,8 +178,7 @@ describe("auth schemas", () => {
 
         passwords.forEach((password) => {
           const result = loginFormSchema.safeParse({ ...validForm, password })
-          expect(result.success).toBe(
-            true)
+          expect(result.success).toBe(true)
         })
       })
 

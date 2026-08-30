@@ -1,10 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { z, ZodType } from "zod"
-import {
-  validateSchema,
-  parseSchema,
-  tryParseSchema,
-} from "./schema-utils"
+import { validateSchema, parseSchema, tryParseSchema } from "./schema-utils"
 
 describe("schema-utils", () => {
   // Test schema for all utilities
@@ -173,7 +169,9 @@ describe("schema-utils", () => {
 
     it("performs complete type transformation when valid", () => {
       const transformSchema = z.object({
-        value: z.string().transform((v) => parseInt(v)) as unknown as ZodType<number>,
+        value: z
+          .string()
+          .transform((v) => parseInt(v)) as unknown as ZodType<number>,
       })
 
       const result = parseSchema(transformSchema, { value: "42" })
