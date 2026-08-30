@@ -1,24 +1,16 @@
 /**
  * @fileoverview Public contract exports from @repo/contracts
- * Combines schemas and types into a single entry point.
+ * Combines schemas, types, defaults, and utilities into a single entry point.
  */
 
-// Re-export all types
-export type {
-  AppearancePreference,
-  PreferencesState,
-  Theme,
-  ThemeForm,
-  ThemeAppearance,
-  ThemeOklchColor,
-  LoginForm,
-  ValidationError,
-} from "./types"
+// All types
+export * from "./types"
 
-// Re-export all schemas
-export {
-  themeFormSchema,
-  themeOklchColorSchema,
-  appearancePreferenceSchema,
-  preferencesStateSchema,
-} from "./schemas"
+// All schemas
+export * from "./schemas"
+
+// All defaults
+export * from "./defaults"
+
+// All utilities
+export * from "./utils"
