@@ -1,8 +1,17 @@
 import { ReactNode, useEffect } from "react"
-import type { StoreApi } from "zustand"
 
 import { themeStore } from "../store/theme-store"
 import type { ThemeStoreState } from "../store/theme-store"
+
+/**
+ * The narrow slice of a theme store this provider actually uses. Declaring
+ * it structurally keeps the prop compatible with any Zustand store shape
+ * (bound hook or plain store API) and with hand-rolled test doubles.
+ */
+export interface ThemeStoreLike {
+  getState: () => ThemeStoreState
+  subscribe: (listener: (state: ThemeStoreState) => void) => () => void
+}
 
 interface ThemeProviderProps {
   children: ReactNode
@@ -15,7 +24,7 @@ interface ThemeProviderProps {
    * inject a fresh `createThemeStore()` instead of mocking the module, and
    * several providers can run side by side without sharing state.
    */
-  store?: StoreApi<ThemeStoreState>
+  store?: ThemeStoreLike
 }
 
 /**

@@ -1,10 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import { act, render, screen } from "@testing-library/react"
-import type { StoreApi } from "zustand"
-
 import { ThemeProvider } from "./theme-provider"
 import { createThemeStore } from "../store/theme-store"
-import type { ThemeStoreState } from "../store/theme-store"
 
 /**
  * These tests inject a store through the `store` prop rather than mocking
@@ -12,7 +9,7 @@ import type { ThemeStoreState } from "../store/theme-store"
  * store implementation against a fresh, isolated instance.
  */
 describe("ThemeProvider", () => {
-  let store: StoreApi<ThemeStoreState>
+  let store: ReturnType<typeof createThemeStore>
   const matchMediaBackup = window.matchMedia
 
   const setSystemDark = (matches: boolean) => {
