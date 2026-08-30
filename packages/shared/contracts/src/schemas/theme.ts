@@ -1,9 +1,9 @@
 import { z } from "zod"
-import { OKLCH_REGEX } from "../defaults/theme"
+import { OKLCH_REGEX } from "../defaults/theme.js"
 import {
   appearancePreferenceSchema,
   type AppearancePreference,
-} from "./preferences"
+} from "./preferences.js"
 
 /** @deprecated Use `appearancePreferenceSchema`. */
 export const themeAppearanceSchema = appearancePreferenceSchema

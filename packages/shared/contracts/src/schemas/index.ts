@@ -8,7 +8,7 @@ export {
   preferencesStateSchema,
   type PreferencesState,
   type AppearancePreference,
-} from "./preferences"
+} from "./preferences.js"
 export {
   themeAppearanceSchema,
   themeOklchColorSchema,
@@ -17,11 +17,11 @@ export {
   type ThemeAppearance,
   type ThemeOklchColor,
   type Theme,
-} from "./theme"
-export { loginFormSchema, type LoginForm } from "./auth"
+} from "./theme.js"
+export { loginFormSchema, type LoginForm } from "./auth.js"
 export {
   validateSchema,
   parseSchema,
   tryParseSchema,
   type ValidationError,
-} from "../utils/schema-utils"
+} from "../utils/schema-utils.js"

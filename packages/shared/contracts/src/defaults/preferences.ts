@@ -1,4 +1,4 @@
-import type { AppearancePreference, PreferencesState } from "../schemas"
+import type { AppearancePreference, PreferencesState } from "../schemas/index.js"
 
 export const DEFAULT_APPEARANCE_PREFERENCE: AppearancePreference = "system"
 
