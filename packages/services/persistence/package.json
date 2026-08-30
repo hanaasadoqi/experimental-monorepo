@@ -1,0 +1,34 @@
+{
+  "name": "@repo/services-persistence",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
+    "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "test": "vitest run",
+    "test:run": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@repo/foundation-eslint-config": "workspace:*",
+    "@repo/foundation-prettier-config": "workspace:*",
+    "@repo/foundation-typescript-config": "workspace:*",
+    "@repo/foundation-vitest-config": "workspace:*",
+    "@types/node": "^26.4.0",
+    "@vitest/coverage-v8": "^4.1.11",
+    "eslint": "^9.39.5",
+    "prettier": "^3.6.2",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./errors": "./src/errors/index.ts",
+    "./serialization": "./src/serialization/index.ts",
+    "./storage": "./src/storage/index.ts",
+    "./testing": "./src/testing/index.ts",
+    "./value": "./src/value/index.ts"
+  }
+}

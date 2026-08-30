@@ -2,7 +2,6 @@ import type { PersistenceAdapter } from "../types/index.js"
 import { isBrowser, isCookieAvailable } from "../utils/ssr.js"
 
 const COOKIE_NAME_PATTERN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/
-const INVALID_ATTRIBUTE_PATTERN = /[;\u0000-\u001f\u007f]/
 const DEFAULT_MAX_AGE = 31_536_000
 const DEFAULT_POLL_INTERVAL = 1_000
 
@@ -39,7 +38,18 @@ function assertCookieName(name: string): void {
 }
 
 function assertCookieAttribute(name: string, value: string): void {
-  if (value.length === 0 || INVALID_ATTRIBUTE_PATTERN.test(value)) {
+  const hasInvalidCharacter = Array.from(value).some((character) => {
+    const codePoint = character.codePointAt(0)
+
+    return (
+      character === ";" ||
+      codePoint === undefined ||
+      codePoint <= 0x1f ||
+      codePoint === 0x7f
+    )
+  })
+
+  if (value.length === 0 || hasInvalidCharacter) {
     throw new TypeError(`Invalid cookie ${name}`)
   }
 }
