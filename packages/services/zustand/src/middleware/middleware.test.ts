@@ -489,7 +489,7 @@ describe("Middleware", () => {
     })
 
     it("should handle async subscribe to external changes", async () => {
-      const persistedData = { data: "initial", setData: (_d: string) => { } }
+      const persistedData = { data: "initial", setData: (_d: string) => {} }
       let subscriber: (() => void) | null = null
 
       const asyncAdapter = {
@@ -518,7 +518,7 @@ describe("Middleware", () => {
       // Simulate external change
       persistedData.data = "external-change"
       if (subscriber && typeof subscriber === "function") {
-        (subscriber as any)()
+        ;(subscriber as any)()
         await new Promise((r) => setTimeout(r, 10))
       }
 
@@ -587,7 +587,7 @@ describe("Middleware", () => {
           value: "external-update",
           setValue: () => {},
         })
-          ; (externalSubscriber as () => void)() // Trigger the subscriber callback
+        ;(externalSubscriber as () => void)() // Trigger the subscriber callback
       }
 
       expect(store.getState().value).toBe("external-update")
@@ -671,7 +671,7 @@ describe("Middleware", () => {
 
       // Trigger subscriber callback with error
       if (externalSubscriber && typeof externalSubscriber === "function") {
-        ; (externalSubscriber as () => void)()
+        ;(externalSubscriber as () => void)()
       }
 
       expect(onError).toHaveBeenCalledWith(expect.any(Error))
@@ -704,7 +704,7 @@ describe("Middleware", () => {
 
       // Trigger external change
       if (externalSubscriber && typeof externalSubscriber === "function") {
-        ; (externalSubscriber as () => void)()
+        ;(externalSubscriber as () => void)()
       }
 
       // setValue should still be a function
@@ -752,7 +752,7 @@ describe("Middleware", () => {
 
       // Trigger external change
       if (externalSubscriber && typeof externalSubscriber === "function") {
-        ; (externalSubscriber as () => void)()
+        ;(externalSubscriber as () => void)()
       }
 
       expect(store.getState().value).toBe("updated-external")
@@ -789,7 +789,7 @@ describe("Middleware", () => {
 
       // Trigger external change
       if (externalSubscriber && typeof externalSubscriber === "function") {
-        ; (externalSubscriber as () => void)()
+        ;(externalSubscriber as () => void)()
       }
 
       expect(onRehydrate.mock.calls.length).toBeGreaterThan(initialCallCount)

@@ -8,8 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "format": "prettier --write \"**/*.{ts,tsx,m}\"",
+    "check-types": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.3.0",

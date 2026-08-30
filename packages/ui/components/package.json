@@ -12,7 +12,7 @@
   "scripts": {
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "test:run": "vitest run --coverage",
     "test": "vitest run"
   },

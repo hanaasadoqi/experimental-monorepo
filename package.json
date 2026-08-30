@@ -9,7 +9,6 @@
     "format": "turbo run format",
     "format:check": "prettier . --check",
     "typecheck": "turbo run check-types",
-    "type-check": "turbo run check-types",
     "check": "turbo run lint && turbo run check-types",
     "check:boundaries": "turbo boundaries",
     "ui:add": "pnpm dlx shadcn@latest add -c apps/web",
