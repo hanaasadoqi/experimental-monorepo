@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from "vitest"
-import { render, renderHook } from "@testing-library/react"
+import { describe, it, expect, beforeEach, afterEach } from "vitest"
+import { act, render, renderHook } from "@testing-library/react"
 import { AppearanceProvider, useAppearanceStore } from "./appearance-provider"
 import { createLocalStorageAppearanceAdapter } from "../persistence/local-storage-adapter"
 
@@ -83,5 +83,90 @@ describe("AppearanceProvider", () => {
       ),
     })
     expect(result.current.getState().preference).toBe("dark")
+  })
+
+  describe("lifecycle ownership", () => {
+    afterEach(() => {
+      document.documentElement.classList.remove("dark")
+      document.documentElement.removeAttribute("data-theme")
+      document.documentElement.style.removeProperty("color-scheme")
+    })
+
+    it("applies the resolved color scheme to the DOM on mount", () => {
+      render(
+        <AppearanceProvider adapter={adapter} initialPreference="dark">
+          <div>content</div>
+        </AppearanceProvider>
+      )
+
+      expect(document.documentElement.classList.contains("dark")).toBe(true)
+    })
+
+    it("persists preference changes through the adapter", () => {
+      const { result } = renderHook(() => useAppearanceStore(), {
+        wrapper: ({ children }) => (
+          <AppearanceProvider adapter={adapter} initialPreference="light">
+            {children}
+          </AppearanceProvider>
+        ),
+      })
+
+      act(() => {
+        result.current.getState().setPreference("dark")
+      })
+
+      expect(adapter.read()).toBe("dark")
+      expect(document.documentElement.classList.contains("dark")).toBe(true)
+    })
+
+    it("stops writing to the DOM and adapter after unmount", () => {
+      const { result, unmount } = renderHook(() => useAppearanceStore(), {
+        wrapper: ({ children }) => (
+          <AppearanceProvider adapter={adapter} initialPreference="light">
+            {children}
+          </AppearanceProvider>
+        ),
+      })
+      const store = result.current
+
+      unmount()
+
+      act(() => {
+        store.getState().setPreference("dark")
+      })
+
+      expect(document.documentElement.classList.contains("dark")).toBe(false)
+      expect(adapter.read()).toBeNull()
+    })
+
+    it("defaults to a localStorage adapter when none is provided", () => {
+      const { result } = renderHook(() => useAppearanceStore(), {
+        wrapper: ({ children }) => (
+          <AppearanceProvider initialPreference="light">
+            {children}
+          </AppearanceProvider>
+        ),
+      })
+
+      act(() => {
+        result.current.getState().setPreference("dark")
+      })
+
+      expect(localStorage.getItem("appearance-preference")).toBe("dark")
+    })
+
+    it("restores the persisted preference with the default adapter", () => {
+      localStorage.setItem("appearance-preference", "dark")
+
+      const { result } = renderHook(() => useAppearanceStore(), {
+        wrapper: ({ children }) => (
+          <AppearanceProvider defaultPreference="light">
+            {children}
+          </AppearanceProvider>
+        ),
+      })
+
+      expect(result.current.getState().preference).toBe("dark")
+    })
   })
 })
