@@ -8,4 +8,4 @@ export {
   type OptionalContextResult,
 } from "./create-optional-context"
 
-export { MissingContextError } from "./missing-context-error"
+export type { MissingContextError } from "./missing-context-error"
