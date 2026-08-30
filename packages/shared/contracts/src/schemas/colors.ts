@@ -1,7 +1,15 @@
-import { z } from "zod";
-import { MAX_CHROMA, MAX_HUE, MAX_LIGHTNESS, MIN_CHROMA, MIN_HUE, MIN_LIGHTNESS, OKLCH_REGEX } from "../defaults/colors.js";
+import { z } from "zod"
+import {
+  MAX_CHROMA,
+  MAX_HUE,
+  MAX_LIGHTNESS,
+  MIN_CHROMA,
+  MIN_HUE,
+  MIN_LIGHTNESS,
+  OKLCH_REGEX,
+} from "../defaults/colors.js"
 
-export { OKLCH_REGEX } from "../defaults/colors.js";
+export { OKLCH_REGEX } from "../defaults/colors.js"
 
 export const oklchStrSchema = z.string().regex(OKLCH_REGEX)
 

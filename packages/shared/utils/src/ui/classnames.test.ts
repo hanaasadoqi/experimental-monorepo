@@ -169,7 +169,7 @@ describe("cn", () => {
         "inline-flex items-center justify-center rounded transition",
         variant === "primary" && "bg-blue-500 text-white hover:bg-blue-600",
         variant === "secondary" &&
-        "bg-gray-200 text-gray-900 hover:bg-gray-300",
+          "bg-gray-200 text-gray-900 hover:bg-gray-300",
         size === "sm" && "px-2 py-1 text-sm",
         size === "lg" && "px-6 py-3 text-lg",
         disabled && "opacity-50 cursor-not-allowed"
@@ -294,9 +294,9 @@ describe("cn", () => {
       const result = cn(
         "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         variant === "primary" &&
-        "bg-primary text-primary-foreground hover:bg-primary/90",
+          "bg-primary text-primary-foreground hover:bg-primary/90",
         variant === "outline" &&
-        "border border-input hover:bg-accent hover:text-accent-foreground",
+          "border border-input hover:bg-accent hover:text-accent-foreground",
         size === "sm" && "h-8 px-3 text-sm",
         size === "md" && "h-10 px-4",
         size === "lg" && "h-12 px-6",

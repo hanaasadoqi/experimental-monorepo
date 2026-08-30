@@ -1,22 +1,33 @@
-import { type oklchColor, OKLCH_REGEX, oklchColorSchema, OklchStr, oklchStrSchema } from "./types"
+import {
+  type oklchColor,
+  OKLCH_REGEX,
+  oklchColorSchema,
+  OklchStr,
+  oklchStrSchema,
+} from "./types"
 
 /** Regex for parsing OKLch CSS color format */
 
 const PERCENTAGE_INDEX = 2
 
-export const validateOklch = (value: string | Record<string, unknown>): {
-  data?: oklchColor | OklchStr | null;
-  success: boolean;
+export const validateOklch = (
+  value: string | Record<string, unknown>
+): {
+  data?: oklchColor | OklchStr | null
+  success: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error?: any;
+  error?: any
 } => {
-  const normalizedSchema = typeof value === 'string' ? oklchStrSchema : oklchColorSchema
+  const normalizedSchema =
+    typeof value === "string" ? oklchStrSchema : oklchColorSchema
   return normalizedSchema.safeParse(value)
 }
 
-export const isValidOklch = (value: string | Record<string, unknown>): boolean => {
+export const isValidOklch = (
+  value: string | Record<string, unknown>
+): boolean => {
   return validateOklch(value).success
-};
+}
 
 /**
  * Parses an OKLch CSS color string into normalized components.

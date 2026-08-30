@@ -27,7 +27,10 @@ export const isDate = (value: unknown): value is Date =>
   value instanceof Date && !Number.isNaN(value.getTime())
 
 export function isArray(value: unknown): value is unknown[]
-export function isArray<T>(value: unknown, itemGuard: TypeGuard<T>): value is T[]
+export function isArray<T>(
+  value: unknown,
+  itemGuard: TypeGuard<T>
+): value is T[]
 export function isArray<T>(
   value: unknown,
   itemGuard?: TypeGuard<T>
@@ -64,9 +67,7 @@ export function isRecord<T>(
 }
 
 export const isEmail = (value: unknown): value is string =>
-  typeof value === "string" &&
-  value.length <= 254 &&
-  EMAIL_PATTERN.test(value)
+  typeof value === "string" && value.length <= 254 && EMAIL_PATTERN.test(value)
 
 export const isUrl = (value: unknown): value is string =>
   typeof value === "string" && HTTP_URL_PATTERN.test(value)

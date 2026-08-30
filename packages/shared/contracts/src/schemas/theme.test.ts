@@ -93,7 +93,10 @@ describe("theme schemas", () => {
 
       expect(result.success).toBe(true)
       if (result.success) {
-        expect(Object.keys(result.data).sort()).toEqual(["appearance", "primaryColor"])
+        expect(Object.keys(result.data).sort()).toEqual([
+          "appearance",
+          "primaryColor",
+        ])
       }
     })
 

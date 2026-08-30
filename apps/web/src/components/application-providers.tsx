@@ -1,10 +1,9 @@
 "use client"
 
-import { useMemo, type ReactNode } from "react"
+import type { ReactNode } from "react"
 
 import {
   PreferencesProvider,
-  createCookiePreferencesAdapter,
   useAppearancePreference,
   useSetAppearancePreference,
 } from "@repo/feature-preferences"
@@ -12,7 +11,7 @@ import {
   AppearanceRuntimeProvider,
   ThemeToggleHotkey,
 } from "@repo/feature-theme"
-import type { AppearancePreference } from "@repo/shared-contracts/types"
+import type { AppearancePreference } from "@repo/shared-contracts"
 
 export interface ApplicationProvidersProps {
   children: ReactNode
@@ -38,12 +37,9 @@ export function ApplicationProviders({
   children,
   initialPreference,
 }: ApplicationProvidersProps) {
-  const preferencesAdapter = useMemo(() => createCookiePreferencesAdapter(), [])
-
   return (
     <PreferencesProvider
-      adapter={preferencesAdapter}
-      {...(initialPreference === undefined ? {} : { initialPreference })}
+      {...(initialPreference === undefined ? {} : { initialAppearance: initialPreference })}
     >
       <AppearanceBridge>{children}</AppearanceBridge>
     </PreferencesProvider>

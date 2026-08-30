@@ -1,5 +1,4 @@
-import { lmsColor, oklchColor } from "./types";
-
+import { lmsColor, oklchColor } from "./types"
 
 /**
  * OKLch to LMS transformation coefficients

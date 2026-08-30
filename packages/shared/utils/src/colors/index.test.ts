@@ -16,7 +16,7 @@ import {
   LMS_TO_RGB_MATRIX,
   RGB_TO_LUMINANCE_WEIGHTS,
 } from "./index"
-import { CONTRAST_THRESHOLDS } from "./types";
+import { CONTRAST_THRESHOLDS } from "./types"
 
 describe("colors barrel export", () => {
   it("exports parseOklch", () => {

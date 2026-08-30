@@ -5,7 +5,10 @@
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import { createLocalStorageAdapter } from "./local-storage-adapter.js"
-import { createCookieAdapter } from "./cookie-adapter.js"
+import {
+  createCookieAdapter,
+  type CookieAdapterOptions,
+} from "./cookie-adapter.js"
 
 describe("LocalStorage Adapter", () => {
   beforeEach(() => {
@@ -60,7 +63,7 @@ describe("LocalStorage Adapter", () => {
     expect(JSON.parse(stored!)).toEqual(testData)
   })
 
-  it("should write complex nested objects", function () {
+  it("should write complex nested objects", async function () {
     if (typeof localStorage === "undefined") return
 
     const adapter = createLocalStorageAdapter<{
@@ -68,13 +71,13 @@ describe("LocalStorage Adapter", () => {
     }>("complex-test")
     const testData = { nested: { deep: { value: "complex" } } }
 
-    adapter.write(testData)
+    await adapter.write?.("complex-test", testData)
 
-    const result = adapter.read()
+    const result = await adapter.read?.("complex-test")
     expect(result).toEqual(testData)
   })
 
-  it("should write null values", function () {
+  it("should write null values", async function () {
     if (typeof localStorage === "undefined") return
 
     const adapter = createLocalStorageAdapter<{ value: string | null }>(
@@ -82,21 +85,21 @@ describe("LocalStorage Adapter", () => {
     )
     const testData = { value: null }
 
-    adapter.write(testData)
+    await adapter.write?.("null-test", testData)
 
-    const result = adapter.read()
+    const result = await adapter.read?.("null-test")
     expect(result).toEqual(testData)
   })
 
-  it("should write empty objects", function () {
+  it("should write empty objects", async function () {
     if (typeof localStorage === "undefined") return
 
     const adapter = createLocalStorageAdapter<object>("empty-test")
     const testData = {}
 
-    adapter.write(testData)
+    await adapter.write?.("empty-test", testData)
 
-    const result = adapter.read()
+    const result = await adapter.read?.("empty-test")
     expect(result).toEqual(testData)
   })
 
@@ -107,7 +110,7 @@ describe("LocalStorage Adapter", () => {
     const adapter = createLocalStorageAdapter<{ value: string }>("event-test")
     const listener = vi.fn()
 
-    adapter.subscribe(listener)
+    adapter.subscribe?.("event-test", listener)
 
     const event = new StorageEvent("storage", {
       key: "event-test",
@@ -127,7 +130,7 @@ describe("LocalStorage Adapter", () => {
     )
     const listener = vi.fn()
 
-    adapter.subscribe(listener)
+    adapter.subscribe?.("key-filter-test", listener)
 
     const event = new StorageEvent("storage", {
       key: "different-key",
@@ -145,7 +148,7 @@ describe("LocalStorage Adapter", () => {
     const adapter = createLocalStorageAdapter<{ value: string }>("unsub-test")
     const listener = vi.fn()
 
-    const unsubscribe = adapter.subscribe(listener)
+    const unsubscribe = adapter.subscribe?.("unsub-test", listener)
 
     const event1 = new StorageEvent("storage", {
       key: "unsub-test",
@@ -154,7 +157,7 @@ describe("LocalStorage Adapter", () => {
     window.dispatchEvent(event1)
     expect(listener).toHaveBeenCalledOnce()
 
-    unsubscribe()
+    unsubscribe?.()
 
     const event2 = new StorageEvent("storage", {
       key: "unsub-test",
@@ -174,7 +177,7 @@ describe("LocalStorage Adapter", () => {
     )
     const listener = vi.fn()
 
-    adapter.subscribe(listener)
+    adapter.subscribe?.("null-key-test", listener)
 
     const event = new StorageEvent("storage", {
       key: null,
@@ -195,8 +198,8 @@ describe("LocalStorage Adapter", () => {
     const listener1 = vi.fn()
     const listener2 = vi.fn()
 
-    adapter.subscribe(listener1)
-    adapter.subscribe(listener2)
+    adapter.subscribe?.("multi-sub-test", listener1)
+    adapter.subscribe?.("multi-sub-test", listener2)
 
     const event = new StorageEvent("storage", {
       key: "multi-sub-test",
@@ -217,7 +220,7 @@ describe("LocalStorage Adapter", () => {
     )
     const listener = vi.fn()
 
-    adapter.subscribe(listener)
+    adapter.subscribe?.("undef-value-test", listener)
 
     const event = new StorageEvent("storage", {
       key: "undef-value-test",
@@ -226,6 +229,48 @@ describe("LocalStorage Adapter", () => {
     window.dispatchEvent(event)
 
     expect(listener).toHaveBeenCalledOnce()
+  })
+
+  it("passes the parsed external value to subscribers", () => {
+    const adapter = createLocalStorageAdapter<{ value: string }>("event-value")
+    const listener = vi.fn()
+    const unsubscribe = adapter.subscribe?.("event-value", listener)
+
+    window.dispatchEvent(
+      new StorageEvent("storage", {
+        key: "event-value",
+        newValue: JSON.stringify({ value: "updated" }),
+      })
+    )
+
+    expect(listener).toHaveBeenCalledWith({ value: "updated" })
+    unsubscribe?.()
+  })
+
+  it("clears only the adapter's default key", async () => {
+    localStorage.setItem("adapter-primary", JSON.stringify({ value: 1 }))
+    localStorage.setItem("adapter-unrelated", JSON.stringify({ value: 2 }))
+    const adapter = createLocalStorageAdapter<{ value: number }>(
+      "adapter-primary"
+    )
+
+    await adapter.clear?.()
+
+    expect(localStorage.getItem("adapter-primary")).toBeNull()
+    expect(localStorage.getItem("adapter-unrelated")).not.toBeNull()
+  })
+
+  it("reports write failures to its caller", async () => {
+    const adapter = createLocalStorageAdapter<{ value: number }>(
+      "adapter-primary"
+    )
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Storage quota exceeded", "QuotaExceededError")
+    })
+
+    await expect(
+      adapter.write?.("adapter-primary", { value: 1 })
+    ).rejects.toThrow("Storage quota exceeded")
   })
 })
 
@@ -258,18 +303,18 @@ describe("Cookie Adapter", () => {
     }
   })
 
-  it("should return undefined for non-existent cookies", function () {
+  it("should return null for non-existent cookies", async function () {
     if (typeof document === "undefined") return
 
     const adapter = createCookieAdapter<{ value: string }>("missing-cookie")
-    expect(adapter.read()).toBeUndefined()
+    await expect(adapter.read?.("missing-cookie")).resolves.toBeNull()
   })
 
   it("should return function from subscribe", function () {
     if (typeof document === "undefined") return
 
     const adapter = createCookieAdapter<{ value: string }>("sub-test")
-    const unsubscribe = adapter.subscribe(() => {})
+    const unsubscribe = adapter.subscribe?.("sub-test", () => {})
     expect(typeof unsubscribe).toBe("function")
   })
 
@@ -279,7 +324,7 @@ describe("Cookie Adapter", () => {
     const adapter = createCookieAdapter<{ value: string }>("write-test")
 
     expect(() => {
-      adapter.write({ value: "test data" })
+      adapter.write?.("write-test", { value: "test data" })
     }).not.toThrow()
 
     await new Promise((resolve) => setTimeout(resolve, 50))
@@ -291,7 +336,7 @@ describe("Cookie Adapter", () => {
     const adapter = createCookieAdapter<{ value: string }>("test")
 
     expect(() => {
-      adapter.subscribe(() => {})
+      adapter.subscribe?.("test", () => {})
     }).not.toThrow()
   })
 
@@ -303,7 +348,7 @@ describe("Cookie Adapter", () => {
     }>("complex-cookie-test")
     const testData = { nested: { deep: { value: "complex" } } }
 
-    adapter.write(testData)
+    adapter.write?.("complex-cookie-test", testData)
 
     await new Promise((resolve) => setTimeout(resolve, 50))
 
@@ -318,7 +363,7 @@ describe("Cookie Adapter", () => {
     )
     const testData = { value: null }
 
-    adapter.write(testData)
+    adapter.write?.("null-cookie-test", testData)
 
     await new Promise((resolve) => setTimeout(resolve, 50))
 
@@ -328,12 +373,91 @@ describe("Cookie Adapter", () => {
   it("should handle empty objects", async function () {
     if (typeof document === "undefined") return
 
-    const adapter = createCookieAdapter<object>(" empty-cookie-test")
+    const adapter = createCookieAdapter<object>("empty-cookie-test")
 
-    adapter.write({})
+    await adapter.write?.("empty-cookie-test", {})
 
     await new Promise((resolve) => setTimeout(resolve, 50))
 
     expect(typeof adapter.subscribe).toBe("function")
+  })
+})
+
+describe("Cookie Adapter contract", () => {
+  beforeEach(() => {
+    document.cookie = "adapter-primary=; Max-Age=0; Path=/"
+    document.cookie = "adapter-unrelated=; Max-Age=0; Path=/"
+    vi.useRealTimers()
+  })
+
+  afterEach(() => {
+    document.cookie = "adapter-primary=; Max-Age=0; Path=/"
+    document.cookie = "adapter-unrelated=; Max-Age=0; Path=/"
+    vi.restoreAllMocks()
+    vi.useRealTimers()
+  })
+
+  it("makes an awaited write immediately readable", async () => {
+    const adapter = createCookieAdapter<{ value: string }>("adapter-primary")
+
+    await adapter.write?.("adapter-primary", { value: "ready" })
+
+    await expect(adapter.read?.("adapter-primary")).resolves.toEqual({
+      value: "ready",
+    })
+  })
+
+  it("rejects cookie names that could inject attributes", () => {
+    expect(() => createCookieAdapter("unsafe; Secure")).toThrow(TypeError)
+  })
+
+  it("writes configured cookie attributes", async () => {
+    const cookieSetter = vi.spyOn(document, "cookie", "set")
+    const options = {
+      maxAge: 60,
+      path: "/settings",
+      sameSite: "strict",
+      secure: true,
+    } as CookieAdapterOptions & {
+      path: string
+      sameSite: "strict"
+      secure: boolean
+    }
+    const adapter = createCookieAdapter<{ value: string }>(
+      "adapter-primary",
+      options
+    )
+
+    await adapter.write?.("adapter-primary", { value: "saved" })
+
+    expect(cookieSetter).toHaveBeenCalledWith(
+      expect.stringMatching(
+        /^adapter-primary=.*; Max-Age=60; Path=\/settings; SameSite=Strict; Secure$/
+      )
+    )
+  })
+
+  it("clears only the adapter's cookie", async () => {
+    document.cookie = `adapter-primary=${encodeURIComponent(JSON.stringify({ value: 1 }))}; Path=/`
+    document.cookie = `adapter-unrelated=${encodeURIComponent(JSON.stringify({ value: 2 }))}; Path=/`
+    const adapter = createCookieAdapter<{ value: number }>("adapter-primary")
+
+    await adapter.clear?.()
+
+    await expect(adapter.read?.("adapter-primary")).resolves.toBeNull()
+    expect(document.cookie).toContain("adapter-unrelated=")
+  })
+
+  it("does not notify subscribers when the serialized cookie is unchanged", async () => {
+    vi.useFakeTimers()
+    const adapter = createCookieAdapter<{ value: number }>("adapter-primary")
+    await adapter.write?.("adapter-primary", { value: 1 })
+    const listener = vi.fn()
+    const unsubscribe = adapter.subscribe?.("adapter-primary", listener)
+
+    await vi.advanceTimersByTimeAsync(2_000)
+
+    expect(listener).not.toHaveBeenCalled()
+    unsubscribe?.()
   })
 })

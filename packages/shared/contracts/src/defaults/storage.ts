@@ -1,7 +1,3 @@
-export const DEFAULT_MAX_AGE = 31_536_000
-export const APPEARANCE_PREFERENCE_COOKIE_NAME = "appearance-preference"
-export const APPEARANCE_PREFERENCE_STORAGE_KEY = "appearance-preference"
-
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 export const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i

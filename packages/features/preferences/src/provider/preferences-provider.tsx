@@ -1,92 +1,49 @@
 "use client"
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  type ReactNode,
-} from "react"
+import { createContext, useContext, useRef, type ReactNode } from "react"
 import type { StoreApi } from "zustand/vanilla"
 
-import { createLocalStoragePreferencesAdapter } from "../persistence"
-import type { PreferencesPersistenceAdapter } from "../persistence"
-import { createPreferencesStore } from "../store"
-import type { AppearancePreference, PreferencesState } from "../types"
 import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/shared-contracts/defaults"
+import type { AppearancePreference } from "@repo/shared-contracts"
+
+import type { PreferencesState } from "../types"
+import { createPreferencesStore } from "../store"
 
 export interface PreferencesProviderProps {
   children: ReactNode
-  adapter?: PreferencesPersistenceAdapter
-  defaultPreference?: AppearancePreference
-  initialPreference?: AppearancePreference
+  initialAppearance?: AppearancePreference
 }
 
-const PreferencesContext = createContext<StoreApi<PreferencesState> | null>(
-  null
-)
+export const PreferencesContext = createContext<PreferencesState | null>(null)
 
 export function PreferencesProvider({
-  adapter,
   children,
-  defaultPreference = DEFAULT_APPEARANCE_PREFERENCE,
-  initialPreference,
+  initialAppearance = DEFAULT_APPEARANCE_PREFERENCE,
 }: PreferencesProviderProps) {
-  const defaultAdapterRef = useRef<PreferencesPersistenceAdapter | null>(null)
-  if (defaultAdapterRef.current === null) {
-    defaultAdapterRef.current = createLocalStoragePreferencesAdapter()
-  }
-  const activeAdapter = adapter ?? defaultAdapterRef.current
-
   const storeRef = useRef<StoreApi<PreferencesState> | null>(null)
+
   if (storeRef.current === null) {
-    const preference =
-      initialPreference ?? (activeAdapter.read?.("preferences").then((s) => s?.appearancePreference) ?? defaultPreference) as AppearancePreference;
-    storeRef.current = createPreferencesStore(preference)
+    storeRef.current = createPreferencesStore(initialAppearance)
   }
 
-  useEffect(() => {
-    const store = storeRef.current as StoreApi<PreferencesState> | null
-    if (store === null) return
-
-    let applyingExternalPreference = false
-    const unsubscribeStore = store.subscribe((state, previousState) => {
-      if (
-        !applyingExternalPreference &&
-        state.appearancePreference !== previousState.appearancePreference
-      ) {
-        activeAdapter.write?.("preferences", (s) => ({ ...s, appearancePreference: state.appearancePreference }))
-      }
-    })
-    const unsubscribeAdapter = activeAdapter.subscribe((preference) => {
-      applyingExternalPreference = true
-      try {
-        store.getState().setAppearancePreference(preference)
-      } finally {
-        applyingExternalPreference = false
-      }
-    })
-
-    return () => {
-      unsubscribeStore()
-      unsubscribeAdapter()
-    }
-  }, [activeAdapter])
+  const state = storeRef.current?.getState()
 
   return (
-    <PreferencesContext.Provider value={storeRef.current}>
+    <PreferencesContext.Provider value={state ?? null}>
       {children}
     </PreferencesContext.Provider>
   )
 }
 
-export function usePreferencesStore(): StoreApi<PreferencesState> {
-  const store: StoreApi<PreferencesState> | null =
-    useContext(PreferencesContext)
-  if (store === null) {
-    throw new Error(
-      "usePreferencesStore must be used within a PreferencesProvider"
-    )
+export function usePreferences(): PreferencesState {
+  const context = useContext(PreferencesContext)
+
+  if (context === null) {
+    throw new Error("usePreferences must be used within a PreferencesProvider")
   }
-  return store
+
+  return {
+    appearance: context.appearance,
+    setAppearance: context.setAppearance,
+  }
 }

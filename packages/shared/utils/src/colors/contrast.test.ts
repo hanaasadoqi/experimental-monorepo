@@ -6,7 +6,7 @@ import {
   suggestTextColorForBackground,
   adjustContrastByLightness,
 } from "./contrast"
-import { CONTRAST_THRESHOLDS } from "./types";
+import { CONTRAST_THRESHOLDS } from "./types"
 
 describe("contrastRatio", () => {
   it("returns 21 for black on white", () => {
@@ -217,7 +217,9 @@ describe("suggestTextColorForBackground", () => {
 
   it("returns a valid suggestion for invalid color", () => {
     const result = suggestTextColorForBackground("invalid")
-    expect(["oklch(5% 0 0)", "oklch(95% 0 0)", "oklch(50% 0 0)"]).toContain(result)
+    expect(["oklch(5% 0 0)", "oklch(95% 0 0)", "oklch(50% 0 0)"]).toContain(
+      result
+    )
   })
 
   it("is deterministic for same input", () => {
@@ -234,13 +236,19 @@ describe("suggestTextColorForBackground", () => {
       "oklch(90% 0 0)",
     ]
     const results = backgrounds.map(suggestTextColorForBackground)
-    expect(results.every(r => r === "oklch(5% 0 0)" || r === "oklch(95% 0 0)")).toBe(true)
+    expect(
+      results.every((r) => r === "oklch(5% 0 0)" || r === "oklch(95% 0 0)")
+    ).toBe(true)
   })
 })
 
 describe("adjustContrastByLightness", () => {
   it("darkens a light color to meet contrast requirement against white", () => {
-    const result = adjustContrastByLightness("oklch(80% 0.2 120)", "oklch(100% 0 0)", 4.5)
+    const result = adjustContrastByLightness(
+      "oklch(80% 0.2 120)",
+      "oklch(100% 0 0)",
+      4.5
+    )
     expect(result).not.toBeNull()
     if (result) {
       expect(result).toMatch(/oklch\(\d+\.?\d*% 0\.2 120\)/)
@@ -254,7 +262,11 @@ describe("adjustContrastByLightness", () => {
   })
 
   it("lightens a dark color to meet contrast requirement against black", () => {
-    const result = adjustContrastByLightness("oklch(30% 0.2 120)", "oklch(0% 0 0)", 4.5)
+    const result = adjustContrastByLightness(
+      "oklch(30% 0.2 120)",
+      "oklch(0% 0 0)",
+      4.5
+    )
     expect(result).not.toBeNull()
     if (result) {
       expect(result).toMatch(/oklch\(\d+\.?\d*% 0\.2 120\)/)
@@ -268,23 +280,39 @@ describe("adjustContrastByLightness", () => {
   })
 
   it("returns null for invalid foreground color", () => {
-    const result = adjustContrastByLightness("rgb(100, 100, 100)", "oklch(100% 0 0)", 4.5)
+    const result = adjustContrastByLightness(
+      "rgb(100, 100, 100)",
+      "oklch(100% 0 0)",
+      4.5
+    )
     expect(result).toBeNull()
   })
 
   it("handles invalid background color gracefully", () => {
-    const result = adjustContrastByLightness("oklch(50% 0.2 120)", "invalid", 4.5)
+    const result = adjustContrastByLightness(
+      "oklch(50% 0.2 120)",
+      "invalid",
+      4.5
+    )
     // Should either return null or a computed value (graceful degradation)
     expect(result === null || typeof result === "string").toBe(true)
   })
 
   it("handles colors without percentage sign", () => {
-    const result = adjustContrastByLightness("oklch(50 0.2 120)", "oklch(100% 0 0)", 4.5)
+    const result = adjustContrastByLightness(
+      "oklch(50 0.2 120)",
+      "oklch(100% 0 0)",
+      4.5
+    )
     expect(result).not.toBeNull()
   })
 
   it("preserves chroma and hue", () => {
-    const result = adjustContrastByLightness("oklch(50% 0.25 200)", "oklch(100% 0 0)", 4.5)
+    const result = adjustContrastByLightness(
+      "oklch(50% 0.25 200)",
+      "oklch(100% 0 0)",
+      4.5
+    )
     expect(result).not.toBeNull()
     if (result) {
       expect(result).toContain("0.25")
@@ -319,7 +347,11 @@ describe("adjustContrastByLightness", () => {
   })
 
   it("handles decimal chroma values", () => {
-    const result = adjustContrastByLightness("oklch(50% 0.157 180)", "oklch(95% 0 0)", 4.5)
+    const result = adjustContrastByLightness(
+      "oklch(50% 0.157 180)",
+      "oklch(95% 0 0)",
+      4.5
+    )
     expect(result).not.toBeNull()
     if (result) {
       expect(result).toContain("0.157")
@@ -327,7 +359,11 @@ describe("adjustContrastByLightness", () => {
   })
 
   it("handles decimal hue values", () => {
-    const result = adjustContrastByLightness("oklch(50% 0.2 123.45)", "oklch(95% 0 0)", 4.5)
+    const result = adjustContrastByLightness(
+      "oklch(50% 0.2 123.45)",
+      "oklch(95% 0 0)",
+      4.5
+    )
     expect(result).not.toBeNull()
     if (result) {
       expect(result).toContain("123.45")

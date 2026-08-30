@@ -154,6 +154,9 @@ importers:
       '@repo/feature-theme':
         specifier: workspace:*
         version: link:../../packages/features/theme
+      '@repo/shared-contracts':
+        specifier: workspace:*
+        version: link:../../packages/shared/contracts
       '@repo/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui/components
@@ -185,9 +188,6 @@ importers:
       '@repo/foundation-vitest-utils':
         specifier: workspace:*
         version: link:../../packages/foundation/testing/vitest-utils
-      '@repo/shared-contracts':
-        specifier: workspace:*
-        version: link:../../packages/shared/contracts
       '@testing-library/react':
         specifier: ^16.3.3
         version: 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -214,19 +214,13 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))
+        version: 4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0))
 
   packages/features/preferences:
     dependencies:
       '@repo/shared-contracts':
         specifier: workspace:*
         version: link:../../shared/contracts
-      '@repo/shared-utils':
-        specifier: workspace:*
-        version: link:../../shared/utils
-      next:
-        specifier: ^16.0.0
-        version: 16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/node@26.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       zustand:
         specifier: ^4.5.2
         version: 4.5.7(@types/react@19.2.18)(react@19.2.8)
@@ -402,7 +396,7 @@ importers:
         version: 3.9.6
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))
+        version: 4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0))
       zustand:
         specifier: ^4.5.2
         version: 4.5.7(@types/react@19.2.18)(react@19.2.8)
@@ -10379,35 +10373,6 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.7.0
       yaml: 2.9.0
-
-  vitest@4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0)):
-    dependencies:
-      '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(vite@8.2.2(@types/node@26.4.0))
-      '@vitest/pretty-format': 4.1.11
-      '@vitest/runner': 4.1.11
-      '@vitest/snapshot': 4.1.11
-      '@vitest/spy': 4.1.11
-      '@vitest/utils': 4.1.11
-      es-module-lexer: 2.3.2
-      expect-type: 1.4.0
-      magic-string: 0.30.21
-      obug: 2.1.4
-      pathe: 2.0.3
-      picomatch: 4.0.7
-      std-env: 4.2.0
-      tinybench: 2.9.0
-      tinyexec: 1.3.0
-      tinyglobby: 0.2.17
-      tinyrainbow: 3.1.1
-      vite: 8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@types/node': 26.4.0
-      '@vitest/coverage-v8': 4.1.11(vitest@4.1.11)
-      jsdom: 27.4.0(supports-color@7.2.0)
-    transitivePeerDependencies:
-      - msw
 
   vitest@4.1.11(@types/node@26.4.0)(@vitest/coverage-v8@4.1.11)(jsdom@27.4.0(supports-color@7.2.0))(vite@8.2.2(@types/node@26.4.0)):
     dependencies:

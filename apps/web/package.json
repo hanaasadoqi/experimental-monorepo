@@ -20,6 +20,7 @@
     "@repo/ui-tailwind-config": "workspace:*",
     "@repo/feature-preferences": "workspace:*",
     "@repo/feature-theme": "workspace:*",
+    "@repo/shared-contracts": "workspace:*",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"
@@ -33,7 +34,6 @@
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
-    "@repo/shared-contracts": "workspace:*",
     "@testing-library/react": "^16.3.3",
     "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9",

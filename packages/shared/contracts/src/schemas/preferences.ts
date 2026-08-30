@@ -5,8 +5,8 @@ export const appearancePreferenceSchema = z.enum(["light", "dark", "system"])
 export type AppearancePreference = z.infer<typeof appearancePreferenceSchema>
 
 export const preferencesStateSchema = z.object({
-  appearancePreference: appearancePreferenceSchema,
-  setAppearancePreference: z
+  appearance: appearancePreferenceSchema,
+  setAppearance: z
     .function()
     .args(appearancePreferenceSchema)
     .returns(z.void()),

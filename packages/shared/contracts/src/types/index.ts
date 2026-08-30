@@ -14,14 +14,8 @@ export type {
   SliceExtractor,
   Selector,
 } from "./store.js"
-export type {
-  ThemeColor,
-  Theme
-} from "./theme.js"
-export type {
-  LoginMethod,
-  AuthProvider
-} from "./auth.js"
+export type { ThemeColor, Theme } from "./theme.js"
+export type { LoginMethod, AuthProvider } from "./auth.js"
 export type {
   PersistenceAdapter,
   PersistenceConfig,
@@ -32,7 +26,7 @@ export type {
   ResolvedAppearance,
   AppearanceSource,
   SavedAppearancePreference,
-  UserPreferences
+  UserPreferences,
 } from "./preference.js"
 
 // Utility types

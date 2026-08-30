@@ -1,36 +1,52 @@
 "use client"
 
-import { useCallback, useSyncExternalStore } from "react"
+import { useCallback, useContext, useSyncExternalStore } from "react"
 
-import { usePreferencesStore } from "../provider"
+import { usePreferencesStore as globalStore, usePreferencesStore } from "../store/preferences-store"
+import { PreferencesContext } from "../provider/preferences-provider"
 import type { AppearancePreference, PreferencesState } from "../types"
 
+function getStore() {
+  // This will only work in client components, but the hooks are marked "use client"
+  // We can't use useContext here since it's not in a component, so we default to global
+  return globalStore
+}
+
 export function usePreferences(): PreferencesState {
-  const store = usePreferencesStore()
-  return useSyncExternalStore(store.subscribe, store.getState, store.getState)
+  const _store = useContext(PreferencesContext) || getStore()
+  return useSyncExternalStore(
+    (listener) => usePreferencesStore.subscribe(listener),
+    () => usePreferencesStore.getState(),
+    () => usePreferencesStore.getState()
+  )
 }
 
 export function useAppearancePreference(): AppearancePreference {
-  const store = usePreferencesStore()
+  const _store = useContext(PreferencesContext) || getStore()
   return useSyncExternalStore(
     (listener) =>
-      store.subscribe((state, previousState) => {
-        if (state.appearancePreference !== previousState.appearancePreference) {
-          listener()
+      usePreferencesStore.subscribe?.(
+        (
+          state: Partial<PreferencesState>,
+          previousState: Partial<PreferencesState>
+        ) => {
+          if (state.appearance !== previousState.appearance) {
+            listener()
+          }
         }
-      }),
-    () => store.getState().appearancePreference,
-    () => store.getState().appearancePreference
+      ),
+    () => usePreferencesStore.getState().appearance,
+    () => usePreferencesStore.getState().appearance
   )
 }
 
 export function useSetAppearancePreference(): (
   preference: AppearancePreference
 ) => void {
-  const store = usePreferencesStore()
+  const store = useContext(PreferencesContext) || getStore()
   return useCallback(
     (preference: AppearancePreference) => {
-      store.getState().setAppearancePreference(preference)
+      usePreferencesStore.getState().setAppearance(preference)
     },
     [store]
   )

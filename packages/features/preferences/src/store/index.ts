@@ -1,1 +1,4 @@
-export { createPreferencesStore } from "./preferences-store"
+export {
+  createPreferencesStore,
+  usePreferencesStore,
+} from "./preferences-store"

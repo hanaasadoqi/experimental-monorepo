@@ -1,9 +1,7 @@
 import { luminance, tryLuminance } from "./luminance"
-import { parseOklch } from "./parse-oklch";
-import { MAX_LIGHTNESS, MIN_LIGHTNESS } from "./types";
+import { parseOklch } from "./parse-oklch"
+import { MAX_LIGHTNESS, MIN_LIGHTNESS } from "./types"
 export { CONTRAST_THRESHOLDS } from "./types"
-
-
 
 /**
  * Calculates WCAG 2.0 contrast ratio between two colors.
@@ -63,7 +61,6 @@ export function meetsContrastRequirement(
   return calculateContrastRatio(fgLuminance, bgLuminance) >= minRatio
 }
 
-
 /**
  * Suggests an accessible text color (light or dark) for a given background.
  * Returns either near-white or near-black depending on background luminance.
@@ -76,7 +73,9 @@ export function meetsContrastRequirement(
 export function suggestTextColorForBackground(background: string): string {
   try {
     const bgLuminance = tryLuminance(background)
-    return bgLuminance !== null && bgLuminance > 0.5 ? "oklch(5% 0 0)" : "oklch(95% 0 0)"
+    return bgLuminance !== null && bgLuminance > 0.5
+      ? "oklch(5% 0 0)"
+      : "oklch(95% 0 0)"
   } catch {
     return "oklch(50% 0 0)"
   }
@@ -99,8 +98,16 @@ export function adjustContrastByLightness(
   minRatio: number
 ): string | null {
   try {
-    const fgRegexMatch = foreground.match(/^oklch\(([\d.]+)(%?)?\s+([\d.]+)\s+([\d.]+)\)$/)
-    if (!fgRegexMatch || !fgRegexMatch[1] || !fgRegexMatch[3] || !fgRegexMatch[4]) return null
+    const fgRegexMatch = foreground.match(
+      /^oklch\(([\d.]+)(%?)?\s+([\d.]+)\s+([\d.]+)\)$/
+    )
+    if (
+      !fgRegexMatch ||
+      !fgRegexMatch[1] ||
+      !fgRegexMatch[3] ||
+      !fgRegexMatch[4]
+    )
+      return null
 
     const chroma = fgRegexMatch[3]
     const hue = fgRegexMatch[4]

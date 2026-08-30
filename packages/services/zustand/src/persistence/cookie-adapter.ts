@@ -1,119 +1,202 @@
 import type { PersistenceAdapter } from "../types/index.js"
 import { isBrowser, isCookieAvailable } from "../utils/ssr.js"
 
+const COOKIE_NAME_PATTERN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/
+const INVALID_ATTRIBUTE_PATTERN = /[;\u0000-\u001f\u007f]/
+const DEFAULT_MAX_AGE = 31_536_000
+const DEFAULT_POLL_INTERVAL = 1_000
+
+export type CookieSameSite = "strict" | "lax" | "none"
+
 export interface CookieAdapterOptions {
-  /**
-   * Cookie max-age in seconds. Defaults to 1 year.
-   */
+  /** Cookie lifetime in seconds. Defaults to one year. */
   maxAge?: number
+  /** Cookie path. Defaults to `/`. */
+  path?: string
+  /** Optional cookie domain. */
+  domain?: string
+  /** SameSite policy. Defaults to `lax`. */
+  sameSite?: CookieSameSite
+  /** Secure flag. Defaults to true on HTTPS pages. */
+  secure?: boolean
+  /** Polling interval used to observe writes from other browser contexts. */
+  pollInterval?: number
+}
+
+interface NormalizedCookieOptions {
+  maxAge: number
+  path: string
+  domain?: string
+  sameSite: CookieSameSite
+  secure: boolean
+  pollInterval: number
+}
+
+function assertCookieName(name: string): void {
+  if (!COOKIE_NAME_PATTERN.test(name)) {
+    throw new TypeError(`Invalid cookie name: ${JSON.stringify(name)}`)
+  }
+}
+
+function assertCookieAttribute(name: string, value: string): void {
+  if (value.length === 0 || INVALID_ATTRIBUTE_PATTERN.test(value)) {
+    throw new TypeError(`Invalid cookie ${name}`)
+  }
+}
+
+function normalizeOptions(
+  options: CookieAdapterOptions
+): NormalizedCookieOptions {
+  const maxAge = options.maxAge ?? DEFAULT_MAX_AGE
+  const path = options.path ?? "/"
+  const sameSite = options.sameSite ?? "lax"
+  const secure =
+    options.secure ??
+    (typeof location !== "undefined" && location.protocol === "https:")
+  const pollInterval = options.pollInterval ?? DEFAULT_POLL_INTERVAL
+
+  if (!Number.isSafeInteger(maxAge) || maxAge < 0) {
+    throw new TypeError("Cookie maxAge must be a non-negative safe integer")
+  }
+  if (!Number.isSafeInteger(pollInterval) || pollInterval <= 0) {
+    throw new TypeError("Cookie pollInterval must be a positive safe integer")
+  }
+
+  assertCookieAttribute("path", path)
+  if (options.domain !== undefined) {
+    assertCookieAttribute("domain", options.domain)
+  }
+  if (sameSite === "none" && !secure) {
+    throw new TypeError("SameSite=None cookies must also be Secure")
+  }
+
+  return {
+    maxAge,
+    path,
+    ...(options.domain === undefined ? {} : { domain: options.domain }),
+    sameSite,
+    secure,
+    pollInterval,
+  }
+}
+
+function readEncodedCookie(name: string): string | null {
+  if (!isBrowser() || !isCookieAvailable()) return null
+
+  try {
+    const cookies = document.cookie.split(";")
+    for (let index = 0; index < cookies.length; index += 1) {
+      const cookie = cookies[index]?.trim()
+      if (!cookie) continue
+
+      const separator = cookie.indexOf("=")
+      if (separator < 0 || cookie.slice(0, separator) !== name) continue
+
+      return cookie.slice(separator + 1)
+    }
+  } catch {
+    return null
+  }
+
+  return null
+}
+
+function parseCookie<T>(name: string): T | null {
+  const encoded = readEncodedCookie(name)
+  if (encoded === null || encoded.length === 0) return null
+
+  try {
+    return JSON.parse(decodeURIComponent(encoded)) as T
+  } catch {
+    return null
+  }
+}
+
+function cookieAttributes(
+  options: NormalizedCookieOptions,
+  maxAge = options.maxAge
+): string[] {
+  const attributes = [
+    `Max-Age=${maxAge}`,
+    `Path=${options.path}`,
+    `SameSite=${options.sameSite[0]?.toUpperCase()}${options.sameSite.slice(1)}`,
+  ]
+
+  if (options.domain !== undefined) attributes.push(`Domain=${options.domain}`)
+  if (options.secure) attributes.push("Secure")
+
+  return attributes
 }
 
 /**
- * Create a cookie-based persistence adapter.
- * Safe for SSR - read/write operations gracefully skip in non-browser environments.
+ * Creates an SSR-safe browser-cookie persistence adapter.
  *
- * Note: Read operations happen synchronously via document.cookie parsing.
- * Writes are deferred to avoid layout thrashing.
- *
- * @param key The cookie name
- * @param options Cookie options
+ * Browser JavaScript cannot create `HttpOnly` cookies. Use a server response
+ * when that protection is required.
  */
 export const createCookieAdapter = <T>(
   defaultKey: string,
   options: CookieAdapterOptions = {}
 ): PersistenceAdapter<T> => {
-  const maxAge = options.maxAge ?? 365 * 24 * 60 * 60 // 1 year
+  assertCookieName(defaultKey)
+  const normalizedOptions = normalizeOptions(options)
 
-  const parseValue = (cookieKey: string): T | null => {
-    if (!isBrowser() || !isCookieAvailable()) {
-      return null
-    }
-
-    try {
-      const match = document.cookie
-        .split("; ")
-        .find((c) => c.startsWith(`${cookieKey}=`))
-
-      if (!match) return null
-
-      const encodedValue = match.split("=")[1]
-      if (!encodedValue) return null
-
-      const value = decodeURIComponent(encodedValue)
-      return JSON.parse(value) as T
-    } catch {
-      return null
-    }
+  const resolveKey = (key?: string): string => {
+    const resolvedKey = key ?? defaultKey
+    assertCookieName(resolvedKey)
+    return resolvedKey
   }
 
-  let writeTimeout: NodeJS.Timeout | null = null
+  const remove = (key: string): void => {
+    if (!isBrowser() || !isCookieAvailable()) return
+    document.cookie = [
+      `${key}=`,
+      ...cookieAttributes(normalizedOptions, 0),
+    ].join("; ")
+  }
 
   return {
     async read(key?: string): Promise<T | null> {
-      const cookieKey = key ?? defaultKey
-      return parseValue(cookieKey)
+      return parseCookie<T>(resolveKey(key))
     },
 
     async write(key: string, state: T): Promise<void> {
-      if (!isBrowser() || !isCookieAvailable()) {
-        return
+      const cookieKey = resolveKey(key)
+      if (!isBrowser() || !isCookieAvailable()) return
+
+      const serialized = JSON.stringify(state)
+      if (serialized === undefined) {
+        throw new TypeError("Cookie persistence cannot serialize undefined")
       }
 
-      // Defer write to avoid layout thrashing
-      if (writeTimeout) clearTimeout(writeTimeout)
-      writeTimeout = setTimeout(() => {
-        try {
-          const value = encodeURIComponent(JSON.stringify(state))
-          document.cookie = `${key}=${value}; max-age=${maxAge}; path=/`
-        } catch {
-          // Silently fail
-        }
-      }, 0)
+      document.cookie = [
+        `${cookieKey}=${encodeURIComponent(serialized)}`,
+        ...cookieAttributes(normalizedOptions),
+      ].join("; ")
     },
 
     async delete(key: string): Promise<void> {
-      if (!isBrowser() || !isCookieAvailable()) {
-        return
-      }
-
-      try {
-        document.cookie = `${key}=; max-age=0; path=/`
-      } catch {
-        // Silently fail
-      }
+      remove(resolveKey(key))
     },
 
     async clear(): Promise<void> {
-      if (!isBrowser() || !isCookieAvailable()) {
-        return
-      }
-
-      try {
-        document.cookie.split(";").forEach((c) => {
-          const eqPos = c.indexOf("=")
-          const name = eqPos > -1 ? c.substring(0, eqPos).trim() : c.trim()
-          if (name) {
-            document.cookie = `${name}=; max-age=0; path=/`
-          }
-        })
-      } catch {
-        // Silently fail
-      }
+      remove(defaultKey)
     },
 
     subscribe(key: string, listener: (value: T | null) => void): () => void {
-      const cookieKey = key ?? defaultKey
-      let lastValue = parseValue(cookieKey)
+      const cookieKey = resolveKey(key)
+      if (!isBrowser() || !isCookieAvailable()) return () => undefined
 
-      const pollInterval = setInterval(() => {
-        const currentValue = parseValue(cookieKey)
-        if (currentValue !== lastValue) {
-          lastValue = currentValue
-          listener(currentValue)
-        }
-      }, 1000)
+      let previousEncodedValue = readEncodedCookie(cookieKey)
+      const interval = window.setInterval(() => {
+        const encodedValue = readEncodedCookie(cookieKey)
+        if (encodedValue === previousEncodedValue) return
 
-      return () => clearInterval(pollInterval)
+        previousEncodedValue = encodedValue
+        listener(parseCookie<T>(cookieKey))
+      }, normalizedOptions.pollInterval)
+
+      return () => window.clearInterval(interval)
     },
   }
 }

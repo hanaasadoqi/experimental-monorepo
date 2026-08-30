@@ -1,12 +1,11 @@
-
 type SameSiteOptions = "Strict" | "Lax" | "None"
 
 interface PersistenceAdapter<T = unknown> {
-  read?(key: string): Promise<T | null>;
-  write?(key: string, value: T): Promise<void>;
-  delete?(key: string): Promise<void>;
-  clear?(): Promise<void>;
-  subscribe?(key: string, listener: (value: T | null) => void): () => void;
+  read?(key: string): Promise<T | null>
+  write?(key: string, value: T): Promise<void>
+  delete?(key: string): Promise<void>
+  clear?(): Promise<void>
+  subscribe?(key?: string, listener?: (value: T | null) => void): () => void
 }
 
 interface PersistenceConfig {
@@ -21,9 +20,13 @@ interface CookieAdapterOptions {
   name?: string
   maxAge?: number
   path?: string
-  sameSite?: SameSiteOptions;
+  sameSite?: SameSiteOptions
   secure?: boolean
 }
 
-
-export type { PersistenceAdapter, PersistenceConfig, CookieAdapterOptions, SameSiteOptions }
+export type {
+  PersistenceAdapter,
+  PersistenceConfig,
+  CookieAdapterOptions,
+  SameSiteOptions,
+}

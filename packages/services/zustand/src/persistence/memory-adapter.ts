@@ -10,7 +10,9 @@ import type { PersistenceAdapter } from "../types/index.ts"
  * - Testing with proper async interface compliance
  * - Temporary state that shouldn't persist
  */
-export const createMemoryAdapter = <T>(defaultKey: string): PersistenceAdapter<T> => {
+export const createMemoryAdapter = <T>(
+  defaultKey: string
+): PersistenceAdapter<T> => {
   const store: Record<string, T | undefined> = {}
 
   return {
@@ -28,7 +30,7 @@ export const createMemoryAdapter = <T>(defaultKey: string): PersistenceAdapter<T
     },
 
     async clear(): Promise<void> {
-      Object.keys(store).forEach(k => delete store[k])
+      Object.keys(store).forEach((k) => delete store[k])
     },
 
     subscribe(_key: string, _listener: (value: T | null) => void): () => void {

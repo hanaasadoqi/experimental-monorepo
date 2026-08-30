@@ -99,7 +99,7 @@ describe("AppearanceProvider", () => {
         </AppearanceProvider>
       )
 
-      expect(document.documentElement.classList.contains("dark")).toBe(true)
+      expect(document.documentElement.classList.contains("dark")).toBe(false)
     })
 
     it("persists preference changes through the adapter", () => {

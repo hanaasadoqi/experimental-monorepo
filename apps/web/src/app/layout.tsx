@@ -2,11 +2,11 @@ import { Geist, Geist_Mono, Inter } from "next/font/google"
 import Script from "next/script"
 
 import "./globals.css"
-import { readAppearancePreferenceCookie } from "@repo/feature-preferences/server"
 import { generateBootstrapCode } from "@repo/feature-theme/runtime"
 import { cn } from "@repo/ui-components/lib/utils"
 
 import { ApplicationProviders } from "../components"
+import { readAppearancePreferenceCookie } from "../server/preferences"
 
 const geist = Geist({
   subsets: ["latin"],
@@ -50,8 +50,12 @@ export default async function RootLayout({
         inter.variable,
         geist.variable,
         {
-          light: explicitColorScheme ? explicitColorScheme === "light" : effectivePreference === "light",
-          dark: explicitColorScheme ? explicitColorScheme === "dark" : effectivePreference === "dark",
+          light: explicitColorScheme
+            ? explicitColorScheme === "light"
+            : effectivePreference === "light",
+          dark: explicitColorScheme
+            ? explicitColorScheme === "dark"
+            : effectivePreference === "dark",
         }
       )}
     >

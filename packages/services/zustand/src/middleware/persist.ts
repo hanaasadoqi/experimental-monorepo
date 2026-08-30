@@ -5,20 +5,13 @@ import type { Middleware } from "./types.ts"
 export interface PersistMiddlewareOptions<T> {
   /**
    * The key used to identify this store in persistence.
-   * Required unless using a custom adapter that doesn't need one.
    */
-  key?: string
+  key: string
 
   /**
    * Adapter for persisting state. Required.
    */
   adapter: PersistenceAdapter<T>
-
-  /**
-   * Versions config for migrations.
-   * Allows you to version your store schema and migrate between versions.
-   */
-  version?: number
 
   /**
    * Merge strategy for rehydrating state.
@@ -73,100 +66,75 @@ export const persistMiddleware = <T>(
   const {
     key,
     adapter,
-    version,
     merge,
     onRehydrate,
     onError,
     syncExternal = true,
-  } = options as PersistMiddlewareOptions<T> & {
-    key?: string
-    version?: number
+  } = options
+
+  if (key.trim().length === 0) {
+    throw new TypeError("Persistence key must not be empty")
   }
 
-  const persistenceKey = key ?? "default"
+  const reportError = (error: unknown): void => {
+    onError?.(error instanceof Error ? error : new Error(String(error)))
+  }
+
+  const withoutFunctions = (state: Partial<T>): Partial<T> => {
+    const result: Partial<T> = {}
+    for (const property in state) {
+      if (typeof state[property] !== "function") {
+        result[property] = state[property]
+      }
+    }
+    return result
+  }
 
   return (next: StateCreator<T, []>) => {
     return (set, get, api: StoreApi<T>) => {
       const store = next(
         (update: Partial<T> | ((state: T) => Partial<T>)) => {
-          // Persist state on every update
-          const nextState =
-            typeof update === "function" ? update(get()) : update
-          const merged = { ...get(), ...nextState }
-
-          // Write to adapter asynchronously, without blocking state update
-          if (adapter.write) {
-            void adapter.write(persistenceKey, merged).catch((error: unknown) => {
-              if (onError) {
-                onError(error instanceof Error ? error : new Error(String(error)))
-              }
-            })
-          }
-
           set(update)
+
+          if (adapter.write) {
+            void adapter.write(key, get()).catch(reportError)
+          }
         },
         get,
         api
       )
 
-      // Rehydrate on initialization
-      ;(async () => {
+      const applyPersistedState = (persisted: Partial<T>): void => {
+        const current = get()
+        const nextState = merge
+          ? merge(persisted, current)
+          : { ...current, ...withoutFunctions(persisted) }
+
+        set(nextState)
+        onRehydrate?.(get())
+      }
+
+      const rehydrate = async (externalValue?: T | null): Promise<void> => {
         try {
-          const persisted = adapter.read ? await adapter.read(persistenceKey) : null
-          if (persisted) {
-            // Merge persisted state into the store object
-            const initial = store as Record<string, unknown>
-            const merged = merge
-              ? merge(persisted, store)
-              : { ...store, ...persisted }
+          const persisted =
+            externalValue === undefined
+              ? adapter.read
+                ? await adapter.read(key)
+                : null
+              : externalValue
 
-            // Update the store object in place with merged values
-            for (const key in merged) {
-              if (typeof merged[key as keyof T] !== "function") {
-                initial[key] = merged[key as keyof T]
-              }
-            }
-
-            if (onRehydrate) {
-              onRehydrate(merged as T)
-            }
-          }
+          if (persisted !== null) applyPersistedState(persisted)
         } catch (error: unknown) {
-          if (onError) {
-            onError(error instanceof Error ? error : new Error(String(error)))
-          }
+          reportError(error)
         }
-      })()
+      }
+
+      void rehydrate()
 
       // Subscribe to external storage changes if enabled
       if (syncExternal && adapter.subscribe) {
-        const unsubscribe = adapter.subscribe(persistenceKey, async () => {
-          try {
-            const persisted = adapter.read ? await adapter.read(persistenceKey) : null
-            if (persisted) {
-              const initial = get()
-              const merged = merge
-                ? merge(persisted, initial)
-                : { ...initial, ...persisted }
-
-              // Extract only the persisted values (exclude methods)
-              const persistedDelta: Partial<T> = {}
-              for (const key in persisted) {
-                if (typeof persisted[key as keyof T] !== "function") {
-                  persistedDelta[key as keyof T] = persisted[key as keyof T]
-                }
-              }
-
-              set(persistedDelta as Partial<T>)
-              if (onRehydrate) {
-                onRehydrate(merged as T)
-              }
-            }
-          } catch (error: unknown) {
-            if (onError) {
-              onError(error instanceof Error ? error : new Error(String(error)))
-            }
-          }
+        const unsubscribe = adapter.subscribe(key, (value) => {
+          void rehydrate(value)
         })
 
         // Attach cleanup to store API
@@ -185,7 +153,7 @@ export const persistMiddleware = <T>(
  */
 export interface AsyncPersistMiddlewareOptions<T> extends Omit<
   PersistMiddlewareOptions<T>,
-  "adapter"
+  "adapter" | "key"
 > {
   adapter: {
     read(): Promise<T | undefined>

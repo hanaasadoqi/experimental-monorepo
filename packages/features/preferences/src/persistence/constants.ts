@@ -1,5 +1,0 @@
-export {
-  APPEARANCE_PREFERENCE_COOKIE_NAME,
-  APPEARANCE_PREFERENCE_STORAGE_KEY,
-  DEFAULT_MAX_AGE,
-} from "@repo/shared-contracts/defaults"

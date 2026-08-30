@@ -7,7 +7,12 @@
  * @module @repo/shared-utils/colors
  */
 // ====== Parsing ======
-export { parseOklch, assertOklch, validateOklch, isValidOklch } from "./parse-oklch"
+export {
+  parseOklch,
+  assertOklch,
+  validateOklch,
+  isValidOklch,
+} from "./parse-oklch"
 
 // ====== Transformations ======
 export {

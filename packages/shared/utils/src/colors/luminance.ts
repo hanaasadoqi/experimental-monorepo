@@ -4,8 +4,7 @@ import {
   calculateLuminanceFromRgb,
 } from "./transforms"
 import { parseOklch, assertOklch } from "./parse-oklch"
-import { oklchColor } from "./types";
-
+import { oklchColor } from "./types"
 
 /**
  * Calculates relative luminance from an OKLch color string per WCAG 2.0.

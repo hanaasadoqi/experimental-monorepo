@@ -6,17 +6,10 @@
   "sideEffects": false,
   "peerDependencies": {
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "next": "^16.0.0"
-  },
-  "peerDependenciesMeta": {
-    "next": {
-      "optional": true
-    }
+    "react-dom": "^19.2.0"
   },
   "dependencies": {
     "@repo/shared-contracts": "workspace:*",
-    "@repo/shared-utils": "workspace:*",
     "zustand": "^4.5.2"
   },
   "scripts": {
@@ -49,8 +42,6 @@
     "./hooks": "./src/hooks/index.ts",
     "./types": "./src/types/index.ts",
     "./provider": "./src/provider/index.ts",
-    "./store": "./src/store/index.ts",
-    "./persistence": "./src/persistence/index.ts",
-    "./server": "./src/server/index.ts"
+    "./store": "./src/store/index.ts"
   }
 }

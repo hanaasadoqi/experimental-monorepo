@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeEach, vi } from "vitest"
-import { create, createStore } from "zustand"
+import { createStore } from "zustand"
 import { composeMiddleware, withCondition } from "./types.js"
 import { persistMiddleware, asyncPersistMiddleware } from "./persist.js"
 import { createMemoryAdapter } from "../persistence/memory-adapter.js"
@@ -24,7 +24,7 @@ describe("Middleware", () => {
           return next(set, get, api)
         }
 
-      const store = create<any>(
+      const store = createStore<any>(
         trackingMiddleware((set) => ({
           count: 0,
           increment: () => set((s) => ({ count: s.count + 1 })),
@@ -55,7 +55,7 @@ describe("Middleware", () => {
 
       const composed = composeMiddleware(middleware1, middleware2)
 
-      create<any>(
+      createStore<any>(
         composed((set) => ({
           count: 0,
           increment: () => set((s) => ({ count: s.count + 1 })),
@@ -69,7 +69,7 @@ describe("Middleware", () => {
     })
 
     it("compose empty middleware list", async () => {
-      const store = create<any>(
+      const store = createStore<any>(
         composeMiddleware<TestState>()((set) => ({
           count: 0,
           increment: () => set((s) => ({ count: s.count + 1 })),
@@ -98,7 +98,7 @@ describe("Middleware", () => {
 
       const conditionMiddleware = withCondition(true, mockMiddleware)
 
-      create<any>(
+      createStore<any>(
         conditionMiddleware((set) => ({
           value: 0,
           setValue: (v) => set({ value: v }),
@@ -119,7 +119,7 @@ describe("Middleware", () => {
 
       const conditionMiddleware = withCondition(false, mockMiddleware)
 
-      create<any>(
+      createStore<any>(
         conditionMiddleware((set) => ({
           value: 0,
           setValue: (v) => set({ value: v }),
@@ -142,7 +142,7 @@ describe("Middleware", () => {
         mockMiddleware
       )
 
-      const store = create<any>(
+      const store = createStore<any>(
         conditionMiddleware((set) => ({
           value: 0,
           setValue: (v) => set({ value: v }),
@@ -167,9 +167,19 @@ describe("Middleware", () => {
       adapter = createMemoryAdapter<TestState>("test-persist")
     })
 
+    it("rejects an empty persistence key", () => {
+      expect(() =>
+        persistMiddleware<TestState>({
+          key: "",
+          adapter,
+        })
+      ).toThrow(TypeError)
+    })
+
     it("should persist state on every update", async () => {
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
         })((set) => ({
           count: 0,
@@ -180,12 +190,12 @@ describe("Middleware", () => {
       )
 
       store.getState().increment()
-      await new Promise(r => setTimeout(r, 10))
+      await new Promise((r) => setTimeout(r, 10))
       const state1 = await adapter.read?.("test-persist")
       expect(state1?.count).toBe(1)
 
       store.getState().setText("hello")
-      await new Promise(r => setTimeout(r, 10))
+      await new Promise((r) => setTimeout(r, 10))
       const state2 = await adapter.read?.("test-persist")
       expect(state2?.text).toBe("hello")
     })
@@ -198,10 +208,11 @@ describe("Middleware", () => {
         setText: () => {},
       }
 
-      adapter.write?.("test-persist", initialState)
+      await adapter.write?.("test-persist", initialState)
 
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
         })((set) => ({
           count: 0,
@@ -211,22 +222,25 @@ describe("Middleware", () => {
         }))
       )
 
-      expect(store.getState().count).toBe(42)
-      expect(store.getState().text).toBe("persisted")
+      await vi.waitFor(() => {
+        expect(store.getState().count).toBe(42)
+        expect(store.getState().text).toBe("persisted")
+      })
     })
 
     it("call onRehydrate hook after rehydration", async () => {
       const onRehydrate = vi.fn()
 
-      adapter.write?.("test-persist", {
+      await adapter.write?.("test-persist", {
         count: 10,
         text: "test",
         increment: () => {},
         setText: () => {},
       })
 
-      create<any>(
+      createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
           onRehydrate,
         })((set) => ({
@@ -237,10 +251,11 @@ describe("Middleware", () => {
         }))
       )
 
-      expect(onRehydrate).toHaveBeenCalled()
-      expect(onRehydrate).toHaveBeenCalledWith(
-        expect.objectContaining({ count: 10, text: "test" })
-      )
+      await vi.waitFor(() => {
+        expect(onRehydrate).toHaveBeenCalledWith(
+          expect.objectContaining({ count: 10, text: "test" })
+        )
+      })
     })
 
     it("call onError hook on rehydration failure", async () => {
@@ -250,14 +265,17 @@ describe("Middleware", () => {
         read: async (_key?: string) => {
           throw new Error("Read failed")
         },
-        write: async (_key?: string, _value?: TestState) => {},
-        delete: async (_key?: string) => {},
+        write: async (_key: string, _value: TestState) => {},
+        delete: async (_key: string) => {},
         clear: async () => {},
-        subscribe: (_key?: string, _listener?: () => void) => () => {},
+        subscribe:
+          (_key: string, _listener: (value: TestState | null) => void) =>
+          () => {},
       }
 
-      create<any>(
+      createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter: failingAdapter,
           onError,
         })((set) => ({
@@ -268,12 +286,14 @@ describe("Middleware", () => {
         }))
       )
 
-      expect(onError).toHaveBeenCalledWith(expect.any(Error))
+      await vi.waitFor(() => {
+        expect(onError).toHaveBeenCalledWith(expect.any(Error))
+      })
     })
 
     it("use custom merge strategy", async () => {
       const persisted: Partial<TestState> = { count: 99 }
-      adapter.write?.("test-persist", persisted as TestState)
+      await adapter.write?.("test-persist", persisted as TestState)
 
       const customMerge = (
         _persisted: Partial<TestState>,
@@ -283,8 +303,9 @@ describe("Middleware", () => {
         count: 100, // Force count to 100
       })
 
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
           merge: customMerge,
         })((set) => ({
@@ -295,13 +316,16 @@ describe("Middleware", () => {
         }))
       )
 
-      expect(store.getState().count).toBe(100)
-      expect(store.getState().text).toBe("initial")
+      await vi.waitFor(() => {
+        expect(store.getState().count).toBe(100)
+        expect(store.getState().text).toBe("initial")
+      })
     })
 
     it("handle update functions in set", async () => {
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
         })((set) => ({
           count: 5,
@@ -318,8 +342,9 @@ describe("Middleware", () => {
     })
 
     it("handle partial state updates", async () => {
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
         })((set) => ({
           count: 0,
@@ -330,7 +355,7 @@ describe("Middleware", () => {
       )
 
       store.getState().setText("updated")
-      await new Promise(r => setTimeout(r, 10))
+      await new Promise((r) => setTimeout(r, 10))
       const persisted = await adapter.read?.("test-persist")
       expect(persisted?.text).toBe("updated")
       expect(persisted?.count).toBe(0)
@@ -354,7 +379,7 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
         })((set) => ({
@@ -383,7 +408,7 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
         })((set) => ({
@@ -409,7 +434,7 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
           onError,
@@ -444,7 +469,7 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      create<any>(
+      createStore<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
           onRehydrate,
@@ -481,7 +506,7 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
           merge: customMerge,
@@ -511,7 +536,7 @@ describe("Middleware", () => {
         },
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
           syncExternal: true,
@@ -566,12 +591,20 @@ describe("Middleware", () => {
     }
 
     it("sync external storage changes when syncExternal is true", async () => {
-      let externalSubscriber: (() => void) | null = null
+      let externalSubscriber: ((value: TestState | null) => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: async () => ({ value: "initial", setValue: () => {} }),
-        write: async () => {},
-        subscribe: (listener) => {
+        read: async (_key?: string) => ({
+          value: "initial",
+          setValue: () => {},
+        }),
+        write: async (_key: string, _value: TestState) => {},
+        delete: async (_key: string) => {},
+        clear: async () => {},
+        subscribe: (
+          _key: string,
+          listener: (value: TestState | null) => void
+        ) => {
           externalSubscriber = listener
           return () => {
             externalSubscriber = null
@@ -579,8 +612,9 @@ describe("Middleware", () => {
         },
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
           syncExternal: true,
         })((set) => ({
@@ -590,12 +624,17 @@ describe("Middleware", () => {
       )
 
       // Simulate external change
-      if (externalSubscriber && typeof externalSubscriber === "function") {
-        vi.spyOn(adapter, "read").mockReturnValue({
+      if (externalSubscriber) {
+        vi.spyOn(adapter, "read").mockReturnValue(
+          Promise.resolve({
+            value: "external-update",
+            setValue: () => {},
+          })
+        )
+        ;(externalSubscriber as (value: TestState | null) => void)({
           value: "external-update",
           setValue: () => {},
         })
-        ;(externalSubscriber as () => void)() // Trigger the subscriber callback
       }
 
       expect(store.getState().value).toBe("external-update")
@@ -605,16 +644,25 @@ describe("Middleware", () => {
       let subscribeCalled = false
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: async () => ({ value: "initial", setValue: () => {} }),
-        write: async () => {},
-        subscribe: () => {
+        read: async (_key?: string) => ({
+          value: "initial",
+          setValue: () => {},
+        }),
+        write: async (_key: string, _value: TestState) => {},
+        delete: async (_key: string) => {},
+        clear: async () => {},
+        subscribe: (
+          _key: string,
+          _listener: (value: TestState | null) => void
+        ) => {
           subscribeCalled = true
           return () => {}
         },
       }
 
-      create<any>(
+      createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
           syncExternal: false,
         })((set) => ({
@@ -630,13 +678,22 @@ describe("Middleware", () => {
       const unsubscribeSpy = vi.fn(() => {})
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: async () => ({ value: "initial", setValue: () => {} }),
-        write: async () => {},
-        subscribe: () => unsubscribeSpy,
+        read: async (_key?: string) => ({
+          value: "initial",
+          setValue: () => {},
+        }),
+        write: async (_key: string, _value: TestState) => {},
+        delete: async (_key: string) => {},
+        clear: async () => {},
+        subscribe: (
+          _key: string,
+          _listener: (value: TestState | null) => void
+        ) => unsubscribeSpy,
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
           syncExternal: true,
         })((set) => ({
@@ -653,22 +710,31 @@ describe("Middleware", () => {
 
     it("handle errors in external subscription callback", async () => {
       const onError = vi.fn()
-      let externalSubscriber: (() => void) | null = null
+      let externalSubscriber: ((value: TestState | null) => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
         read: async () => {
           throw new Error("Read failed")
         },
-        write: async () => {},
-        subscribe: (listener) => {
+        write: async (_key: string, _value: TestState) => {},
+        delete: async (_key: string) => {},
+        clear: async () => {},
+        subscribe: (
+          _key: string,
+          listener: (value: TestState | null) => void
+        ) => {
           externalSubscriber = listener
           return () => {}
         },
       }
 
-      create<any>(
+      createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
+          merge: () => {
+            throw new Error("Merge failed")
+          },
           onError,
           syncExternal: true,
         })((set) => ({
@@ -678,30 +744,41 @@ describe("Middleware", () => {
       )
 
       // Trigger subscriber callback with error
-      if (externalSubscriber && typeof externalSubscriber === "function") {
-        ;(externalSubscriber as () => void)()
+      if (externalSubscriber) {
+        ;(externalSubscriber as (value: TestState | null) => void)({
+          value: "updated",
+          setValue: () => {},
+        })
       }
 
-      expect(onError).toHaveBeenCalledWith(expect.any(Error))
+      await vi.waitFor(() => {
+        expect(onError).toHaveBeenCalledWith(expect.any(Error))
+      })
     })
 
     it("filter functions when applying external changes", async () => {
-      let externalSubscriber: (() => void) | null = null
+      let externalSubscriber: ((value: TestState | null) => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: async () => ({
+        read: async (_key?: string) => ({
           value: "updated",
           setValue: () => {},
         }),
-        write: async () => {},
-        subscribe: (listener) => {
+        write: async (_key: string, _value: TestState) => {},
+        delete: async (_key: string) => {},
+        clear: async () => {},
+        subscribe: (
+          _key: string,
+          listener: (value: TestState | null) => void
+        ) => {
           externalSubscriber = listener
           return () => {}
         },
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
           syncExternal: true,
         })((set) => ({
@@ -711,8 +788,11 @@ describe("Middleware", () => {
       )
 
       // Trigger external change
-      if (externalSubscriber && typeof externalSubscriber === "function") {
-        ;(externalSubscriber as () => void)()
+      if (externalSubscriber) {
+        ;(externalSubscriber as (value: TestState | null) => void)({
+          value: "updated",
+          setValue: () => {},
+        })
       }
 
       // setValue should still be a function
@@ -730,22 +810,28 @@ describe("Middleware", () => {
       })
 
       let externalValue = "external"
-      let externalSubscriber: (() => void) | null = null
+      let externalSubscriber: ((value: TestState | null) => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: async () => ({
+        read: async (_key?: string) => ({
           value: externalValue,
           setValue: () => {},
         }),
-        write: async () => {},
-        subscribe: (listener) => {
+        write: async (_key: string, _value: TestState) => {},
+        delete: async (_key: string) => {},
+        clear: async () => {},
+        subscribe: (
+          _key: string,
+          listener: (value: TestState | null) => void
+        ) => {
           externalSubscriber = listener
           return () => {}
         },
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
           merge: customMerge,
           syncExternal: true,
@@ -759,8 +845,11 @@ describe("Middleware", () => {
       externalValue = "updated-external"
 
       // Trigger external change
-      if (externalSubscriber && typeof externalSubscriber === "function") {
-        ;(externalSubscriber as () => void)()
+      if (externalSubscriber) {
+        ;(externalSubscriber as (value: TestState | null) => void)({
+          value: "updated-external",
+          setValue: () => {},
+        })
       }
 
       expect(store.getState().value).toBe("updated-external")
@@ -768,22 +857,28 @@ describe("Middleware", () => {
 
     it("call onRehydrate after external sync", async () => {
       const onRehydrate = vi.fn()
-      let externalSubscriber: (() => void) | null = null
+      let externalSubscriber: ((value: TestState | null) => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: async () => ({
+        read: async (_key?: string) => ({
           value: "external",
           setValue: () => {},
         }),
-        write: async () => {},
-        subscribe: (listener) => {
+        write: async (_key: string, _value: TestState) => {},
+        delete: async (_key: string) => {},
+        clear: async () => {},
+        subscribe: (
+          _key: string,
+          listener: (value: TestState | null) => void
+        ) => {
           externalSubscriber = listener
           return () => {}
         },
       }
 
-      const _store = create<any>(
+      const _store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
           onRehydrate,
           syncExternal: true,
@@ -796,8 +891,11 @@ describe("Middleware", () => {
       const initialCallCount = onRehydrate.mock.calls.length
 
       // Trigger external change
-      if (externalSubscriber && typeof externalSubscriber === "function") {
-        ;(externalSubscriber as () => void)()
+      if (externalSubscriber) {
+        ;(externalSubscriber as (value: TestState | null) => void)({
+          value: "external",
+          setValue: () => {},
+        })
       }
 
       expect(onRehydrate.mock.calls.length).toBeGreaterThan(initialCallCount)
@@ -807,15 +905,23 @@ describe("Middleware", () => {
       const onError = vi.fn()
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: async () => ({ value: "initial", setValue: () => {} }),
-        write: async () => {
+        read: async (_key?: string) => ({
+          value: "initial",
+          setValue: () => {},
+        }),
+        write: async (_key: string, _value: TestState) => {
           throw new Error("Write failed")
         },
-        subscribe: () => () => {},
+        delete: async (_key: string) => {},
+        clear: async () => {},
+        subscribe:
+          (_key: string, _listener: (value: TestState | null) => void) =>
+          () => {},
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
           onError,
         })((set) => ({
@@ -826,20 +932,30 @@ describe("Middleware", () => {
 
       store.getState().setValue("test")
 
-      expect(onError).toHaveBeenCalledWith(expect.any(Error))
+      await vi.waitFor(() => {
+        expect(onError).toHaveBeenCalledWith(expect.any(Error))
+      })
     })
 
     it("continue updating state even if write fails", async () => {
       const adapter: PersistenceAdapter<TestState> = {
-        read: async () => ({ value: "initial", setValue: () => {} }),
-        write: async () => {
+        read: async (_key?: string) => ({
+          value: "initial",
+          setValue: () => {},
+        }),
+        write: async (_key: string, _value: TestState) => {
           throw new Error("Write failed")
         },
-        subscribe: () => () => {},
+        delete: async (_key: string) => {},
+        clear: async () => {},
+        subscribe:
+          (_key: string, _listener: (value: TestState | null) => void) =>
+          () => {},
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
           onError: () => {},
         })((set) => ({
@@ -857,15 +973,20 @@ describe("Middleware", () => {
       const onError = vi.fn()
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: async () => {
+        read: async (_key?: string) => {
           throw "string-error" // Non-Error thrown
         },
-        write: async () => {},
-        subscribe: () => () => {},
+        write: async (_key: string, _value: TestState) => {},
+        delete: async (_key: string) => {},
+        clear: async () => {},
+        subscribe:
+          (_key: string, _listener: (value: TestState | null) => void) =>
+          () => {},
       }
 
-      create<any>(
+      createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
           onError,
         })((set) => ({
@@ -874,25 +995,32 @@ describe("Middleware", () => {
         }))
       )
 
-      expect(onError).toHaveBeenCalledWith(expect.any(Error))
+      await vi.waitFor(() => {
+        expect(onError).toHaveBeenCalledWith(expect.any(Error))
+      })
     })
 
     it("handle update function with objects containing functions", async () => {
       const persistedValues: Partial<TestState> = {}
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: async () => ({
+        read: async (_key?: string) => ({
           value: persistedValues.value || "initial",
           setValue: () => {},
         }),
-        write: (state) => {
-          persistedValues.value = state.value
+        write: async (_key: string, v: TestState) => {
+          persistedValues.value = v.value
         },
-        subscribe: () => () => {},
+        delete: async (_key: string) => {},
+        clear: async () => {},
+        subscribe:
+          (_key: string, _listener: (value: TestState | null) => void) =>
+          () => {},
       }
 
-      const store = create<any>(
+      const store = createStore<any>(
         persistMiddleware({
+          key: "test-persist",
           adapter,
         })((set) => ({
           value: "initial",
