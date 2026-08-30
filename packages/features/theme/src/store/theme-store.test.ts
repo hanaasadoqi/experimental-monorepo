@@ -362,7 +362,7 @@ describe("ThemeStore", () => {
         value: vi.fn(() => ({ matches: true })),
       })
       store.getState().setTheme("system")
-      expect(currentStates[currentStates.length - 1].theme).toBe("system")
+      expect(currentStates.at(-1)?.theme).toBe("system")
     })
 
     it("works with default export (shared instance)", () => {

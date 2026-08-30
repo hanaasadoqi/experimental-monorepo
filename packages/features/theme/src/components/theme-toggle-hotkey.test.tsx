@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
+import type { Mock } from "vitest"
 import { render } from "@testing-library/react"
 import { ThemeToggleHotkey } from "./theme-toggle-hotkey"
+import type { AppearancePreference } from "../types"
 
 // Mock the hooks
 vi.mock("../hooks", () => ({
@@ -16,10 +18,10 @@ import { useResolvedColorScheme, useSetAppearancePreference } from "../hooks"
 import { isTypingTarget } from "../utils/is-typing-target"
 
 describe("ThemeToggleHotkey", () => {
-  let setPreferenceCallback: ReturnType<typeof vi.fn>
+  let setPreferenceCallback: Mock<(preference: AppearancePreference) => void>
 
   beforeEach(() => {
-    setPreferenceCallback = vi.fn()
+    setPreferenceCallback = vi.fn<(preference: AppearancePreference) => void>()
 
     vi.mocked(useResolvedColorScheme).mockReturnValue("light")
     vi.mocked(useSetAppearancePreference).mockReturnValue(setPreferenceCallback)
