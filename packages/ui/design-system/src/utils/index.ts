@@ -9,11 +9,6 @@
 
 // ====== Re-export Colors from Shared Utils ======
 // (For backwards compatibility — colors are now in shared-utils)
-export type {
-  OklchColor,
-  OklchComponents,
-  LmsComponents,
-} from "@repo/shared-utils/colors/index"
 export {
   parseOklch,
   assertOklch,

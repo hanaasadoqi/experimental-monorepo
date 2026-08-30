@@ -1,10 +1,22 @@
-import type { OklchColor } from "./types"
-import { OKLCH_REGEX } from "@repo/shared-contracts/defaults"
-export type { OklchColor }
+import { type oklchColor, OKLCH_REGEX, oklchColorSchema, OklchStr, oklchStrSchema } from "./types"
 
 /** Regex for parsing OKLch CSS color format */
 
 const PERCENTAGE_INDEX = 2
+
+export const validateOklch = (value: string | Record<string, unknown>): {
+  data?: oklchColor | OklchStr | null;
+  success: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error?: any;
+} => {
+  const normalizedSchema = typeof value === 'string' ? oklchStrSchema : oklchColorSchema
+  return normalizedSchema.safeParse(value)
+}
+
+export const isValidOklch = (value: string | Record<string, unknown>): boolean => {
+  return validateOklch(value).success
+};
 
 /**
  * Parses an OKLch CSS color string into normalized components.
@@ -14,15 +26,17 @@ const PERCENTAGE_INDEX = 2
  *   parseOklch("oklch(50% 0.2 120)") // => { lightness: 0.5, chroma: 0.2, hue: 2.094 }
  *   parseOklch("invalid") // => null
  */
-export function parseOklch(value: string): OklchColor | null {
+export function parseOklch(value: string): oklchColor | null {
+  if (!isValidOklch(value)) return null
   const match = value.match(OKLCH_REGEX)
   if (!match) return null
 
-  return {
+  const newOklch = {
     lightness: Number(match[1]) / (match[PERCENTAGE_INDEX] ? 100 : 1),
     chroma: Number(match[3]),
     hue: (Number(match[4]) * Math.PI) / 180,
   }
+  return newOklch
 }
 
 /**
@@ -35,7 +49,7 @@ export function parseOklch(value: string): OklchColor | null {
  *   assertOklch("oklch(50% 0.2 120)") // => OklchColor
  *   assertOklch("rgb(255 0 0)") // throws
  */
-export function assertOklch(value: string): OklchColor {
+export function assertOklch(value: string): oklchColor {
   const color = parseOklch(value)
   if (!color) {
     throw new Error(
@@ -43,13 +57,4 @@ export function assertOklch(value: string): OklchColor {
     )
   }
   return color
-}
-
-/**
- * @deprecated Use parseOklch() instead. This function is kept for backwards compatibility.
- */
-export const validateOklch = (value: string) => {
-  const match = value.match(OKLCH_REGEX)
-  if (!match) throw new Error("Unsupported color: " + value)
-  return match
 }

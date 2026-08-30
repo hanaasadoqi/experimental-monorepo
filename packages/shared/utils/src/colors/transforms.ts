@@ -1,6 +1,5 @@
-import type { OklchComponents, LmsComponents } from "./types"
+import { lmsColor, oklchColor } from "./types";
 
-export type { OklchComponents, LmsComponents }
 
 /**
  * OKLch to LMS transformation coefficients
@@ -34,7 +33,7 @@ export const RGB_TO_LUMINANCE_WEIGHTS = [0.2126, 0.7152, 0.0722] as const
  * @param oklch - OKLch color components
  * @returns LMS components for RGB transformation
  */
-export function transformOklchToLMS(oklch: OklchComponents): LmsComponents {
+export function transformOklchToLMS(oklch: oklchColor): lmsColor {
   const { lightness, chroma, hue } = oklch
   const a = chroma * Math.cos(hue)
   const b = chroma * Math.sin(hue)
@@ -64,7 +63,7 @@ export function transformOklchToLMS(oklch: OklchComponents): LmsComponents {
  * @returns Linear RGB as readonly tuple, clamped to [0, 1]
  */
 export function transformLMStoRgb(
-  lms: LmsComponents
+  lms: lmsColor
 ): readonly [number, number, number] {
   const { l, m, s } = lms
 

@@ -12,11 +12,11 @@ import {
   contrastRatio,
   calculateContrastRatio,
   meetsContrastRequirement,
-  CONTRAST_THRESHOLDS,
   OKLCH_TO_LMS_COEFFICIENTS,
   LMS_TO_RGB_MATRIX,
   RGB_TO_LUMINANCE_WEIGHTS,
 } from "./index"
+import { CONTRAST_THRESHOLDS } from "./types";
 
 describe("colors barrel export", () => {
   it("exports parseOklch", () => {

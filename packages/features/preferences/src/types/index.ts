@@ -1,4 +1,4 @@
 export type {
   AppearancePreference,
   PreferencesState,
-} from "@repo/shared-contracts/types"
+} from "@repo/shared-contracts/schemas"

@@ -1,20 +1,29 @@
-/**
- * Contract for persisting store state to external storage.
- */
-export interface PersistenceAdapter<T> {
-  /**
-   * Read state from storage. Return undefined if not found.
-   */
-  read(): T | undefined
 
-  /**
-   * Write state to storage.
-   */
-  write(state: T): void
+type SameSiteOptions = "Strict" | "Lax" | "None"
 
-  /**
-   * Listen for external changes to storage (e.g., storage events, cookie changes).
-   * Return unsubscribe function.
-   */
-  subscribe(listener: () => void): () => void
+interface PersistenceAdapter<T = unknown> {
+  read?(key: string): Promise<T | null>;
+  write?(key: string, value: T): Promise<void>;
+  delete?(key: string): Promise<void>;
+  clear?(): Promise<void>;
+  subscribe?(key: string, listener: (value: T | null) => void): () => void;
 }
+
+interface PersistenceConfig {
+  key: string
+  adapter: PersistenceAdapter
+  version?: number
+  migrate?: (state: unknown, version: number) => unknown
+  partialPersist?: (state: unknown) => Partial<unknown>
+}
+
+interface CookieAdapterOptions {
+  name?: string
+  maxAge?: number
+  path?: string
+  sameSite?: SameSiteOptions;
+  secure?: boolean
+}
+
+
+export type { PersistenceAdapter, PersistenceConfig, CookieAdapterOptions, SameSiteOptions }

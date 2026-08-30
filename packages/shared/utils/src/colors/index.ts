@@ -6,12 +6,8 @@
  *
  * @module @repo/shared-utils/colors
  */
-
-// ====== Types ======
-export type { OklchColor, OklchComponents, LmsComponents } from "./types"
-
 // ====== Parsing ======
-export { parseOklch, assertOklch, validateOklch } from "./parse-oklch"
+export { parseOklch, assertOklch, validateOklch, isValidOklch } from "./parse-oklch"
 
 // ====== Transformations ======
 export {
@@ -31,5 +27,7 @@ export {
   contrastRatio,
   calculateContrastRatio,
   meetsContrastRequirement,
+  suggestTextColorForBackground,
+  adjustContrastByLightness,
   CONTRAST_THRESHOLDS,
 } from "./contrast"

@@ -34,6 +34,6 @@
     "./types": "./src/types/index.ts",
     "./schemas": "./src/schemas/index.ts",
     "./defaults": "./src/defaults/index.ts",
-    "./*": "./src/*"
+    "./*": "./src/*.ts"
   }
 }

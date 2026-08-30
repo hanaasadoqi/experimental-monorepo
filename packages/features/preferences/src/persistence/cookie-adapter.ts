@@ -1,12 +1,10 @@
-import { appearancePreferenceSchema } from "@repo/shared-contracts"
-
-import { APPEARANCE_PREFERENCE_COOKIE_NAME } from "./constants"
+import { AppearancePreference, appearancePreferenceSchema, validateSchema } from "@repo/shared-contracts";
+import { APPEARANCE_PREFERENCE_COOKIE_NAME, DEFAULT_MAX_AGE } from "./constants"
 import type {
   CookiePreferencesAdapterOptions,
   PreferencesPersistenceAdapter,
 } from "./types"
 
-const DEFAULT_MAX_AGE = 31_536_000
 
 function isHttps(): boolean {
   try {
@@ -42,7 +40,7 @@ function createChannel(name: string): BroadcastChannel | null {
   }
 }
 
-export function createCookiePreferencesAdapter(
+export async function createCookiePreferencesAdapter(
   options: CookiePreferencesAdapterOptions = {}
 ): PreferencesPersistenceAdapter {
   const name = options.name ?? APPEARANCE_PREFERENCE_COOKIE_NAME
@@ -60,9 +58,9 @@ export function createCookiePreferencesAdapter(
   }
 
   return {
-    read() {
-      const result = appearancePreferenceSchema.safeParse(readCookie(name))
-      return result.success ? result.data : null
+    read: async () => {
+      const result = validateSchema<AppearancePreference>(appearancePreferenceSchema, readCookie(name))
+      return await (result.success ? (result.data as AppearancePreference) : null)
     },
     write(preference) {
       try {

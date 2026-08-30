@@ -1,14 +1,9 @@
 import { luminance, tryLuminance } from "./luminance"
+import { parseOklch } from "./parse-oklch";
+import { MAX_LIGHTNESS, MIN_LIGHTNESS } from "./types";
+export { CONTRAST_THRESHOLDS } from "./types"
 
-/**
- * WCAG compliance level contrast ratio thresholds
- */
-export const CONTRAST_THRESHOLDS = {
-  AA_NORMAL: 4.5, // Normal text, AA level
-  AA_LARGE: 3, // Large text (18pt+), AA level
-  AAA_NORMAL: 7, // Normal text, AAA level
-  AAA_LARGE: 4.5, // Large text AAA level
-} as const
+
 
 /**
  * Calculates WCAG 2.0 contrast ratio between two colors.
@@ -66,4 +61,69 @@ export function meetsContrastRequirement(
   }
 
   return calculateContrastRatio(fgLuminance, bgLuminance) >= minRatio
+}
+
+
+/**
+ * Suggests an accessible text color (light or dark) for a given background.
+ * Returns either near-white or near-black depending on background luminance.
+ * @param background - OKLch background color
+ * @returns "oklch(5% 0 0)" for light backgrounds, "oklch(95% 0 0)" for dark backgrounds
+ * @example
+ *   suggestTextColorForBackground("oklch(80% 0.1 250)")
+ *   // => "oklch(5% 0 0)" (dark text on light background)
+ */
+export function suggestTextColorForBackground(background: string): string {
+  try {
+    const bgLuminance = tryLuminance(background)
+    return bgLuminance !== null && bgLuminance > 0.5 ? "oklch(5% 0 0)" : "oklch(95% 0 0)"
+  } catch {
+    return "oklch(50% 0 0)"
+  }
+}
+
+/**
+ * Adjusts a color's lightness to meet a minimum contrast ratio against a background.
+ * Binary searches for the optimal lightness that satisfies the requirement.
+ * @param foreground - OKLch color to adjust (e.g., "oklch(50% 0.2 250)")
+ * @param background - OKLch background color
+ * @param minRatio - Minimum required contrast ratio (e.g., 4.5 for WCAG AA)
+ * @returns Adjusted OKLch string with modified lightness, null if invalid input
+ * @example
+ *   adjustContrastByLightness("oklch(50% 0.2 250)", "oklch(95% 0 0)", 4.5)
+ *   // => "oklch(30% 0.2 250)" or similar darkened color
+ */
+export function adjustContrastByLightness(
+  foreground: string,
+  background: string,
+  minRatio: number
+): string | null {
+  try {
+    const fgRegexMatch = foreground.match(/^oklch\(([\d.]+)(%?)?\s+([\d.]+)\s+([\d.]+)\)$/)
+    if (!fgRegexMatch) return null
+
+    const chroma = fgRegexMatch[3]
+    const hue = fgRegexMatch[4]
+    const hasPercent = fgRegexMatch[2] === "%" ? "%" : ""
+
+    let low = 0
+    let high = 100
+    let bestLightness = parseFloat(fgRegexMatch[1])
+
+    for (let i = 0; i < 20; i++) {
+      const mid = (low + high) / 2
+      const testColor = `oklch(${mid}${hasPercent} ${chroma} ${hue})`
+
+      if (meetsContrastRequirement(testColor, background, minRatio)) {
+        bestLightness = mid
+        high = mid
+      } else {
+        low = mid
+      }
+    }
+
+    return `oklch(${bestLightness.toFixed(2)}${hasPercent} ${chroma} ${hue})`
+  } catch {
+    return null
+  }
 }

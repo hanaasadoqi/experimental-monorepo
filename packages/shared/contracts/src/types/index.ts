@@ -3,26 +3,6 @@
  * This is the public types directory. Re-exported through @repo/contracts main index.
  */
 
-// Core domain types
-export type {
-  AppearanceMode,
-  AppearancePreference,
-  Theme,
-  ThemeColor,
-  UserPreferences,
-  ThemeAppearance,
-  ThemeForm,
-  PersistenceAdapter,
-  PersistenceConfig,
-} from "./domain.js"
-
-// Form types
-export type { LoginForm } from "./forms.js"
-
-// Utility types
-export type { ValidationError } from "../utils/schema-utils.js"
-
-// Zustand types
 export type {
   StateCreator,
   StoreApi,
@@ -34,3 +14,28 @@ export type {
   SliceExtractor,
   Selector,
 } from "./store.js"
+export type {
+  ThemeColor,
+  Theme
+} from "./theme.js"
+export type {
+  LoginMethod,
+  AuthProvider
+} from "./auth.js"
+export type {
+  PersistenceAdapter,
+  PersistenceConfig,
+  CookieAdapterOptions,
+  SameSiteOptions,
+} from "./storage.js"
+export type {
+  ResolvedAppearance,
+  AppearanceSource,
+  SavedAppearancePreference,
+  UserPreferences
+} from "./preference.js"
+
+// Utility types
+export type { ValidationError } from "../utils/schema-utils.js"
+
+export type TypeGuard<T> = (value: unknown) => value is T

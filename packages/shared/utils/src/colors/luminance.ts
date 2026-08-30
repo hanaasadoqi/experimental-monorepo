@@ -3,7 +3,9 @@ import {
   transformLMStoRgb,
   calculateLuminanceFromRgb,
 } from "./transforms"
-import { parseOklch, assertOklch, type OklchColor } from "./parse-oklch"
+import { parseOklch, assertOklch } from "./parse-oklch"
+import { oklchColor } from "./types";
+
 
 /**
  * Calculates relative luminance from an OKLch color string per WCAG 2.0.
@@ -27,7 +29,7 @@ export function luminance(value: string): number {
  * @param oklch - Parsed OKLch color components
  * @returns Luminance value (0-1)
  */
-export function luminanceFromOklch(oklch: OklchColor): number {
+export function luminanceFromOklch(oklch: oklchColor): number {
   const lms = transformOklchToLMS(oklch)
   const rgb = transformLMStoRgb(lms)
   return calculateLuminanceFromRgb(rgb)

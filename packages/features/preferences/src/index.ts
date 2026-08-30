@@ -2,7 +2,7 @@ export { createPreferencesStore } from "./store"
 export type {
   AppearancePreference,
   PreferencesState,
-} from "@repo/shared-contracts/types/domain.js"
+} from "./types"
 export { PreferencesProvider, usePreferencesStore } from "./provider"
 export {
   useAppearancePreference,

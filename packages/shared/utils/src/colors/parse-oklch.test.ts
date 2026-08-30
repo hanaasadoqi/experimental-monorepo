@@ -128,30 +128,33 @@ describe("assertOklch", () => {
 })
 
 describe("validateOklch", () => {
-  it("returns match array for valid format", () => {
+  it("returns success for valid format", () => {
     const result = validateOklch("oklch(50% 0.2 120)")
-    expect(result).toBeDefined()
-    expect(result?.[1]).toBe("50")
-    expect(result?.[3]).toBe("0.2")
-    expect(result?.[4]).toBe("120")
+    expect(result.success).toBe(true)
+    expect(result.data).toBe("oklch(50% 0.2 120)")
   })
 
-  it("throws error for invalid format", () => {
-    expect(() => validateOklch("rgb(255, 0, 0)")).toThrow("Unsupported color")
+  it("returns error for invalid rgb format", () => {
+    const result = validateOklch("rgb(255, 0, 0)")
+    expect(result.success).toBe(false)
+    expect(result.error).toBeDefined()
   })
 
-  it("throws error includes original value", () => {
-    const color = "invalid-color"
-    expect(() => validateOklch(color)).toThrow(`Unsupported color: ${color}`)
+  it("returns error for invalid format", () => {
+    const result = validateOklch("invalid-color")
+    expect(result.success).toBe(false)
+    expect(result.error).toBeDefined()
   })
 
-  it("returns match with percentage flag", () => {
+  it("validates oklch with percentage flag", () => {
     const result = validateOklch("oklch(50% 0.2 120)")
-    expect(result?.[2]).toBe("%")
+    expect(result.success).toBe(true)
+    expect(result.data).toBe("oklch(50% 0.2 120)")
   })
 
-  it("returns match without percentage flag", () => {
+  it("validates oklch without percentage flag", () => {
     const result = validateOklch("oklch(0.5 0.2 120)")
-    expect(result?.[2]).toBeUndefined()
+    expect(result.success).toBe(true)
+    expect(result.data).toBe("oklch(0.5 0.2 120)")
   })
 })

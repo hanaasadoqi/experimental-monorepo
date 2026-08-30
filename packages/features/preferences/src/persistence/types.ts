@@ -1,15 +1,9 @@
-import type { AppearancePreference } from "@repo/shared-contracts"
+import type {
+  CookieAdapterOptions,
+  PersistenceAdapter,
+} from "@repo/shared-contracts/types"
+import { PreferencesState } from "../types";
 
-export interface PreferencesPersistenceAdapter {
-  read(): AppearancePreference | null
-  write(preference: AppearancePreference): void
-  subscribe(listener: (preference: AppearancePreference) => void): () => void
-}
 
-export interface CookiePreferencesAdapterOptions {
-  name?: string
-  maxAge?: number
-  path?: string
-  sameSite?: "Strict" | "Lax" | "None"
-  secure?: boolean
-}
+export type CookiePreferencesAdapterOptions = CookieAdapterOptions;
+export type PreferencesPersistenceAdapter = PersistenceAdapter<PreferencesState>;

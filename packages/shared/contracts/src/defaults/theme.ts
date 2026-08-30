@@ -1,21 +1,9 @@
-/**
- * Theme constants and defaults
- */
+import { ThemeForm } from "../schemas/theme.js";
+import { DEFAULT_PRIMARY_BASE } from "./colors.js";
+import { DEFAULT_APPEARANCE_PREFERENCE } from "./preferences.js";
 
-// OKLCH color regex — exported as constant for reuse
-export const OKLCH_REGEX = /^oklch\(([\d.]+)%?\s+([\d.]+)\s+([\d.]+)\)$/
+export const DEFAULT_THEME: ThemeForm = {
+  appearance: DEFAULT_APPEARANCE_PREFERENCE,
+  primaryColor: DEFAULT_PRIMARY_BASE
+}
 
-// Default theme configuration
-export const DEFAULT_THEME = {
-  appearance: 'system' as const,
-  accentColor: 'oklch(65% 0.15 250)'
-} as const
-
-export const DEFAULT_APPEARANCE_MODE = 'system' as const
-
-// OKLCH color constraints
-export const OKLCH_CONSTRAINTS = {
-  lightness: { min: 0, max: 100 },
-  chroma: { min: 0, max: 0.4 },
-  hue: { min: 0, max: 360 }
-} as const

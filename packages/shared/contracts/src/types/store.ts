@@ -7,7 +7,7 @@ type StoreCreator<T> = StateCreator<T, [], []>
 /**
  * Selector function that extracts a value from state.
  */
-export type Selector<T, U> = (state: T) => U
+type Selector<T, U> = (state: T) => U
 
 /**
  * Slice creator function.
@@ -32,6 +32,7 @@ export type {
   StoreApi,
   UseBoundStore,
   Store,
+  Selector,
   StoreCreator,
   SliceCreator,
   SliceState,

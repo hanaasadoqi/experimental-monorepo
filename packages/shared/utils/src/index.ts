@@ -1,8 +1,4 @@
-// ====== Generic Utilities ======
-export { cn, type ClassValue } from "./classnames"
+export { cn, type ClassValue } from "./ui/classnames";
 export { shallowEqual, type EqualityFn } from "./shallow-equal"
-// ====== Color Utilities ======
 export * from "./colors"
-
-// ====== Server Utilities ======
 export * from "./server"

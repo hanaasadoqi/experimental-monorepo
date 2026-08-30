@@ -33,9 +33,11 @@
     "next": "^16.3.3"
   },
   "exports": {
-    "./classnames": "./src/classnames.ts",
-    ".": "./src//index.ts",
+    "./classnames": "./src/ui/classnames.ts",
+    ".": "./src/index.ts",
     "./*": "./src/*.ts",
+    "./ui/classnames": "./src/ui/classnames.ts",
+    "./colors": "./src/colors/index.ts",
     "./server/*": "./src/server/*.ts",
     "./server": "./src/server/index.ts"
   }
