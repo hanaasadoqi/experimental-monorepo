@@ -36,6 +36,11 @@ interface StringStorage {
 }
 ```
 
+The concrete `createLocalStorage()` adapter exposes the narrower
+`SynchronousSubscribableStringStorage` capability. This lets synchronous
+consumers preserve their API while remaining assignable to the Promise-capable
+generic contracts.
+
 The package ships:
 
 - `createLocalStorage()` — browser localStorage with same-context and cross-tab subscriptions.

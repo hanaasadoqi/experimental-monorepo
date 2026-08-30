@@ -7,6 +7,12 @@ export interface StringStorage {
   removeItem(key: string): MaybePromise<void>
 }
 
+export interface SynchronousStringStorage extends StringStorage {
+  getItem(key: string): string | null
+  setItem(key: string, value: string): void
+  removeItem(key: string): void
+}
+
 export type StorageListener = (value: string | null) => void
 export type StorageListenerErrorHandler = (error: unknown) => void
 
@@ -16,6 +22,14 @@ export interface StorageSubscription {
 }
 
 export interface SubscribableStringStorage extends StringStorage {
+  subscribe(
+    key: string,
+    listener: StorageListener,
+    onError: StorageListenerErrorHandler
+  ): Unsubscribe
+}
+
+export interface SynchronousSubscribableStringStorage extends SynchronousStringStorage {
   subscribe(
     key: string,
     listener: StorageListener,

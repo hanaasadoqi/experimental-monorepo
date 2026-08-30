@@ -17,5 +17,7 @@ export {
   type StorageSubscription,
   type StringStorage,
   type SubscribableStringStorage,
+  type SynchronousStringStorage,
+  type SynchronousSubscribableStringStorage,
   type Unsubscribe,
 } from "./types.js"

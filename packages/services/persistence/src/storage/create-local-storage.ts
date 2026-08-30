@@ -3,7 +3,7 @@ import type {
   StorageListener,
   StorageListenerErrorHandler,
   StorageSubscription,
-  SubscribableStringStorage,
+  SynchronousSubscribableStringStorage,
   Unsubscribe,
 } from "./types.js"
 
@@ -38,7 +38,7 @@ function defaultGetWindow(): Window | undefined {
 
 export function createLocalStorage(
   options: LocalStorageOptions = {}
-): SubscribableStringStorage {
+): SynchronousSubscribableStringStorage {
   const getWindow = options.getWindow ?? defaultGetWindow
 
   const getLocalStorage = (

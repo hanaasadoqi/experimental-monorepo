@@ -10,9 +10,5 @@ export {
   MAX_LIGHTNESS,
   CONTRAST_THRESHOLDS,
 } from "./colors"
-export {
-  DEFAULT_APPEARANCE_PREFERENCE,
-  DEFAULT_PREFERENCES_STATE,
-} from "./preferences"
 export { DEFAULT_THEME } from "./theme"
 export { HTTP_URL_PATTERN, EMAIL_PATTERN, UUID_PATTERN } from "./storage"
