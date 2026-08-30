@@ -50,8 +50,8 @@ export default async function RootLayout({
         inter.variable,
         geist.variable,
         {
-          light: explicitColorScheme === "light",
-          dark: explicitColorScheme === "dark",
+          light: explicitColorScheme ? explicitColorScheme === "light" : effectivePreference === "light",
+          dark: explicitColorScheme ? explicitColorScheme === "dark" : effectivePreference === "dark",
         }
       )}
     >
@@ -65,9 +65,9 @@ export default async function RootLayout({
           suppressHydrationWarning
         />
         <ApplicationProviders
-          {...(preference === undefined
+          {...(effectivePreference === undefined
             ? {}
-            : { initialPreference: preference })}
+            : { initialPreference: effectivePreference })}
         >
           {children}
         </ApplicationProviders>
