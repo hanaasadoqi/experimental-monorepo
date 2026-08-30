@@ -1,2 +1,2 @@
-export * from "./appearance";
-export * from "./hotkeys";
+export * from "./appearance"
+export * from "./hotkeys"

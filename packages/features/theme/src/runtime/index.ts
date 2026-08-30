@@ -1,7 +1,3 @@
-export {
-  applyAppearance,
-} from "./apply-appearance"
+export { applyAppearance } from "./apply-appearance"
 
-export {
-  generateBootstrapCode,
-} from "./generate-bootstrap-code"
+export { generateBootstrapCode } from "./generate-bootstrap-code"

@@ -2,24 +2,14 @@
 
 import { useStore } from "zustand"
 
-import type {
-  PreferencesStore,
-} from "../store"
+import type { PreferencesStore } from "../store"
 
-import {
-  usePreferencesStoreApi,
-} from "./preferences-context"
+import { usePreferencesStoreApi } from "./preferences-context"
 
 export function usePreferencesStore<T>(
-  selector: (
-    state: PreferencesStore
-  ) => T,
+  selector: (state: PreferencesStore) => T
 ): T {
-  const store =
-    usePreferencesStoreApi()
+  const store = usePreferencesStoreApi()
 
-  return useStore(
-    store,
-    selector,
-  )
+  return useStore(store, selector)
 }

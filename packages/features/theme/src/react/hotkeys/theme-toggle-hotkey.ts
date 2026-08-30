@@ -2,29 +2,19 @@
 
 import { useEffect } from "react"
 
-import {
-  useSetAppearancePreference,
-} from "@repo/feature-preferences"
+import { useSetAppearancePreference } from "@repo/feature-preferences"
 
-import {
-  useResolvedAppearance,
-} from "../appearance"
+import { useResolvedAppearance } from "../appearance"
 
-import {
-  isTypingTarget,
-} from "./is-typing-target"
+import { isTypingTarget } from "./is-typing-target"
 
 export function ThemeToggleHotkey() {
-  const resolvedAppearance =
-    useResolvedAppearance()
+  const resolvedAppearance = useResolvedAppearance()
 
-  const setAppearance =
-    useSetAppearancePreference()
+  const setAppearance = useSetAppearancePreference()
 
   useEffect(() => {
-    function onKeyDown(
-      event: KeyboardEvent,
-    ) {
+    function onKeyDown(event: KeyboardEvent) {
       if (
         event.defaultPrevented ||
         event.repeat ||
@@ -35,40 +25,23 @@ export function ThemeToggleHotkey() {
         return
       }
 
-      if (
-        event.key.toLowerCase() !== "d"
-      ) {
+      if (event.key.toLowerCase() !== "d") {
         return
       }
 
-      if (
-        isTypingTarget(event.target)
-      ) {
+      if (isTypingTarget(event.target)) {
         return
       }
 
-      setAppearance(
-        resolvedAppearance === "dark"
-          ? "light"
-          : "dark",
-      )
+      setAppearance(resolvedAppearance === "dark" ? "light" : "dark")
     }
 
-    window.addEventListener(
-      "keydown",
-      onKeyDown,
-    )
+    window.addEventListener("keydown", onKeyDown)
 
     return () => {
-      window.removeEventListener(
-        "keydown",
-        onKeyDown,
-      )
+      window.removeEventListener("keydown", onKeyDown)
     }
-  }, [
-    resolvedAppearance,
-    setAppearance,
-  ])
+  }, [resolvedAppearance, setAppearance])
 
   return null
 }

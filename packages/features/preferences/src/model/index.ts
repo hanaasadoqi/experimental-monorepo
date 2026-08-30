@@ -2,9 +2,6 @@ export {
   appearancePreferenceSchema,
   DEFAULT_APPEARANCE_PREFERENCE,
   type AppearancePreference,
-  type SavedAppearancePreference,
-  type ResolvedAppearance,
-  type AppearanceSource,
 } from "./appearance"
 
 export {

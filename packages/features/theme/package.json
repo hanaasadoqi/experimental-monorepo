@@ -59,6 +59,5 @@
     "./react": "./src/react/index.ts",
     "./resolution": "./src/resolution/index.ts",
     "./runtime": "./src/runtime/index.ts"
-
   }
 }

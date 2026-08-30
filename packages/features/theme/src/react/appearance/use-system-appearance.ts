@@ -1,56 +1,33 @@
 "use client"
 
-import {
-  useSyncExternalStore,
-} from "react"
+import { useSyncExternalStore } from "react"
 
-import type {
-  ResolvedAppearance,
-} from "../../model"
+import type { ResolvedAppearance } from "../../model"
 
-const COLOR_SCHEME_QUERY =
-  "(prefers-color-scheme: dark)"
+const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
 
-function getSystemAppearance():
-  ResolvedAppearance {
-  return window
-    .matchMedia(COLOR_SCHEME_QUERY)
-    .matches
-    ? "dark"
-    : "light"
+function getSystemAppearance(): ResolvedAppearance {
+  return window.matchMedia(COLOR_SCHEME_QUERY).matches ? "dark" : "light"
 }
 
-function getServerAppearance():
-  ResolvedAppearance {
+function getServerAppearance(): ResolvedAppearance {
   return "light"
 }
 
-function subscribe(
-  callback: () => void,
-): () => void {
-  const mediaQuery =
-    window.matchMedia(
-      COLOR_SCHEME_QUERY,
-    )
+function subscribe(callback: () => void): () => void {
+  const mediaQuery = window.matchMedia(COLOR_SCHEME_QUERY)
 
-  mediaQuery.addEventListener(
-    "change",
-    callback,
-  )
+  mediaQuery.addEventListener("change", callback)
 
   return () => {
-    mediaQuery.removeEventListener(
-      "change",
-      callback,
-    )
+    mediaQuery.removeEventListener("change", callback)
   }
 }
 
-export function useSystemAppearance():
-  ResolvedAppearance {
+export function useSystemAppearance(): ResolvedAppearance {
   return useSyncExternalStore(
     subscribe,
     getSystemAppearance,
-    getServerAppearance,
+    getServerAppearance
   )
 }

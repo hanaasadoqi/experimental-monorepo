@@ -1,5 +1,5 @@
-import { AppearancePreference } from "@repo/feature-preferences";
-import { ResolvedAppearance } from "../model/appearance";
+import { AppearancePreference } from "@repo/feature-preferences"
+import { ResolvedAppearance } from "../model/appearance"
 
 /**
  * Generate executable code to reconcile appearance before hydration.
@@ -7,7 +7,7 @@ import { ResolvedAppearance } from "../model/appearance";
  * @returns JavaScript code suitable for a framework script component
  */
 export function generateBootstrapCode(
-  preference: AppearancePreference,
+  preference: AppearancePreference
 ): string {
   return `(function(){var p=${JSON.stringify(preference)};var a=p==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":p==="system"?"light":p;var r=document.documentElement;r.classList.toggle("dark",a==="dark");r.dataset.theme=a;r.style.colorScheme=a})()`
 }

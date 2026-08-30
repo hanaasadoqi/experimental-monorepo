@@ -18,7 +18,7 @@ vi.mock("./is-typing-target", () => ({
 
 import { useSetAppearancePreference } from "@repo/feature-preferences"
 import { isTypingTarget } from "./is-typing-target"
-import { useResolvedAppearance } from "../appearance";
+import { useResolvedAppearance } from "../appearance"
 
 describe("ThemeToggleHotkey", () => {
   let setPreferenceCallback: Mock<(preference: AppearancePreference) => void>
@@ -162,7 +162,7 @@ describe("ThemeToggleHotkey", () => {
       const event = new KeyboardEvent("keydown", { key: "d" })
       window.dispatchEvent(event)
 
-      expect(setPreferenceCallback).toHaveBeenCalledWith("dark")
+      expect(setPreferenceCallback).toHaveBeenCalledWith("light")
     })
 
     it("case-insensitive: triggers on uppercase D", () => {
@@ -174,7 +174,7 @@ describe("ThemeToggleHotkey", () => {
       const event = new KeyboardEvent("keydown", { key: "D" })
       window.dispatchEvent(event)
 
-      expect(setPreferenceCallback).toHaveBeenCalledWith("dark")
+      expect(setPreferenceCallback).toHaveBeenCalledWith("light")
     })
   })
 
@@ -208,7 +208,7 @@ describe("ThemeToggleHotkey", () => {
 
       window.dispatchEvent(event)
 
-      expect(setPreferenceCallback).toHaveBeenCalledWith("dark")
+      expect(setPreferenceCallback).toHaveBeenCalledWith("light")
     })
 
     it("handles null target", () => {
@@ -223,13 +223,13 @@ describe("ThemeToggleHotkey", () => {
       window.dispatchEvent(event)
 
       expect(isTypingTarget).toHaveBeenCalledWith(null)
-      expect(setPreferenceCallback).toHaveBeenCalledWith("dark")
+      expect(setPreferenceCallback).toHaveBeenCalledWith("light")
     })
   })
 
   describe("theme toggling logic", () => {
     it("toggles from light to dark", () => {
-      vi.mocked(useResolvedAppearance).mockReturnValue("dark")
+      vi.mocked(useResolvedAppearance).mockReturnValue("light")
       vi.mocked(isTypingTarget).mockReturnValue(false)
 
       render(<ThemeToggleHotkey />)
@@ -249,11 +249,11 @@ describe("ThemeToggleHotkey", () => {
       const event = new KeyboardEvent("keydown", { key: "d" })
       window.dispatchEvent(event)
 
-      expect(setPreferenceCallback).toHaveBeenCalledWith("dark")
+      expect(setPreferenceCallback).toHaveBeenCalledWith("light")
     })
 
     it("uses the current resolved color scheme", () => {
-      const colorSchemes: Array<"dark" | "dark"> = ["dark", "dark"]
+      const colorSchemes: Array<"dark" | "light"> = ["dark", "light"]
 
       colorSchemes.forEach((scheme) => {
         vi.clearAllMocks()
@@ -265,7 +265,7 @@ describe("ThemeToggleHotkey", () => {
         const event = new KeyboardEvent("keydown", { key: "d" })
         window.dispatchEvent(event)
 
-        const expectedPreference = scheme === "dark" ? "dark" : "dark"
+        const expectedPreference = scheme === "dark" ? "light" : "dark"
         expect(setPreferenceCallback).toHaveBeenCalledWith(expectedPreference)
 
         unmount()
@@ -277,7 +277,7 @@ describe("ThemeToggleHotkey", () => {
     it("handles multiple sequential key presses", () => {
       vi.mocked(useResolvedAppearance)
         .mockReturnValueOnce("dark")
-        .mockReturnValueOnce("dark")
+        .mockReturnValueOnce("light")
       vi.mocked(isTypingTarget).mockReturnValue(false)
 
       render(<ThemeToggleHotkey />)
@@ -333,7 +333,7 @@ describe("ThemeToggleHotkey", () => {
       const event = new KeyboardEvent("keydown", { key: "d" })
       window.dispatchEvent(event)
 
-      expect(newSetPreference).toHaveBeenCalledWith("dark")
+      expect(newSetPreference).toHaveBeenCalledWith("light")
     })
 
     it("handles re-renders with different hook values", () => {
@@ -344,10 +344,10 @@ describe("ThemeToggleHotkey", () => {
       rerender(<ThemeToggleHotkey />)
 
       window.dispatchEvent(new KeyboardEvent("keydown", { key: "d" }))
-      expect(setPreferenceCallback).toHaveBeenCalledWith("dark")
+      expect(setPreferenceCallback).toHaveBeenCalledWith("light")
 
       vi.clearAllMocks()
-      vi.mocked(useResolvedAppearance).mockReturnValue("dark")
+      vi.mocked(useResolvedAppearance).mockReturnValue("light")
       rerender(<ThemeToggleHotkey />)
 
       window.dispatchEvent(new KeyboardEvent("keydown", { key: "d" }))
@@ -363,11 +363,11 @@ describe("ThemeToggleHotkey", () => {
       const { rerender } = render(<ThemeToggleHotkey />)
 
       window.dispatchEvent(new KeyboardEvent("keydown", { key: "d" }))
-      expect(setPreferenceCallback).toHaveBeenCalledWith("dark")
+      expect(setPreferenceCallback).toHaveBeenCalledWith("light")
 
       // Update mock and rerender to simulate resolved color scheme changing
       vi.clearAllMocks()
-      vi.mocked(useResolvedAppearance).mockReturnValue("dark")
+      vi.mocked(useResolvedAppearance).mockReturnValue("light")
       rerender(<ThemeToggleHotkey />)
 
       window.dispatchEvent(new KeyboardEvent("keydown", { key: "d" }))

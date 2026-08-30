@@ -1,7 +1,4 @@
-import {
-  createStore,
-  type StoreApi,
-} from "zustand/vanilla"
+import { createStore, type StoreApi } from "zustand/vanilla"
 
 import {
   DEFAULT_PREFERENCES,
@@ -9,16 +6,13 @@ import {
   type Preferences,
 } from "../model"
 
-import type {
-  PreferencesStore,
-} from "./types"
+import type { PreferencesStore } from "./types"
 
 export interface CreatePreferencesStoreOptions {
   initialState?: Partial<Preferences>
 }
 
-export type PreferencesStoreApi =
-  StoreApi<PreferencesStore>
+export type PreferencesStoreApi = StoreApi<PreferencesStore>
 
 export function createPreferencesStore({
   initialState,
@@ -28,17 +22,13 @@ export function createPreferencesStore({
     ...initialState,
   }
 
-  return createStore<PreferencesStore>()(
-    (set) => ({
-      ...initialPreferences,
+  return createStore<PreferencesStore>()((set) => ({
+    ...initialPreferences,
 
-      setAppearance: (
-        appearance: AppearancePreference
-      ) => {
-        set({ appearance })
-      },
-    }),
-  )
+    setAppearance: (appearance: AppearancePreference) => {
+      set({ appearance })
+    },
+  }))
 }
 
 /**@example initializaion
@@ -48,4 +38,4 @@ export function createPreferencesStore({
  *    appearance: initialAppearance,
  *  }
  * });
-*/
+ */

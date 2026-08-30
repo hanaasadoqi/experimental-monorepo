@@ -2,22 +2,15 @@
 
 import { useEffect } from "react"
 
-import {
-  useAppearancePreference,
-} from "@repo/feature-preferences"
+import { useAppearancePreference } from "@repo/feature-preferences"
 
-import {
-  persistAppearancePreference,
-} from "../preferences/persist-appearance-preference"
+import { persistAppearancePreference } from "../preferences/persist-appearance-preference"
 
 export function PreferencesPersistence() {
-  const appearance =
-    useAppearancePreference()
+  const appearance = useAppearancePreference()
 
   useEffect(() => {
-    persistAppearancePreference(
-      appearance,
-    )
+    persistAppearancePreference(appearance)
   }, [appearance])
 
   return null

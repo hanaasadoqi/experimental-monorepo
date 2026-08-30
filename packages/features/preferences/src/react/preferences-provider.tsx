@@ -1,22 +1,12 @@
 "use client"
 
-import {
-  useRef,
-  type ReactNode,
-} from "react"
+import { useRef, type ReactNode } from "react"
 
-import type {
-  AppearancePreference,
-} from "../model"
+import type { AppearancePreference } from "../model"
 
-import {
-  createPreferencesStore,
-  type PreferencesStoreApi,
-} from "../store"
+import { createPreferencesStore, type PreferencesStoreApi } from "../store"
 
-import {
-  PreferencesStoreContext,
-} from "./preferences-context"
+import { PreferencesStoreContext } from "./preferences-context"
 
 export interface PreferencesProviderProps {
   children: ReactNode
@@ -27,28 +17,21 @@ export function PreferencesProvider({
   children,
   initialAppearance,
 }: PreferencesProviderProps) {
-  const storeRef =
-    useRef<PreferencesStoreApi | null>(
-      null
-    )
+  const storeRef = useRef<PreferencesStoreApi | null>(null)
 
   if (storeRef.current === null) {
-    storeRef.current =
-      createPreferencesStore({
-        initialState:
-          initialAppearance === undefined
-            ? undefined
-            : {
-              appearance:
-                initialAppearance,
+    storeRef.current = createPreferencesStore({
+      initialState:
+        initialAppearance === undefined
+          ? undefined
+          : {
+              appearance: initialAppearance,
             },
-      })
+    })
   }
 
   return (
-    <PreferencesStoreContext
-      value={storeRef.current}
-    >
+    <PreferencesStoreContext value={storeRef.current}>
       {children}
     </PreferencesStoreContext>
   )

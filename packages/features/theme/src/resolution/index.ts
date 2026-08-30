@@ -1,3 +1,1 @@
-export {
-  resolveAppearance,
-} from "./resolve-appearance"
+export { resolveAppearance } from "./resolve-appearance"

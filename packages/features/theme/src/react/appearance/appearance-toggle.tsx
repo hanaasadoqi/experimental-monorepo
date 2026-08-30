@@ -1,19 +1,13 @@
 "use client"
 
-import {
-  useResolvedAppearance,
-} from "./use-resolved-appearance"
+import { useResolvedAppearance } from "./use-resolved-appearance"
 
-import {
-  useToggleAppearance,
-} from "./use-toggle-appearance"
+import { useToggleAppearance } from "./use-toggle-appearance"
 
 export function AppearanceToggle() {
-  const appearance =
-    useResolvedAppearance()
+  const appearance = useResolvedAppearance()
 
-  const toggleAppearance =
-    useToggleAppearance()
+  const toggleAppearance = useToggleAppearance()
 
   return (
     <button
@@ -25,9 +19,7 @@ export function AppearanceToggle() {
           : "Switch to dark appearance"
       }
     >
-      {appearance === "dark"
-        ? "Light"
-        : "Dark"}
+      {appearance === "dark" ? "Light" : "Dark"}
     </button>
   )
 }

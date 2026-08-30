@@ -19,9 +19,7 @@ export type {
   PreferencesState,
 } from "./model"
 
-export {
-  createPreferencesStore,
-} from "./store"
+export { createPreferencesStore } from "./store"
 
 export type {
   PreferencesStore,
@@ -36,6 +34,4 @@ export {
   useSetAppearancePreference,
 } from "./react"
 
-export type {
-  PreferencesProviderProps,
-} from "./react"
+export type { PreferencesProviderProps } from "./react"

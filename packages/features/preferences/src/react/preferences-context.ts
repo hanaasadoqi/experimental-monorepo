@@ -1,31 +1,21 @@
 "use client"
 
-import {
-  createContext,
-  useContext,
-} from "react"
+import { createContext, useContext } from "react"
 
-import type {
-  PreferencesStoreApi,
-} from "../store"
+import type { PreferencesStoreApi } from "../store"
 
 export const PreferencesStoreContext =
-  createContext<
-    PreferencesStoreApi | null
-  >(null)
+  createContext<PreferencesStoreApi | null>(null)
 
-PreferencesStoreContext.displayName =
-  "PreferencesStoreContext"
+PreferencesStoreContext.displayName = "PreferencesStoreContext"
 
-export function usePreferencesStoreApi():
-  PreferencesStoreApi {
-  const store =
-    useContext(PreferencesStoreContext)
+export function usePreferencesStoreApi(): PreferencesStoreApi {
+  const store = useContext(PreferencesStoreContext)
 
   if (store === null) {
     throw new Error(
       "PreferencesStoreContext is unavailable. " +
-      "Ensure this component is rendered within PreferencesProvider.",
+        "Ensure this component is rendered within PreferencesProvider."
     )
   }
 

@@ -1,3 +1,3 @@
-import { PreferencesActions, Preferences } from "../model";
+import { PreferencesActions, Preferences } from "../model"
 
-export type PreferencesStore = Preferences & PreferencesActions;
+export type PreferencesStore = Preferences & PreferencesActions

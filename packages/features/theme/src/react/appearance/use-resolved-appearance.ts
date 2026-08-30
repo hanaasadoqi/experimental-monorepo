@@ -1,14 +1,9 @@
 "use client"
 
-import type {
-  ResolvedAppearance,
-} from "../../model"
+import type { ResolvedAppearance } from "../../model"
 
-import {
-  useAppearanceContext,
-} from "./appearance-context"
+import { useAppearanceContext } from "./appearance-context"
 
-export function useResolvedAppearance():
-  ResolvedAppearance {
+export function useResolvedAppearance(): ResolvedAppearance {
   return useAppearanceContext()
 }

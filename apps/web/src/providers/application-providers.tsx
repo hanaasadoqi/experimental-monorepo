@@ -1,21 +1,15 @@
 "use client"
 
-import type {
-  ReactNode,
-} from "react"
+import type { ReactNode } from "react"
 
 import {
   PreferencesProvider,
   type AppearancePreference,
 } from "@repo/feature-preferences"
 
-import {
-  AppearanceBridge,
-} from "./appearance-bridge"
+import { AppearanceBridge } from "./appearance-bridge"
 
-import {
-  PreferencesPersistence,
-} from "./preferences-persistence"
+import { PreferencesPersistence } from "./preferences-persistence"
 
 export interface ApplicationProvidersProps {
   children: ReactNode
@@ -27,16 +21,10 @@ export function ApplicationProviders({
   initialAppearance,
 }: ApplicationProvidersProps) {
   return (
-    <PreferencesProvider
-      initialAppearance={
-        initialAppearance
-      }
-    >
+    <PreferencesProvider initialAppearance={initialAppearance}>
       <PreferencesPersistence />
 
-      <AppearanceBridge>
-        {children}
-      </AppearanceBridge>
+      <AppearanceBridge>{children}</AppearanceBridge>
     </PreferencesProvider>
   )
 }

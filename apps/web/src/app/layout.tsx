@@ -1,25 +1,16 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google"
 import "./globals.css"
-import { cn } from "@repo/ui-components/lib/utils";
+import { cn } from "@repo/ui-components/lib/utils"
 import type { ReactNode } from "react"
 import Script from "next/script"
 
-import {
-  DEFAULT_APPEARANCE_PREFERENCE,
-} from "@repo/feature-preferences"
+import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/feature-preferences"
 
-import {
-  generateBootstrapCode,
-} from "@repo/feature-theme"
+import { generateBootstrapCode } from "@repo/feature-theme"
 
-import {
-  ApplicationProviders,
-} from "../providers/application-providers"
+import { ApplicationProviders } from "../providers/application-providers"
 
-import {
-  readAppearancePreferenceCookie,
-} from "../server/preferences/read-appearance-preference-cookie"
-
+import { readAppearancePreferenceCookie } from "../server/preferences/read-appearance-preference-cookie"
 
 export interface RootLayoutProps {
   children: ReactNode
@@ -40,20 +31,13 @@ const fontMono = Geist_Mono({
   variable: "--font-family-mono",
 })
 
-export default async function RootLayout({
-  children,
-}: RootLayoutProps) {
-  const storedPreference =
-    await readAppearancePreferenceCookie()
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const storedPreference = await readAppearancePreferenceCookie()
 
-  const initialAppearance =
-    storedPreference ??
-    DEFAULT_APPEARANCE_PREFERENCE
+  const initialAppearance = storedPreference ?? DEFAULT_APPEARANCE_PREFERENCE
 
   const explicitAppearance =
-    initialAppearance === "system"
-      ? undefined
-      : initialAppearance
+    initialAppearance === "system" ? undefined : initialAppearance
 
   return (
     <html
@@ -65,37 +49,25 @@ export default async function RootLayout({
         inter.variable,
         geist.variable,
         {
-          "dark": explicitAppearance === "dark"
+          dark: explicitAppearance === "dark",
         }
       )}
       data-theme={explicitAppearance}
       style={
         explicitAppearance
           ? {
-            colorScheme:
-              explicitAppearance,
-          }
+              colorScheme: explicitAppearance,
+            }
           : undefined
       }
       suppressHydrationWarning
     >
-      <body
-
-      >
-        <Script
-          id="appearance-bootstrap"
-          strategy="beforeInteractive"
-        >
-          {generateBootstrapCode(
-            initialAppearance,
-          )}
+      <body>
+        <Script id="appearance-bootstrap" strategy="beforeInteractive">
+          {generateBootstrapCode(initialAppearance)}
         </Script>
 
-        <ApplicationProviders
-          initialAppearance={
-            initialAppearance
-          }
-        >
+        <ApplicationProviders initialAppearance={initialAppearance}>
           {children}
         </ApplicationProviders>
       </body>

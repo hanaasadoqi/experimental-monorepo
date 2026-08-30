@@ -1,1 +1,1 @@
-export  type{ ResolvedAppearance } from "./appearance.js"
+export type { ResolvedAppearance } from "./appearance.js"

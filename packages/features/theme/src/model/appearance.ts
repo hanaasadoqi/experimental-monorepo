@@ -1,3 +1,1 @@
-export type ResolvedAppearance =
-  | "light"
-  | "dark"
+export type ResolvedAppearance = "light" | "dark"

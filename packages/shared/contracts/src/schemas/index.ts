@@ -4,7 +4,6 @@
  */
 
 export { loginFormSchema, type LoginForm } from "./auth"
-export { themeFormSchema, type ThemeForm } from "./theme.js"
 export {
   oklchStrSchema,
   type OklchStr,

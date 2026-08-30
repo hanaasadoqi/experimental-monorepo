@@ -9,19 +9,12 @@ import {
 } from "@repo/feature-preferences"
 
 export function AppearanceSelect() {
-  const preference =
-    useAppearancePreference()
+  const preference = useAppearancePreference()
 
-  const setAppearance =
-    useSetAppearancePreference()
+  const setAppearance = useSetAppearancePreference()
 
-  function handleChange(
-    value: string,
-  ): void {
-    const result =
-      appearancePreferenceSchema.safeParse(
-        value,
-      )
+  function handleChange(value: string): void {
+    const result = appearancePreferenceSchema.safeParse(value)
 
     if (!result.success) {
       return
@@ -34,22 +27,14 @@ export function AppearanceSelect() {
     <select
       value={preference}
       onChange={(event) => {
-        handleChange(
-          event.target.value,
-        )
+        handleChange(event.target.value)
       }}
     >
-      <option value="system">
-        System
-      </option>
+      <option value="system">System</option>
 
-      <option value="light">
-        Light
-      </option>
+      <option value="light">Light</option>
 
-      <option value="dark">
-        Dark
-      </option>
+      <option value="dark">Dark</option>
     </select>
   )
 }

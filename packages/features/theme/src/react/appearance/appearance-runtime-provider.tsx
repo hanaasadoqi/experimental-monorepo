@@ -1,29 +1,16 @@
 "use client"
 
-import {
-  useEffect,
-  type ReactNode,
-} from "react"
+import { useEffect, type ReactNode } from "react"
 
-import type {
-  AppearancePreference,
-} from "@repo/feature-preferences"
+import type { AppearancePreference } from "@repo/feature-preferences"
 
-import {
-  resolveAppearance,
-} from "../../resolution"
+import { resolveAppearance } from "../../resolution"
 
-import {
-  applyAppearance,
-} from "../../runtime"
+import { applyAppearance } from "../../runtime"
 
-import {
-  AppearanceContext,
-} from "./appearance-context"
+import { AppearanceContext } from "./appearance-context"
 
-import {
-  useSystemAppearance,
-} from "./use-system-appearance"
+import { useSystemAppearance } from "./use-system-appearance"
 
 export interface AppearanceRuntimeProviderProps {
   preference: AppearancePreference
@@ -34,26 +21,15 @@ export function AppearanceRuntimeProvider({
   preference,
   children,
 }: AppearanceRuntimeProviderProps) {
-  const systemAppearance =
-    useSystemAppearance()
+  const systemAppearance = useSystemAppearance()
 
-  const resolvedAppearance =
-    resolveAppearance(
-      preference,
-      systemAppearance,
-    )
+  const resolvedAppearance = resolveAppearance(preference, systemAppearance)
 
   useEffect(() => {
-    applyAppearance(
-      resolvedAppearance,
-    )
+    applyAppearance(resolvedAppearance)
   }, [resolvedAppearance])
 
   return (
-    <AppearanceContext
-      value={resolvedAppearance}
-    >
-      {children}
-    </AppearanceContext>
+    <AppearanceContext value={resolvedAppearance}>{children}</AppearanceContext>
   )
 }
