@@ -138,6 +138,18 @@ describe("applyColorScheme", () => {
     expect(element.style.colorScheme).toBe("light")
   })
 
+  it("keeps the light and dark scheme classes mutually exclusive", () => {
+    element.classList.add("light")
+
+    applyColorScheme(element, "dark")
+    expect(element.classList.contains("dark")).toBe(true)
+    expect(element.classList.contains("light")).toBe(false)
+
+    applyColorScheme(element, "light")
+    expect(element.classList.contains("dark")).toBe(false)
+    expect(element.classList.contains("light")).toBe(true)
+  })
+
   it("is idempotent when applying the same scheme twice", () => {
     applyColorScheme(element, "dark")
     applyColorScheme(element, "dark")

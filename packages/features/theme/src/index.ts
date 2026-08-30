@@ -18,8 +18,9 @@ export type {
 // Provider
 export {
   AppearanceProvider,
+  AppearanceRuntimeProvider,
   useAppearanceStore,
-} from "./provider/appearance-provider"
+} from "./provider"
 
 // Convenience wrapper: AppearanceProvider + bootstrap script + hotkey
 export { ThemeWrapper } from "./components"

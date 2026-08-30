@@ -7,13 +7,14 @@ import type { ResolvedColorScheme } from "../types"
 // scheme to the DOM. All three properties below are derived from the same
 // `scheme` argument and updated together so they can never disagree:
 //
-//   - the `.dark` class (Tailwind's `darkMode: 'class'` strategy)
+//   - mutually exclusive `.light` and `.dark` classes
 //   - the `data-theme` attribute (CSS attribute selectors, debugging)
 //   - the inline `color-scheme` CSS property (native form controls,
 //     scrollbars, etc.)
 // ---------------------------------------------------------------------------
 
 const DARK_CLASS = "dark"
+const LIGHT_CLASS = "light"
 const DATA_THEME_ATTRIBUTE = "data-theme"
 
 export function applyColorScheme(
@@ -23,6 +24,7 @@ export function applyColorScheme(
   const isDark = scheme === "dark"
 
   element.classList.toggle(DARK_CLASS, isDark)
+  element.classList.toggle(LIGHT_CLASS, !isDark)
   element.setAttribute(DATA_THEME_ATTRIBUTE, scheme)
   element.style.colorScheme = scheme
 }

@@ -1,45 +1,45 @@
 # @repo/feature-theme
 
-Appearance and theme management for the monorepo with Zustand-backed persistence, flash-free rendering, and server-side integration.
+Derived Appearance runtime and Theme compatibility for the monorepo, including operating-system resolution, atomic DOM synchronization, and flash-free bootstrap generation.
+
+> **Ownership update:** Active persisted intent now belongs to `@repo/feature-preferences`. Canonical applications compose Preferences into `AppearanceRuntimeProvider`. `AppearanceProvider`, ThemeWrapper, and the feature-theme persistence adapters remain compatibility interfaces until the documented cleanup phase.
 
 > **The Appearance API is canonical.** Use `AppearanceProvider` and the `useAppearance*` hooks. The `Theme`-prefixed exports (`ThemeProvider`, `useTheme`, `themeStore`, `Theme`) are deprecated compatibility shims scheduled for removal in v2.0 — see [Migration Guide](#migration-guide). Full guide: [`.docs/guides/appearance-api.md`](../../../.docs/guides/appearance-api.md).
 
 ## Overview
 
-This feature provides a complete appearance management system:
+This feature provides the derived Appearance behavior:
 
 - **Appearance Preferences**: Light, dark, or system-following modes
 - **Flash-Free Rendering**: Pre-hydration bootstrap script prevents color scheme flashing
-- **Persistent State**: Cookie and localStorage adapters for cross-session persistence
-- **Server Integration**: Reads appearance preference from cookies during SSR
+- **Controlled Runtime**: Projects active Preferences into resolved Appearance
+- **Compatibility**: Existing persistence and Theme-named interfaces remain available during migration
 - **React 19 Compatible**: Uses `useSyncExternalStore` for proper external store integration
 
 ## Quick Start
 
-### Setup in App Layout
+### Canonical application composition
 
 ```typescript
-// apps/web/src/app/layout.tsx
-import { ThemeWrapper } from "@repo/feature-theme/components"
-import { generateBootstrapScript } from "@repo/feature-theme"
-import { readAppearanceCookie } from "@/lib/read-appearance-cookie"
+"use client"
 
-export default async function RootLayout({ children }) {
-  const preference = await readAppearanceCookie()
-  const bootstrapScript = generateBootstrapScript(preference || "system")
+import {
+  useAppearancePreference,
+  useSetAppearancePreference,
+} from "@repo/feature-preferences"
+import { AppearanceRuntimeProvider } from "@repo/feature-theme"
+
+export function AppearanceBridge({ children }) {
+  const preference = useAppearancePreference()
+  const setPreference = useSetAppearancePreference()
 
   return (
-    <html>
-      <head></head>
-      <body>
-        <ThemeWrapper
-          initialPreference={preference}
-          bootstrapScript={bootstrapScript}
-        >
-          {children}
-        </ThemeWrapper>
-      </body>
-    </html>
+    <AppearanceRuntimeProvider
+      preference={preference}
+      onPreferenceChange={setPreference}
+    >
+      {children}
+    </AppearanceRuntimeProvider>
   )
 }
 ```
@@ -49,14 +49,10 @@ export default async function RootLayout({ children }) {
 ```typescript
 "use client"
 
-import {
-  useAppearancePreference,
-  useResolvedColorScheme,
-  useSetAppearancePreference,
-} from "@repo/feature-theme/hooks"
+import { useSetAppearancePreference } from "@repo/feature-preferences/hooks"
+import { useResolvedColorScheme } from "@repo/feature-theme/hooks"
 
 export function ThemeToggle() {
-  const preference = useAppearancePreference()
   const colorScheme = useResolvedColorScheme()
   const setPreference = useSetAppearancePreference()
 

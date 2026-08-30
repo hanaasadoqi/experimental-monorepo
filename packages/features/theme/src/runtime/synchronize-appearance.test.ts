@@ -5,7 +5,10 @@ import { synchronizeAppearance } from "./synchronize-appearance"
 import { createAppearanceStore } from "../store/appearance-store"
 import type { AppearancePersistenceAdapter } from "../persistence/types"
 import type { AppearancePreference, AppearanceState } from "../types"
-import { createMatchMedia, createMatchMediaMock } from "@repo/foundation-test-mocks"
+import {
+  createMatchMedia,
+  createMatchMediaMock,
+} from "@repo/foundation-test-mocks"
 
 function createMockAdapter(): AppearancePersistenceAdapter & {
   emit: (preference: AppearancePreference) => void
@@ -237,11 +240,9 @@ describe("synchronizeAppearance", () => {
   })
 
   it("gracefully handles matchMedia() throwing an error during readSystemMatches", () => {
-    const throwingMatchMedia = vi
-      .fn()
-      .mockImplementation(() => {
-        throw new Error("matchMedia error")
-      })
+    const throwingMatchMedia = vi.fn().mockImplementation(() => {
+      throw new Error("matchMedia error")
+    })
 
     window.matchMedia = throwingMatchMedia
 
@@ -258,11 +259,9 @@ describe("synchronizeAppearance", () => {
   })
 
   it("gracefully handles matchMedia() throwing during listener setup", () => {
-    const throwingMatchMedia = vi
-      .fn()
-      .mockImplementation(() => {
-        throw new Error("matchMedia setup error")
-      })
+    const throwingMatchMedia = vi.fn().mockImplementation(() => {
+      throw new Error("matchMedia setup error")
+    })
 
     window.matchMedia = throwingMatchMedia
 
@@ -321,9 +320,9 @@ describe("synchronizeAppearance", () => {
 
     const mockMatchMedia = createMatchMedia(
       conditionalThrowMatchMedia().matches
-    );
+    )
 
-    window.matchMedia = mockMatchMedia;
+    window.matchMedia = mockMatchMedia
 
     const localStore = createAppearanceStore("system", "light")
     let dispose: () => void = () => {}

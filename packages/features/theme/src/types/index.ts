@@ -27,7 +27,7 @@ export interface ThemeContextValue {
 // consumers migrate to the `Appearance`-prefixed names incrementally.
 // ---------------------------------------------------------------------------
 
-export type AppearancePreference = "light" | "dark" | "system"
+export type AppearancePreference = SharedAppearancePreference
 
 export type ResolvedColorScheme = "light" | "dark"
 
@@ -47,3 +47,4 @@ export type ThemePreference = AppearancePreference
 
 /** @deprecated Use {@link AppearanceState} instead. */
 export type ThemeState = AppearanceState
+import type { AppearancePreference as SharedAppearancePreference } from "@repo/shared-contracts"

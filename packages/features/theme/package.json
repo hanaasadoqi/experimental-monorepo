@@ -15,6 +15,7 @@
     }
   },
   "dependencies": {
+    "@repo/shared-contracts": "workspace:*",
     "@repo/services-zustand": "workspace:*",
     "zustand": "^4.5.2"
   },
