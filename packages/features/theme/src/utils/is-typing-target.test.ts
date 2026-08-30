@@ -10,8 +10,8 @@ describe("isTypingTarget", () => {
     it("returns false for non-HTMLElement targets", () => {
       const targets: EventTarget[] = [
         new EventTarget(),
-        { tagName: "DIV" } as any,
-        { isContentEditable: true } as any,
+        { tagName: "DIV" } as unknown as EventTarget,
+        { isContentEditable: true } as unknown as EventTarget,
       ]
 
       targets.forEach((target) => {
@@ -24,7 +24,7 @@ describe("isTypingTarget", () => {
     })
 
     it("returns false for Window", () => {
-      expect(isTypingTarget(window as any)).toBe(false)
+      expect(isTypingTarget(window as unknown as EventTarget)).toBe(false)
     })
   })
 

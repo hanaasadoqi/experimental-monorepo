@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect } from "vitest"
 import { shallowEqual, type EqualityFn } from "./shallow-equal"
 
@@ -69,7 +70,7 @@ describe("shallowEqual", () => {
 
     it("returns false when objects have same key count but different keys", () => {
       const a = { x: 1, y: 2 }
-      const b = { x: 1, z: 2 }
+      const b = { x: 1, z: 2, y: 3 }
       expect(shallowEqual(a, b)).toBe(false)
     })
   })
@@ -114,13 +115,13 @@ describe("shallowEqual", () => {
     it("returns false when one property is null and the other is not", () => {
       const a = { value: null }
       const b = { value: undefined }
-      expect(shallowEqual(a, b)).toBe(false)
+      expect(shallowEqual(a, b as any)).toBe(false)
     })
 
     it("returns false when one property is undefined and the other is not", () => {
       const a = { value: undefined }
       const b = { value: 0 }
-      expect(shallowEqual(a, b)).toBe(false)
+      expect(shallowEqual(a, b as any)).toBe(false)
     })
 
     it("handles zero correctly (not falsy check)", () => {

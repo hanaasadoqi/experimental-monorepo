@@ -160,6 +160,7 @@ describe("meetsContrastRequirement", () => {
     )
     // result1 should be true, result2 might be false (or very close)
     expect(result1).toBe(true)
+    expect(result2).toBe(false)
   })
 
   it("handles NaN values by returning false", () => {

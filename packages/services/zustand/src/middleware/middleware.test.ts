@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeEach, vi } from "vitest"
-import { create } from "zustand"
+import { create, createStore } from "zustand"
 import { composeMiddleware, withCondition } from "./types.js"
 import { persistMiddleware, asyncPersistMiddleware } from "./persist.js"
 import { createMemoryAdapter } from "../persistence/memory-adapter.js"
@@ -23,7 +24,7 @@ describe("Middleware", () => {
           return next(set, get, api)
         }
 
-      const store = create<TestState>(
+      const store = create<any>(
         trackingMiddleware((set) => ({
           count: 0,
           increment: () => set((s) => ({ count: s.count + 1 })),
@@ -54,7 +55,7 @@ describe("Middleware", () => {
 
       const composed = composeMiddleware(middleware1, middleware2)
 
-      create<TestState>(
+      create<any>(
         composed((set) => ({
           count: 0,
           increment: () => set((s) => ({ count: s.count + 1 })),
@@ -68,7 +69,7 @@ describe("Middleware", () => {
     })
 
     it("should compose empty middleware list", () => {
-      const store = create<TestState>(
+      const store = create<any>(
         composeMiddleware<TestState>()((set) => ({
           count: 0,
           increment: () => set((s) => ({ count: s.count + 1 })),
@@ -97,7 +98,7 @@ describe("Middleware", () => {
 
       const conditionMiddleware = withCondition(true, mockMiddleware)
 
-      create<TestState>(
+      create<any>(
         conditionMiddleware((set) => ({
           value: 0,
           setValue: (v) => set({ value: v }),
@@ -118,7 +119,7 @@ describe("Middleware", () => {
 
       const conditionMiddleware = withCondition(false, mockMiddleware)
 
-      create<TestState>(
+      create<any>(
         conditionMiddleware((set) => ({
           value: 0,
           setValue: (v) => set({ value: v }),
@@ -141,7 +142,7 @@ describe("Middleware", () => {
         mockMiddleware
       )
 
-      const store = create<TestState>(
+      const store = create<any>(
         conditionMiddleware((set) => ({
           value: 0,
           setValue: (v) => set({ value: v }),
@@ -167,7 +168,7 @@ describe("Middleware", () => {
     })
 
     it("should persist state on every update", () => {
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
         })((set) => ({
@@ -195,7 +196,7 @@ describe("Middleware", () => {
 
       adapter.write(initialState)
 
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
         })((set) => ({
@@ -220,7 +221,7 @@ describe("Middleware", () => {
         setText: () => {},
       })
 
-      create<TestState>(
+      create<any>(
         persistMiddleware({
           adapter,
           onRehydrate,
@@ -249,7 +250,7 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      create<TestState>(
+      create<any>(
         persistMiddleware({
           adapter: failingAdapter,
           onError,
@@ -276,7 +277,7 @@ describe("Middleware", () => {
         count: 100, // Force count to 100
       })
 
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
           merge: customMerge,
@@ -293,7 +294,7 @@ describe("Middleware", () => {
     })
 
     it("should handle update functions in set", () => {
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
         })((set) => ({
@@ -310,7 +311,7 @@ describe("Middleware", () => {
     })
 
     it("should handle partial state updates", () => {
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
         })((set) => ({
@@ -345,12 +346,12 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
         })((set) => ({
           data: "initial",
-          setData: (d) => set({ data: d }),
+          setData: (d: string) => set({ data: d }),
         }))
       )
 
@@ -374,12 +375,12 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
         })((set) => ({
           data: "initial",
-          setData: (d) => set({ data: d }),
+          setData: (d: string) => set({ data: d }),
         }))
       )
 
@@ -400,13 +401,13 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
           onError,
         })((set) => ({
           data: "initial",
-          setData: (d) => set({ data: d }),
+          setData: (d: string) => set({ data: d }),
         }))
       )
 
@@ -435,13 +436,13 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      create<TestState>(
+      create<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
           onRehydrate,
         })((set) => ({
           data: "initial",
-          setData: (d) => set({ data: d }),
+          setData: (d: string) => set({ data: d }),
         }))
       )
 
@@ -472,13 +473,13 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
           merge: customMerge,
         })((set) => ({
           data: "initial",
-          setData: (d) => set({ data: d }),
+          setData: (d: string) => set({ data: d }),
         }))
       )
 
@@ -488,7 +489,7 @@ describe("Middleware", () => {
     })
 
     it("should handle async subscribe to external changes", async () => {
-      const persistedData = { data: "initial", setData: () => {} }
+      const persistedData = { data: "initial", setData: (_d: string) => { } }
       let subscriber: (() => void) | null = null
 
       const asyncAdapter = {
@@ -502,13 +503,13 @@ describe("Middleware", () => {
         },
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
           syncExternal: true,
         })((set) => ({
           data: "initial",
-          setData: (d) => set({ data: d }),
+          setData: (d: string) => set({ data: d }),
         }))
       )
 
@@ -516,8 +517,8 @@ describe("Middleware", () => {
 
       // Simulate external change
       persistedData.data = "external-change"
-      if (subscriber) {
-        subscriber()
+      if (subscriber && typeof subscriber === "function") {
+        (subscriber as any)()
         await new Promise((r) => setTimeout(r, 10))
       }
 
@@ -534,13 +535,13 @@ describe("Middleware", () => {
         subscribe: subscribeSpy,
       }
 
-      create<TestState>(
+      createStore<any>(
         asyncPersistMiddleware({
           adapter: asyncAdapter,
           syncExternal: false,
-        })((set) => ({
+        })((set: any) => ({
           data: "initial",
-          setData: (d) => set({ data: d }),
+          setData: () => set({}),
         }))
       )
 
@@ -570,7 +571,7 @@ describe("Middleware", () => {
         },
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
           syncExternal: true,
@@ -581,12 +582,12 @@ describe("Middleware", () => {
       )
 
       // Simulate external change
-      if (externalSubscriber) {
+      if (externalSubscriber && typeof externalSubscriber === "function") {
         vi.spyOn(adapter, "read").mockReturnValue({
           value: "external-update",
           setValue: () => {},
         })
-        externalSubscriber()
+          ; (externalSubscriber as () => void)() // Trigger the subscriber callback
       }
 
       expect(store.getState().value).toBe("external-update")
@@ -604,7 +605,7 @@ describe("Middleware", () => {
         },
       }
 
-      create<TestState>(
+      create<any>(
         persistMiddleware({
           adapter,
           syncExternal: false,
@@ -626,7 +627,7 @@ describe("Middleware", () => {
         subscribe: () => unsubscribeSpy,
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
           syncExternal: true,
@@ -657,7 +658,7 @@ describe("Middleware", () => {
         },
       }
 
-      create<TestState>(
+      create<any>(
         persistMiddleware({
           adapter,
           onError,
@@ -669,8 +670,8 @@ describe("Middleware", () => {
       )
 
       // Trigger subscriber callback with error
-      if (externalSubscriber) {
-        externalSubscriber()
+      if (externalSubscriber && typeof externalSubscriber === "function") {
+        (externalSubscriber as () => void)()
       }
 
       expect(onError).toHaveBeenCalledWith(expect.any(Error))
@@ -691,7 +692,7 @@ describe("Middleware", () => {
         },
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
           syncExternal: true,
@@ -702,8 +703,8 @@ describe("Middleware", () => {
       )
 
       // Trigger external change
-      if (externalSubscriber) {
-        externalSubscriber()
+      if (externalSubscriber && typeof externalSubscriber === "function") {
+        (externalSubscriber as () => void)()
       }
 
       // setValue should still be a function
@@ -735,7 +736,7 @@ describe("Middleware", () => {
         },
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
           merge: customMerge,
@@ -750,8 +751,8 @@ describe("Middleware", () => {
       externalValue = "updated-external"
 
       // Trigger external change
-      if (externalSubscriber) {
-        externalSubscriber()
+      if (externalSubscriber && typeof externalSubscriber === "function") {
+        (externalSubscriber as () => void)()
       }
 
       expect(store.getState().value).toBe("updated-external")
@@ -773,7 +774,7 @@ describe("Middleware", () => {
         },
       }
 
-      const store = create<TestState>(
+      const _store = create<any>(
         persistMiddleware({
           adapter,
           onRehydrate,
@@ -787,8 +788,8 @@ describe("Middleware", () => {
       const initialCallCount = onRehydrate.mock.calls.length
 
       // Trigger external change
-      if (externalSubscriber) {
-        externalSubscriber()
+      if (externalSubscriber && typeof externalSubscriber === "function") {
+        (externalSubscriber as () => void)()
       }
 
       expect(onRehydrate.mock.calls.length).toBeGreaterThan(initialCallCount)
@@ -805,7 +806,7 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
           onError,
@@ -829,7 +830,7 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
           onError: () => {},
@@ -855,7 +856,7 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      create<TestState>(
+      create<any>(
         persistMiddleware({
           adapter,
           onError,
@@ -882,7 +883,7 @@ describe("Middleware", () => {
         subscribe: () => () => {},
       }
 
-      const store = create<TestState>(
+      const store = create<any>(
         persistMiddleware({
           adapter,
         })((set) => ({

@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import { render, screen } from "@testing-library/react"
 import { ThemeProvider } from "./theme-provider"
 import { themeStore } from "../store/theme-store"
+import type { ThemeStoreState } from "../store/theme-store"
 
 // Mock the store
 vi.mock("../store/theme-store", () => ({
@@ -16,11 +17,16 @@ describe("ThemeProvider", () => {
   let mockSubscribe: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
-    mockGetState = vi.fn()
+    mockGetState = vi.fn(() => ({
+      theme: "light",
+      isDark: false,
+      setTheme: vi.fn(),
+    }))
     mockSubscribe = vi.fn(() => vi.fn()) // Return unsubscribe function
 
-    vi.mocked(themeStore).getState = mockGetState
-    vi.mocked(themeStore).subscribe = mockSubscribe
+    const mocked = themeStore as unknown as { getState?: typeof mockGetState; subscribe?: typeof mockSubscribe }
+    mocked.getState = mockGetState
+    mocked.subscribe = mockSubscribe
 
     // Clear document classes
     document.documentElement.className = ""
@@ -260,7 +266,7 @@ describe("ThemeProvider", () => {
         setTheme: setThemeMock,
       })
 
-      let subscriptionCallback: ((state: any) => void) | null = null
+      let subscriptionCallback: ((state: ThemeStoreState) => void) | null = null
       mockSubscribe.mockImplementation((callback) => {
         subscriptionCallback = callback
         return vi.fn()
@@ -275,8 +281,9 @@ describe("ThemeProvider", () => {
       // Simulate theme change from light to dark
       expect(document.documentElement.classList.contains("dark")).toBe(false)
 
-      if (subscriptionCallback) {
-        subscriptionCallback({ theme: "dark", isDark: true })
+      if (subscriptionCallback && typeof subscriptionCallback === "function") {
+        const callback = subscriptionCallback as (state: ThemeStoreState) => void
+        callback({ theme: "dark", isDark: true, setTheme: vi.fn() })
       }
 
       expect(document.documentElement.classList.contains("dark")).toBe(true)
@@ -289,7 +296,7 @@ describe("ThemeProvider", () => {
         setTheme: vi.fn(),
       })
 
-      let subscriptionCallback: ((state: any) => void) | null = null
+      let subscriptionCallback: ((state: ThemeStoreState) => void) | null = null
       mockSubscribe.mockImplementation((callback) => {
         subscriptionCallback = callback
         return vi.fn()
@@ -303,8 +310,9 @@ describe("ThemeProvider", () => {
 
       expect(document.documentElement.classList.contains("dark")).toBe(true)
 
-      if (subscriptionCallback) {
-        subscriptionCallback({ theme: "light", isDark: false })
+      if (subscriptionCallback && typeof subscriptionCallback === "function") {
+        const callback = subscriptionCallback as (state: ThemeStoreState) => void
+        callback({ theme: "light", isDark: false, setTheme: vi.fn() })
       }
 
       expect(document.documentElement.classList.contains("dark")).toBe(false)
@@ -380,7 +388,7 @@ describe("ThemeProvider", () => {
         setTheme: vi.fn(),
       })
 
-      let subscriptionCallback: ((state: any) => void) | null = null
+      let subscriptionCallback: ((state: ThemeStoreState) => void) | null = null
       mockSubscribe.mockImplementation((callback) => {
         subscriptionCallback = callback
         return vi.fn()
@@ -393,16 +401,17 @@ describe("ThemeProvider", () => {
       )
 
       // Sequence of theme changes
-      const themes = [
-        { theme: "dark", isDark: true },
-        { theme: "light", isDark: false },
-        { theme: "dark", isDark: true },
-        { theme: "light", isDark: false },
+      const themes: ThemeStoreState[] = [
+        { theme: "dark", isDark: true, setTheme: vi.fn() },
+        { theme: "light", isDark: false, setTheme: vi.fn() },
+        { theme: "dark", isDark: true, setTheme: vi.fn() },
+        { theme: "light", isDark: false, setTheme: vi.fn() },
       ]
 
       themes.forEach((themeState) => {
-        if (subscriptionCallback) {
-          subscriptionCallback(themeState)
+        if (subscriptionCallback && typeof subscriptionCallback === "function") {
+          const callback = subscriptionCallback as (state: ThemeStoreState) => void
+          callback(themeState)
         }
       })
 
@@ -465,7 +474,7 @@ describe("ThemeProvider", () => {
         setTheme: vi.fn(),
       })
 
-      let subscriptionCallback: ((state: any) => void) | null = null
+      let subscriptionCallback: ((state: ThemeStoreState) => void) | null = null
       mockSubscribe.mockImplementation((callback) => {
         subscriptionCallback = callback
         return vi.fn()
@@ -478,14 +487,16 @@ describe("ThemeProvider", () => {
       )
 
       // User toggles to dark
-      if (subscriptionCallback) {
-        subscriptionCallback({ theme: "dark", isDark: true })
+      if (subscriptionCallback && typeof subscriptionCallback === "function") {
+        const callback = subscriptionCallback as (state: ThemeStoreState) => void
+        callback({ theme: "dark", isDark: true, setTheme: vi.fn() })
       }
       expect(document.documentElement.classList.contains("dark")).toBe(true)
 
       // User toggles back to light
-      if (subscriptionCallback) {
-        subscriptionCallback({ theme: "light", isDark: false })
+      if (subscriptionCallback && typeof subscriptionCallback === "function") {
+        const callback = subscriptionCallback as (state: ThemeStoreState) => void
+        callback({ theme: "light", isDark: false, setTheme: vi.fn() })
       }
       expect(document.documentElement.classList.contains("dark")).toBe(false)
     })

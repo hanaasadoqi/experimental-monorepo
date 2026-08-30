@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { readCookie } from "./read-cookie"
 
@@ -22,7 +23,7 @@ describe("readCookie", () => {
         return undefined
       }),
     }
-    ;(cookies as any).mockResolvedValue(mockCookieStore)
+      ; (cookies as any).mockResolvedValue(mockCookieStore)
 
     const result = await readCookie("test-cookie")
     expect(result).toBe("test-value")

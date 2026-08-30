@@ -2,7 +2,7 @@ import { createStore } from "@repo/services-zustand/store"
 
 import type { Theme, ThemeContextValue } from "../types"
 
-interface ThemeStoreState extends ThemeContextValue {
+export interface ThemeStoreState extends ThemeContextValue {
   setTheme: (theme: Theme) => void
 }
 

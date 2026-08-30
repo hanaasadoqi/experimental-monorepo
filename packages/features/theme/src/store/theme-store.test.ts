@@ -206,7 +206,7 @@ describe("ThemeStore", () => {
       const callback2 = vi.fn()
 
       const unsubscribe1 = store.subscribe(callback1)
-      const unsubscribe2 = store.subscribe(callback2)
+      const _unsubscribe2 = store.subscribe(callback2)
 
       store.getState().setTheme("dark")
       expect(callback1).toHaveBeenCalledTimes(1)
@@ -267,7 +267,7 @@ describe("ThemeStore", () => {
 
     it("sequences multiple theme changes correctly", () => {
       const store = createThemeStore()
-      const states: any[] = []
+      const states: { theme: Theme; isDark: boolean }[] = []
 
       store.subscribe((state) => {
         states.push({ theme: state.theme, isDark: state.isDark })
@@ -336,7 +336,7 @@ describe("ThemeStore", () => {
   describe("real-world scenarios", () => {
     it("simulates user toggling theme preference", () => {
       const store = createThemeStore()
-      const currentStates: any[] = []
+      const currentStates: { theme: Theme; isDark: boolean }[] = []
 
       store.subscribe((state) => {
         currentStates.push({ theme: state.theme, isDark: state.isDark })
