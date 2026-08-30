@@ -16,7 +16,8 @@
     "next-env.d.ts",
     "next.config.ts",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
-  ],
+    ".next/dev/types/**/*.ts",
+    "server"
+ ],
   "exclude": ["node_modules", ".next", ".turbo"]
 }

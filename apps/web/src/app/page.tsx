@@ -2,8 +2,8 @@
 
 import { Moon, Sun } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useSetAppearancePreference } from "@repo/feature-preferences/hooks"
-import { useResolvedColorScheme } from "@repo/feature-theme/hooks"
+import { useSetAppearancePreference } from "@repo/feature-preferences/react"
+import { useResolvedAppearance } from "@repo/feature-theme"
 import { Button } from "@repo/ui-components/base/button"
 import {
   Card,
@@ -16,7 +16,7 @@ import {
 } from "@repo/ui-components/base/card"
 
 export default function Page() {
-  const colorScheme = useResolvedColorScheme()
+  const colorScheme = useResolvedAppearance()
   const setPreference = useSetAppearancePreference()
   const isDark = colorScheme === "dark"
   const Icon = isDark ? Sun : Moon

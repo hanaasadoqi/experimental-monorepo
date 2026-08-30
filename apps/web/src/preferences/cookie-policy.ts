@@ -1,6 +1,8 @@
-export const APPEARANCE_PREFERENCE_COOKIE = {
-  name: "appearance-preference",
-  maxAge: 31_536_000,
+export const APPEARANCE_PREFERENCE_COOKIE =
+  "appearance"
+
+export const APPEARANCE_PREFERENCE_COOKIE_OPTIONS = {
   path: "/",
   sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
 } as const

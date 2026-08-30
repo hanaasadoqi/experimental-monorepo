@@ -1,12 +1,29 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google"
+import { Geist, Geist_Mono, Inter } from "next/font/google";
+import "./globals.css"
+import { cn } from "@repo/ui-components/lib/utils";
+import type { ReactNode } from "react"
 import Script from "next/script"
 
-import "./globals.css"
-import { generateBootstrapCode } from "@repo/feature-theme/runtime"
-import { cn } from "@repo/ui-components/lib/utils"
+import {
+  DEFAULT_APPEARANCE_PREFERENCE,
+} from "@repo/feature-preferences"
 
-import { ApplicationProviders } from "../components"
-import { readAppearancePreferenceCookie } from "../server/preferences"
+import {
+  generateBootstrapCode,
+} from "@repo/feature-theme"
+
+import {
+  ApplicationProviders,
+} from "../providers/application-providers"
+
+import {
+  readAppearancePreferenceCookie,
+} from "../server/preferences/read-appearance-preference-cookie"
+
+
+export interface RootLayoutProps {
+  children: ReactNode
+}
 
 const geist = Geist({
   subsets: ["latin"],
@@ -25,24 +42,22 @@ const fontMono = Geist_Mono({
 
 export default async function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
-  const preference = await readAppearancePreferenceCookie()
-  const effectivePreference = preference ?? "system"
-  const explicitColorScheme =
-    effectivePreference === "system" ? undefined : effectivePreference
+}: RootLayoutProps) {
+  const storedPreference =
+    await readAppearancePreferenceCookie()
+
+  const initialAppearance =
+    storedPreference ??
+    DEFAULT_APPEARANCE_PREFERENCE
+
+  const explicitAppearance =
+    initialAppearance === "system"
+      ? undefined
+      : initialAppearance
 
   return (
     <html
       lang="en"
-      suppressHydrationWarning
-      data-theme={explicitColorScheme}
-      style={{
-        ...(explicitColorScheme
-          ? { colorScheme: explicitColorScheme }
-          : undefined),
-      }}
       className={cn(
         "antialiased",
         fontMono.variable,
@@ -50,28 +65,36 @@ export default async function RootLayout({
         inter.variable,
         geist.variable,
         {
-          light: explicitColorScheme
-            ? explicitColorScheme === "light"
-            : effectivePreference === "light",
-          dark: explicitColorScheme
-            ? explicitColorScheme === "dark"
-            : effectivePreference === "dark",
+          "dark": explicitAppearance === "dark"
         }
       )}
+      data-theme={explicitAppearance}
+      style={
+        explicitAppearance
+          ? {
+            colorScheme:
+              explicitAppearance,
+          }
+          : undefined
+      }
+      suppressHydrationWarning
     >
-      <body>
+      <body
+
+      >
         <Script
           id="appearance-bootstrap"
           strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: generateBootstrapCode(effectivePreference),
-          }}
-          suppressHydrationWarning
-        />
+        >
+          {generateBootstrapCode(
+            initialAppearance,
+          )}
+        </Script>
+
         <ApplicationProviders
-          {...(effectivePreference === undefined
-            ? {}
-            : { initialPreference: effectivePreference })}
+          initialAppearance={
+            initialAppearance
+          }
         >
           {children}
         </ApplicationProviders>
