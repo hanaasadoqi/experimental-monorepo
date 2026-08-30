@@ -1,5 +1,0 @@
-export { createLocalStorageAdapter } from "./local-storage-adapter.js"
-export { createCookieAdapter } from "./cookie-adapter.js"
-export { createMemoryAdapter } from "./memory-adapter.js"
-export type { CookieAdapterOptions } from "./cookie-adapter.js"
-export type { PersistenceAdapter } from "../types/index.js"

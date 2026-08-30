@@ -1,47 +1,17 @@
 {
   "name": "@repo/services-zustand",
-  "version": "0.0.0",
-  "type": "module",
   "private": true,
-  "sideEffects": false,
-  "scripts": {
-    "lint": "eslint",
-    "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
-    "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
-    "test:run": "vitest run --coverage",
-    "test": "vitest run"
-  },
-  "dependencies": {
-    "zustand": "^4.5.2"
-  },
-  "devDependencies": {
-    "@repo/foundation-eslint-config": "workspace:*",
-    "@repo/foundation-prettier-config": "workspace:*",
-    "@repo/foundation-typescript-config": "workspace:*",
-    "@repo/foundation-vitest-config": "workspace:*",
-    "@repo/foundation-vitest-utils": "workspace:*",
-    "@repo/foundation-test-mocks": "workspace:*",
-    "@repo/shared-utils": "workspace:*",
-    "@repo/shared-contracts": "workspace:*",
-    "@types/node": "^26.4.0",
-    "eslint": "^9.39.5",
-    "@eslint/js": "^10.0.1",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^15.2.0",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^7.9.0",
-    "vitest": "^4.1.11",
-    "@vitest/coverage-v8": "^4.1.11"
-  },
+  "type": "module",
   "exports": {
-    "./store": "./src/store/index.ts",
-    "./hooks": "./src/hooks/index.ts",
-    "./types": "./src/types/index.ts",
-    "./persistence": "./src/persistence/index.ts",
-    "./middleware": "./src/middleware/index.ts",
-    "./migrations": "./src/migrations/index.ts",
-    "./slices": "./src/slices/index.ts",
-    "./selectors": "./src/selectors/index.ts",
-    "./utils": "./src/utils/index.ts"
+    ".": "./src/index.ts",
+    "./persist": "./src/persist/index.ts",
+    "./hydration": "./src/hydration/index.ts",
+    "./react": "./src/react/index.ts",
+    "./testing": "./src/testing/index.ts",
+    "./factories": "./src/factories/index.ts"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "zustand": "^5.0.0"
   }
 }
