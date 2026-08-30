@@ -94,14 +94,13 @@ export const persistMiddleware = <T>(
             typeof update === "function" ? update(get()) : update
           const merged = { ...get(), ...nextState }
 
-          try {
-            if (adapter.write) {
-              adapter.write(persistenceKey, merged)
-            }
-          } catch (error: unknown) {
-            if (onError) {
-              onError(error instanceof Error ? error : new Error(String(error)))
-            }
+          // Write to adapter asynchronously, without blocking state update
+          if (adapter.write) {
+            void adapter.write(persistenceKey, merged).catch((error: unknown) => {
+              if (onError) {
+                onError(error instanceof Error ? error : new Error(String(error)))
+              }
+            })
           }
 
           set(update)
@@ -111,37 +110,39 @@ export const persistMiddleware = <T>(
       )
 
       // Rehydrate on initialization
-      try {
-        const persisted = adapter.read ? adapter.read(persistenceKey) : null
-        if (persisted) {
-          // Merge persisted state into the store object
-          const initial = store as Record<string, unknown>
-          const merged = merge
-            ? merge(persisted, store)
-            : { ...store, ...persisted }
+      ;(async () => {
+        try {
+          const persisted = adapter.read ? await adapter.read(persistenceKey) : null
+          if (persisted) {
+            // Merge persisted state into the store object
+            const initial = store as Record<string, unknown>
+            const merged = merge
+              ? merge(persisted, store)
+              : { ...store, ...persisted }
 
-          // Update the store object in place with merged values
-          for (const key in merged) {
-            if (typeof merged[key as keyof T] !== "function") {
-              initial[key] = merged[key as keyof T]
+            // Update the store object in place with merged values
+            for (const key in merged) {
+              if (typeof merged[key as keyof T] !== "function") {
+                initial[key] = merged[key as keyof T]
+              }
+            }
+
+            if (onRehydrate) {
+              onRehydrate(merged as T)
             }
           }
-
-          if (onRehydrate) {
-            onRehydrate(merged as T)
+        } catch (error: unknown) {
+          if (onError) {
+            onError(error instanceof Error ? error : new Error(String(error)))
           }
         }
-      } catch (error: unknown) {
-        if (onError) {
-          onError(error instanceof Error ? error : new Error(String(error)))
-        }
-      }
+      })()
 
       // Subscribe to external storage changes if enabled
       if (syncExternal && adapter.subscribe) {
-        const unsubscribe = adapter.subscribe(persistenceKey, () => {
+        const unsubscribe = adapter.subscribe(persistenceKey, async () => {
           try {
-            const persisted = adapter.read ? adapter.read(persistenceKey) : null
+            const persisted = adapter.read ? await adapter.read(persistenceKey) : null
             if (persisted) {
               const initial = get()
               const merged = merge

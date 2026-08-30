@@ -19,41 +19,42 @@ export interface CookieAdapterOptions {
  * @param options Cookie options
  */
 export const createCookieAdapter = <T>(
-  key: string,
+  defaultKey: string,
   options: CookieAdapterOptions = {}
 ): PersistenceAdapter<T> => {
   const maxAge = options.maxAge ?? 365 * 24 * 60 * 60 // 1 year
 
-  const parseValue = (): T | undefined => {
+  const parseValue = (cookieKey: string): T | null => {
     if (!isBrowser() || !isCookieAvailable()) {
-      return undefined
+      return null
     }
 
     try {
       const match = document.cookie
         .split("; ")
-        .find((c) => c.startsWith(`${key}=`))
+        .find((c) => c.startsWith(`${cookieKey}=`))
 
-      if (!match) return undefined
+      if (!match) return null
 
       const encodedValue = match.split("=")[1]
-      if (!encodedValue) return undefined
+      if (!encodedValue) return null
 
       const value = decodeURIComponent(encodedValue)
       return JSON.parse(value) as T
     } catch {
-      return undefined
+      return null
     }
   }
 
   let writeTimeout: NodeJS.Timeout | null = null
 
   return {
-    read(): T | undefined {
-      return parseValue()
+    async read(key?: string): Promise<T | null> {
+      const cookieKey = key ?? defaultKey
+      return parseValue(cookieKey)
     },
 
-    write(state: T): void {
+    async write(key: string, state: T): Promise<void> {
       if (!isBrowser() || !isCookieAvailable()) {
         return
       }
@@ -70,14 +71,45 @@ export const createCookieAdapter = <T>(
       }, 0)
     },
 
-    subscribe(listener: () => void): () => void {
-      let lastValue = parseValue()
+    async delete(key: string): Promise<void> {
+      if (!isBrowser() || !isCookieAvailable()) {
+        return
+      }
+
+      try {
+        document.cookie = `${key}=; max-age=0; path=/`
+      } catch {
+        // Silently fail
+      }
+    },
+
+    async clear(): Promise<void> {
+      if (!isBrowser() || !isCookieAvailable()) {
+        return
+      }
+
+      try {
+        document.cookie.split(";").forEach((c) => {
+          const eqPos = c.indexOf("=")
+          const name = eqPos > -1 ? c.substring(0, eqPos).trim() : c.trim()
+          if (name) {
+            document.cookie = `${name}=; max-age=0; path=/`
+          }
+        })
+      } catch {
+        // Silently fail
+      }
+    },
+
+    subscribe(key: string, listener: (value: T | null) => void): () => void {
+      const cookieKey = key ?? defaultKey
+      let lastValue = parseValue(cookieKey)
 
       const pollInterval = setInterval(() => {
-        const currentValue = parseValue()
+        const currentValue = parseValue(cookieKey)
         if (currentValue !== lastValue) {
           lastValue = currentValue
-          listener()
+          listener(currentValue)
         }
       }, 1000)
 

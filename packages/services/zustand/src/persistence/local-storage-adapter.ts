@@ -9,24 +9,25 @@ import { isBrowser, isLocalStorageAvailable } from "../utils/ssr.ts"
  * @throws Nothing - fails gracefully in SSR/non-browser environments
  */
 export const createLocalStorageAdapter = <T>(
-  key: string
+  defaultKey: string
 ): PersistenceAdapter<T> => {
   return {
-    read(): T | undefined {
+    async read(key?: string): Promise<T | null> {
+      const storageKey = key ?? defaultKey
       if (!isBrowser() || !isLocalStorageAvailable()) {
-        return undefined
+        return null
       }
 
       try {
-        const item = localStorage.getItem(key)
-        if (!item) return undefined
+        const item = localStorage.getItem(storageKey)
+        if (!item) return null
         return JSON.parse(item) as T
       } catch {
-        return undefined
+        return null
       }
     },
 
-    write(state: T): void {
+    async write(key: string, state: T): Promise<void> {
       if (!isBrowser() || !isLocalStorageAvailable()) {
         return
       }
@@ -38,15 +39,40 @@ export const createLocalStorageAdapter = <T>(
       }
     },
 
-    subscribe(listener: () => void): () => void {
+    async delete(key: string): Promise<void> {
+      if (!isBrowser() || !isLocalStorageAvailable()) {
+        return
+      }
+
+      try {
+        localStorage.removeItem(key)
+      } catch {
+        // Silently fail on delete errors
+      }
+    },
+
+    async clear(): Promise<void> {
+      if (!isBrowser() || !isLocalStorageAvailable()) {
+        return
+      }
+
+      try {
+        localStorage.clear()
+      } catch {
+        // Silently fail on clear errors
+      }
+    },
+
+    subscribe(key: string, listener: (value: T | null) => void): () => void {
+      const storageKey = key ?? defaultKey
       if (!isBrowser()) {
         // Return no-op unsubscribe in non-browser environments
         return () => {}
       }
 
       const handler = (e: StorageEvent) => {
-        if (e.key === key) {
-          listener()
+        if (e.key === storageKey) {
+          listener(null)
         }
       }
 

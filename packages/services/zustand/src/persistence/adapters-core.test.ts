@@ -19,7 +19,7 @@ describe("LocalStorage Adapter", () => {
     }
   })
 
-  it("should write and read values from localStorage", function () {
+  it("should write and read values from localStorage", async function () {
     if (typeof localStorage === "undefined") return
 
     const adapter = createLocalStorageAdapter<{ value: string }>("test-key")
@@ -27,32 +27,34 @@ describe("LocalStorage Adapter", () => {
     const testData = { value: "test data" }
     localStorage.setItem("test-key", JSON.stringify(testData))
 
-    const result = adapter.read()
+    const result = await adapter.read?.("test-key")
     expect(result).toEqual(testData)
   })
 
-  it("should return undefined for non-existent keys", function () {
+  it("should return null for non-existent keys", async function () {
     if (typeof localStorage === "undefined") return
 
     const adapter = createLocalStorageAdapter<{ value: string }>("missing-key")
-    expect(adapter.read()).toBeUndefined()
+    const result = await adapter.read?.("missing-key")
+    expect(result).toBeNull()
   })
 
-  it("should handle JSON parse errors gracefully", function () {
+  it("should handle JSON parse errors gracefully", async function () {
     if (typeof localStorage === "undefined") return
 
     const adapter = createLocalStorageAdapter<{ value: string }>("error-test")
     localStorage.setItem("error-test", "{ invalid json }")
-    expect(adapter.read()).toBeUndefined()
+    const result = await adapter.read?.("error-test")
+    expect(result).toBeNull()
   })
 
-  it("should write values to localStorage", function () {
+  it("should write values to localStorage", async function () {
     if (typeof localStorage === "undefined") return
 
     const adapter = createLocalStorageAdapter<{ value: string }>("write-test")
     const testData = { value: "test" }
 
-    adapter.write(testData)
+    await adapter.write?.("write-test", testData)
 
     const stored = localStorage.getItem("write-test")
     expect(JSON.parse(stored!)).toEqual(testData)

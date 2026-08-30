@@ -167,7 +167,7 @@ describe("Middleware", () => {
       adapter = createMemoryAdapter<TestState>("test-persist")
     })
 
-    it("should persist state on every update", () => {
+    it("should persist state on every update", async () => {
       const store = create<any>(
         persistMiddleware({
           adapter,
@@ -180,10 +180,14 @@ describe("Middleware", () => {
       )
 
       store.getState().increment()
-      expect(adapter.read?.("test-persist")?.count).toBe(1)
+      await new Promise(r => setTimeout(r, 10))
+      const state1 = await adapter.read?.("test-persist")
+      expect(state1?.count).toBe(1)
 
       store.getState().setText("hello")
-      expect(adapter.read?.("test-persist")?.text).toBe("hello")
+      await new Promise(r => setTimeout(r, 10))
+      const state2 = await adapter.read?.("test-persist")
+      expect(state2?.text).toBe("hello")
     })
 
     it("should rehydrate state from adapter on initialization", () => {
@@ -243,11 +247,13 @@ describe("Middleware", () => {
       const onError = vi.fn()
 
       const failingAdapter: PersistenceAdapter<TestState> = {
-        read: () => {
+        read: async (_key?: string) => {
           throw new Error("Read failed")
         },
-        write: () => {},
-        subscribe: () => () => {},
+        write: async (_key?: string, _value?: TestState) => {},
+        delete: async (_key?: string) => {},
+        clear: async () => {},
+        subscribe: (_key?: string, _listener?: () => void) => () => {},
       }
 
       create<any>(
@@ -307,7 +313,8 @@ describe("Middleware", () => {
 
       store.getState().increment()
       expect(store.getState().count).toBe(6)
-      expect(adapter.read?.("test-persist")?.count).toBe(6)
+      const state = await adapter.read?.("test-persist")
+      expect(state?.count).toBe(6)
     })
 
     it("should handle partial state updates", () => {
@@ -323,7 +330,8 @@ describe("Middleware", () => {
       )
 
       store.getState().setText("updated")
-      const persisted = adapter.read?.("test-persist")
+      await new Promise(r => setTimeout(r, 10))
+      const persisted = await adapter.read?.("test-persist")
       expect(persisted?.text).toBe("updated")
       expect(persisted?.count).toBe(0)
     })
@@ -561,8 +569,8 @@ describe("Middleware", () => {
       let externalSubscriber: (() => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({ value: "initial", setValue: () => {} }),
-        write: () => {},
+        read: async () => ({ value: "initial", setValue: () => {} }),
+        write: async () => {},
         subscribe: (listener) => {
           externalSubscriber = listener
           return () => {
@@ -597,8 +605,8 @@ describe("Middleware", () => {
       let subscribeCalled = false
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({ value: "initial", setValue: () => {} }),
-        write: () => {},
+        read: async () => ({ value: "initial", setValue: () => {} }),
+        write: async () => {},
         subscribe: () => {
           subscribeCalled = true
           return () => {}
@@ -622,8 +630,8 @@ describe("Middleware", () => {
       const unsubscribeSpy = vi.fn(() => {})
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({ value: "initial", setValue: () => {} }),
-        write: () => {},
+        read: async () => ({ value: "initial", setValue: () => {} }),
+        write: async () => {},
         subscribe: () => unsubscribeSpy,
       }
 
@@ -648,10 +656,10 @@ describe("Middleware", () => {
       let externalSubscriber: (() => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => {
+        read: async () => {
           throw new Error("Read failed")
         },
-        write: () => {},
+        write: async () => {},
         subscribe: (listener) => {
           externalSubscriber = listener
           return () => {}
@@ -681,11 +689,11 @@ describe("Middleware", () => {
       let externalSubscriber: (() => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({
+        read: async () => ({
           value: "updated",
           setValue: () => {},
         }),
-        write: () => {},
+        write: async () => {},
         subscribe: (listener) => {
           externalSubscriber = listener
           return () => {}
@@ -725,11 +733,11 @@ describe("Middleware", () => {
       let externalSubscriber: (() => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({
+        read: async () => ({
           value: externalValue,
           setValue: () => {},
         }),
-        write: () => {},
+        write: async () => {},
         subscribe: (listener) => {
           externalSubscriber = listener
           return () => {}
@@ -763,11 +771,11 @@ describe("Middleware", () => {
       let externalSubscriber: (() => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({
+        read: async () => ({
           value: "external",
           setValue: () => {},
         }),
-        write: () => {},
+        write: async () => {},
         subscribe: (listener) => {
           externalSubscriber = listener
           return () => {}
@@ -799,8 +807,8 @@ describe("Middleware", () => {
       const onError = vi.fn()
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({ value: "initial", setValue: () => {} }),
-        write: () => {
+        read: async () => ({ value: "initial", setValue: () => {} }),
+        write: async () => {
           throw new Error("Write failed")
         },
         subscribe: () => () => {},
@@ -823,8 +831,8 @@ describe("Middleware", () => {
 
     it("should continue updating state even if write fails", () => {
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({ value: "initial", setValue: () => {} }),
-        write: () => {
+        read: async () => ({ value: "initial", setValue: () => {} }),
+        write: async () => {
           throw new Error("Write failed")
         },
         subscribe: () => () => {},
@@ -849,10 +857,10 @@ describe("Middleware", () => {
       const onError = vi.fn()
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => {
+        read: async () => {
           throw "string-error" // Non-Error thrown
         },
-        write: () => {},
+        write: async () => {},
         subscribe: () => () => {},
       }
 
@@ -873,7 +881,7 @@ describe("Middleware", () => {
       const persistedValues: Partial<TestState> = {}
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({
+        read: async () => ({
           value: persistedValues.value || "initial",
           setValue: () => {},
         }),

@@ -7,25 +7,28 @@ import type { PersistenceAdapter } from "../types/index.ts"
  *
  * Can be used as:
  * - SSR fallback when storage APIs unavailable
- * - Testing mock
+ * - Testing with proper async interface compliance
  * - Temporary state that shouldn't persist
  */
 export const createMemoryAdapter = <T>(defaultKey: string): PersistenceAdapter<T> => {
   const store: Record<string, T | undefined> = {}
 
   return {
-    read(key?: string): T | null {
+    async read(key?: string): Promise<T | null> {
       const k = key ?? defaultKey
       return (store[k] ?? null) as T | null
     },
 
-    write(key: string | T, value?: T): void {
-      // Support both old (value-only) and new (key, value) signatures for backwards compatibility
-      if (typeof key === 'string') {
-        store[key] = value
-      } else {
-        store[defaultKey] = key
-      }
+    async write(key: string, value: T): Promise<void> {
+      store[key] = value
+    },
+
+    async delete(key: string): Promise<void> {
+      delete store[key]
+    },
+
+    async clear(): Promise<void> {
+      Object.keys(store).forEach(k => delete store[k])
     },
 
     subscribe(_key: string, _listener: (value: T | null) => void): () => void {

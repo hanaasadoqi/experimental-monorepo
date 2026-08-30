@@ -41,7 +41,7 @@ export function PreferencesProvider({
   const storeRef = useRef<StoreApi<PreferencesState> | null>(null)
   if (storeRef.current === null) {
     const preference =
-      initialPreference ?? activeAdapter.read?.("preferences") ?? defaultPreference
+      initialPreference ?? (activeAdapter.read?.("preferences").then((s) => s?.appearancePreference) ?? defaultPreference) as AppearancePreference;
     storeRef.current = createPreferencesStore(preference)
   }
 
@@ -55,7 +55,7 @@ export function PreferencesProvider({
         !applyingExternalPreference &&
         state.appearancePreference !== previousState.appearancePreference
       ) {
-        activeAdapter.write(state.appearancePreference)
+        activeAdapter.write?.("preferences", (s) => ({ ...s, appearancePreference: state.appearancePreference }))
       }
     })
     const unsubscribeAdapter = activeAdapter.subscribe((preference) => {
