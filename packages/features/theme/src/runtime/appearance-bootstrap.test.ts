@@ -1,11 +1,20 @@
 import { describe, it, expect } from "vitest"
 import {
+  generateBootstrapCode,
   generateBootstrapScript,
   resolveServerColorScheme,
 } from "./appearance-bootstrap"
 import type { AppearancePreference } from "../types"
 
 describe("generateBootstrapScript", () => {
+  it("exposes executable code for framework script components", () => {
+    const code = generateBootstrapCode("light")
+
+    expect(code).not.toContain("<script")
+    expect(code).not.toContain("</script>")
+    expect(code).toContain("data-theme")
+  })
+
   it("generates a script for light preference", () => {
     const script = generateBootstrapScript("light")
     expect(script).toContain("<script>")

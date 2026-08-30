@@ -31,6 +31,7 @@
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
+    "@repo/foundation-test-mocks": "workspace:*",
     "@repo/shared-utils": "workspace:*",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.4.3",

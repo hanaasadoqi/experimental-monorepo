@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest"
 import { render, renderHook, screen } from "@testing-library/react"
+import { renderToString } from "react-dom/server"
 import userEvent from "@testing-library/user-event"
 import {
   useAppearance,
@@ -48,12 +49,30 @@ const ControlComponent = () => {
   )
 }
 
+const ServerAppearanceComponent = () => {
+  const appearance = useAppearance()
+  const preference = useAppearancePreference()
+  const scheme = useResolvedColorScheme()
+
+  return <div>{`${appearance.preference}:${preference}:${scheme}`}</div>
+}
+
 describe("Appearance hooks", () => {
   let adapter = createLocalStorageAppearanceAdapter()
 
   beforeEach(() => {
     localStorage.clear()
     adapter = createLocalStorageAppearanceAdapter()
+  })
+
+  it("uses the provider's initial state during server rendering", () => {
+    const html = renderToString(
+      <AppearanceProvider adapter={adapter} initialPreference="dark">
+        <ServerAppearanceComponent />
+      </AppearanceProvider>
+    )
+
+    expect(html).toContain("dark:dark:dark")
   })
 
   describe("useAppearance", () => {

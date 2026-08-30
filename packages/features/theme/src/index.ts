@@ -53,6 +53,7 @@ export {
   getSystemColorScheme,
   applyColorScheme,
   getAppliedColorScheme,
+  generateBootstrapCode,
   generateBootstrapScript,
   resolveServerColorScheme,
 } from "./runtime"

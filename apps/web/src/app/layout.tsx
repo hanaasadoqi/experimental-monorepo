@@ -1,8 +1,9 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google"
+import Script from "next/script"
 
 import "./globals.css"
 import { ThemeWrapper } from "@repo/feature-theme/components"
-import { generateBootstrapScript } from "@repo/feature-theme/runtime"
+import { generateBootstrapCode } from "@repo/feature-theme/runtime"
 import { readAppearanceCookie } from "@repo/feature-theme/server"
 import { cn } from "@repo/ui-components/lib/utils"
 
@@ -27,28 +28,42 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const preference = await readAppearanceCookie()
-  const bootstrapScript = generateBootstrapScript(preference || "system")
+  const effectivePreference = preference ?? "system"
+  const explicitColorScheme =
+    effectivePreference === "system" ? undefined : effectivePreference
 
   return (
     <html
       lang="en"
       suppressHydrationWarning
+      data-theme={explicitColorScheme}
+      style={{
+        ...(explicitColorScheme
+          ? { colorScheme: explicitColorScheme }
+          : undefined),
+      }}
       className={cn(
         "antialiased",
         fontMono.variable,
         "font-sans",
         inter.variable,
-        geist.variable
+        geist.variable,
+        {
+          light: explicitColorScheme === "light",
+          dark: explicitColorScheme === "dark",
+        }
       )}
     >
-      <head>{/* meta tags, etc */}</head>
       <body>
-        <ThemeWrapper
-          initialPreference={preference}
-          bootstrapScript={bootstrapScript}
-        >
-          {children}
-        </ThemeWrapper>
+        <Script
+          id="appearance-bootstrap"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: generateBootstrapCode(effectivePreference),
+          }}
+          suppressHydrationWarning
+        />
+        <ThemeWrapper initialPreference={preference}>{children}</ThemeWrapper>
       </body>
     </html>
   )

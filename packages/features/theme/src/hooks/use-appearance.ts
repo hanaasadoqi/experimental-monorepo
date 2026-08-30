@@ -12,6 +12,7 @@ export function useAppearance(): AppearanceState {
   const store = useAppearanceStore()
   return useSyncExternalStore(
     (listener) => store.subscribe(listener),
+    () => store.getState(),
     () => store.getState()
   )
 }
@@ -28,6 +29,7 @@ export function useAppearancePreference(): AppearancePreference {
         }
       })
     },
+    () => store.getState().preference,
     () => store.getState().preference
   )
 }
@@ -44,6 +46,7 @@ export function useResolvedColorScheme(): ResolvedColorScheme {
         }
       })
     },
+    () => store.getState().resolvedColorScheme,
     () => store.getState().resolvedColorScheme
   )
 }

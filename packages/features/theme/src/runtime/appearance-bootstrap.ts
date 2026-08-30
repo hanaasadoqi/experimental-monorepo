@@ -1,6 +1,19 @@
-"use client"
+import type { AppearancePreference, ResolvedColorScheme } from "../types"
 
-import { AppearancePreference, ResolvedColorScheme } from "../types"
+/**
+ * Generate executable code to reconcile appearance before hydration.
+ * @param preference The appearance preference ('light', 'dark', or 'system')
+ * @returns JavaScript code suitable for a framework script component
+ */
+export function generateBootstrapCode(
+  preference: AppearancePreference
+): string {
+  if (!["light", "dark", "system"].includes(preference)) {
+    preference = "system"
+  }
+
+  return `(function(){var p=${JSON.stringify(preference)};var s=p==='system'?(typeof window!=='undefined'&&window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):p;var r=document.documentElement;if(!r)return;if(s==='dark'){r.classList.add('dark')}else{r.classList.remove('dark')}r.setAttribute('data-theme',s);r.style.colorScheme=s})()`
+}
 
 /**
  * Generate a minimal inline script to reconcile appearance before hydration.
@@ -12,11 +25,7 @@ export function generateBootstrapScript(
   preference: AppearancePreference,
   nonce?: string
 ): string {
-  if (!["light", "dark", "system"].includes(preference)) {
-    preference = "system"
-  }
-
-  const code = `(function(){var p=${JSON.stringify(preference)};var s=p==='system'?(typeof window!=='undefined'&&window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):p;var r=document.documentElement;if(!r)return;if(s==='dark'){r.classList.add('dark')}else{r.classList.remove('dark')}r.setAttribute('data-theme',s);r.style.colorScheme=s})()`
+  const code = generateBootstrapCode(preference)
 
   if (nonce) {
     return `<script nonce="${escapeHtml(nonce)}">${code}</script>`
