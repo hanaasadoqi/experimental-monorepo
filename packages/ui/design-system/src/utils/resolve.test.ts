@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { resolveToken, validateTokenExists, validateAllTokens } from "./resolve"
-import { TokenMap } from "../types";
+import { TokenMap } from "../types"
 
 describe("resolveToken", () => {
   describe("literal values", () => {
@@ -356,19 +356,13 @@ describe("validateAllTokens", () => {
     })
 
     it("handles malformed variable references in validation", () => {
-      const tokens = new Map([
-        ["--bad", "not-a-var()"],
-      ])
+      const tokens = new Map([["--bad", "not-a-var()"]])
       expect(() => validateAllTokens(tokens)).toThrow()
     })
 
     it("validates single missing token throws with proper message", () => {
-      const tokens = new Map([
-        ["--solo", "var(--missing)"],
-      ])
-      expect(() => validateAllTokens(tokens)).toThrow(
-        /Token validation failed/
-      )
+      const tokens = new Map([["--solo", "var(--missing)"]])
+      expect(() => validateAllTokens(tokens)).toThrow(/Token validation failed/)
     })
 
     it("error message preserves line breaks for readability", () => {

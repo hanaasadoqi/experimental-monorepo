@@ -205,7 +205,11 @@ describe("isTypingTarget", () => {
     it("handles duplicate custom tags correctly", () => {
       const custom = document.createElement("my-input")
       // Should deduplicate via Set
-      const result = isTypingTarget(custom, ["my-input", "my-input", "my-input"])
+      const result = isTypingTarget(custom, [
+        "my-input",
+        "my-input",
+        "my-input",
+      ])
 
       expect(result).toBe(true)
     })

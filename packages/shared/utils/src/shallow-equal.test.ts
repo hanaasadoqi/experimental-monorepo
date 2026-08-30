@@ -172,14 +172,34 @@ describe("shallowEqual", () => {
 
   describe("multiple properties", () => {
     it("compares multiple properties correctly", () => {
-      const a = { id: 1, name: "Alice", email: "alice@example.com", active: true }
-      const b = { id: 1, name: "Alice", email: "alice@example.com", active: true }
+      const a = {
+        id: 1,
+        name: "Alice",
+        email: "alice@example.com",
+        active: true,
+      }
+      const b = {
+        id: 1,
+        name: "Alice",
+        email: "alice@example.com",
+        active: true,
+      }
       expect(shallowEqual(a, b)).toBe(true)
     })
 
     it("returns false when any property differs", () => {
-      const a = { id: 1, name: "Alice", email: "alice@example.com", active: true }
-      const b = { id: 1, name: "Alice", email: "alice@example.com", active: false }
+      const a = {
+        id: 1,
+        name: "Alice",
+        email: "alice@example.com",
+        active: true,
+      }
+      const b = {
+        id: 1,
+        name: "Alice",
+        email: "alice@example.com",
+        active: false,
+      }
       expect(shallowEqual(a, b)).toBe(false)
     })
 

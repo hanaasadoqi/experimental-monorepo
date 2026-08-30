@@ -4,7 +4,9 @@ import { ThemeWrapper } from "./theme-wrapper"
 
 // Mock dependencies
 vi.mock("../provider/appearance-provider", () => ({
-  AppearanceProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  AppearanceProvider: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
 }))
 
 vi.mock("../hooks/use-appearance", () => ({
@@ -47,7 +49,9 @@ describe("ThemeWrapper", () => {
         </ThemeWrapper>
       )
 
-      expect(screen.getByTestId("test-child").textContent).toEqual("Test Content")
+      expect(screen.getByTestId("test-child").textContent).toEqual(
+        "Test Content"
+      )
     })
 
     it("renders multiple children", () => {
@@ -65,11 +69,11 @@ describe("ThemeWrapper", () => {
     })
 
     it("renders without children", () => {
-      const { container } = render((
+      const { container } = render(
         <ThemeWrapper>
           <span data-testid="no-children">No Children</span>
         </ThemeWrapper>
-      ))
+      )
       expect(container).toBeDefined()
     })
   })
@@ -165,9 +169,7 @@ describe("ThemeWrapper", () => {
         </ThemeWrapper>
       )
 
-      const scriptDivs = container.querySelectorAll(
-        'div[style*="display"]'
-      )
+      const scriptDivs = container.querySelectorAll('div[style*="display"]')
       expect(scriptDivs.length).toBe(0)
     })
 
@@ -438,9 +440,9 @@ describe("ThemeWrapper", () => {
       )
 
       expect(document.documentElement.classList.contains("dark")).toBe(true)
-      expect(document.documentElement.classList.contains("existing-class")).toBe(
-        true
-      )
+      expect(
+        document.documentElement.classList.contains("existing-class")
+      ).toBe(true)
     })
   })
 })

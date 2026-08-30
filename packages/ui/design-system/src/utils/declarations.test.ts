@@ -246,7 +246,9 @@ describe("error handling and edge cases", () => {
   describe("unclosed CSS comments", () => {
     it("throws error for unclosed CSS comment", () => {
       const css = ":root { /* comment --color: red; }"
-      expect(() => declarationsFor(css, ":root")).toThrow("Unclosed CSS comment")
+      expect(() => declarationsFor(css, ":root")).toThrow(
+        "Unclosed CSS comment"
+      )
     })
 
     it("throws error for comment that spans beyond end", () => {
@@ -311,7 +313,8 @@ describe("error handling and edge cases", () => {
 
     it("handles mismatched braces in complex rules", () => {
       // Valid complex rule with balanced braces
-      const css = ":root { --a: 1px; } @media (max-width: 600px) { .dark { --b: 2px; } }"
+      const css =
+        ":root { --a: 1px; } @media (max-width: 600px) { .dark { --b: 2px; } }"
       const result = declarationsFor(css, ":root")
       expect(result.get("--a")).toBe("1px")
     })
@@ -320,12 +323,16 @@ describe("error handling and edge cases", () => {
   describe("unclosed CSS functions", () => {
     it("throws error for unclosed calc() function", () => {
       const css = ":root { --size: calc(1rem + 2px; }"
-      expect(() => declarationsFor(css, ":root")).toThrow("Unclosed CSS function")
+      expect(() => declarationsFor(css, ":root")).toThrow(
+        "Unclosed CSS function"
+      )
     })
 
     it("throws error for unclosed var() function", () => {
       const css = ":root { --color: var(--base; }"
-      expect(() => declarationsFor(css, ":root")).toThrow("Unclosed CSS function")
+      expect(() => declarationsFor(css, ":root")).toThrow(
+        "Unclosed CSS function"
+      )
     })
 
     it("handles multiple nested functions", () => {
@@ -347,7 +354,9 @@ describe("error handling and edge cases", () => {
       const css = ":root { --valid: 1px; } .invalid { --prop: value"
       // The "Invalid CSS rule" error is thrown when there's a dangling rule (without opening brace)
       // But this case has an unclosed block, so that's the error that's thrown
-      expect(() => declarationsFor(css, ".invalid")).toThrow("Unclosed CSS block")
+      expect(() => declarationsFor(css, ".invalid")).toThrow(
+        "Unclosed CSS block"
+      )
     })
 
     it("throws error for dangling selector without brace", () => {

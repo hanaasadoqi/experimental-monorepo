@@ -12,11 +12,11 @@ describe("Logger Middleware", () => {
 
   beforeEach(() => {
     consoleSpy = {
-      log: vi.spyOn(console, "log").mockImplementation(() => { }),
+      log: vi.spyOn(console, "log").mockImplementation(() => {}),
       groupCollapsed: vi
         .spyOn(console, "groupCollapsed")
-        .mockImplementation(() => { }),
-      groupEnd: vi.spyOn(console, "groupEnd").mockImplementation(() => { }),
+        .mockImplementation(() => {}),
+      groupEnd: vi.spyOn(console, "groupEnd").mockImplementation(() => {}),
     }
   })
 
@@ -121,7 +121,8 @@ describe("Logger Middleware", () => {
         loggerMiddleware({ logDiff: true })((set) => ({
           count: 0,
           name: "",
-          increment: () => set((s) => ({ count: s.count + 1, name: "updated" })),
+          increment: () =>
+            set((s) => ({ count: s.count + 1, name: "updated" })),
           setName: (n) => set({ name: n }),
         }))
       )

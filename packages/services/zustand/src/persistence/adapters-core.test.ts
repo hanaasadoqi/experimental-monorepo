@@ -140,9 +140,7 @@ describe("LocalStorage Adapter", () => {
     if (typeof localStorage === "undefined" || typeof window === "undefined")
       return
 
-    const adapter = createLocalStorageAdapter<{ value: string }>(
-      "unsub-test"
-    )
+    const adapter = createLocalStorageAdapter<{ value: string }>("unsub-test")
     const listener = vi.fn()
 
     const unsubscribe = adapter.subscribe(listener)
@@ -269,7 +267,7 @@ describe("Cookie Adapter", () => {
     if (typeof document === "undefined") return
 
     const adapter = createCookieAdapter<{ value: string }>("sub-test")
-    const unsubscribe = adapter.subscribe(() => { })
+    const unsubscribe = adapter.subscribe(() => {})
     expect(typeof unsubscribe).toBe("function")
   })
 
@@ -291,7 +289,7 @@ describe("Cookie Adapter", () => {
     const adapter = createCookieAdapter<{ value: string }>("test")
 
     expect(() => {
-      adapter.subscribe(() => { })
+      adapter.subscribe(() => {})
     }).not.toThrow()
   })
 

@@ -189,8 +189,8 @@ describe("Middleware", () => {
       const initialState: TestState = {
         count: 42,
         text: "persisted",
-        increment: () => { },
-        setText: () => { },
+        increment: () => {},
+        setText: () => {},
       }
 
       adapter.write(initialState)
@@ -216,8 +216,8 @@ describe("Middleware", () => {
       adapter.write({
         count: 10,
         text: "test",
-        increment: () => { },
-        setText: () => { },
+        increment: () => {},
+        setText: () => {},
       })
 
       create<TestState>(
@@ -245,8 +245,8 @@ describe("Middleware", () => {
         read: () => {
           throw new Error("Read failed")
         },
-        write: () => { },
-        subscribe: () => () => { },
+        write: () => {},
+        subscribe: () => () => {},
       }
 
       create<TestState>(
@@ -342,7 +342,7 @@ describe("Middleware", () => {
         write: async (_state: TestState) => {
           writePromises.push(Promise.resolve())
         },
-        subscribe: () => () => { },
+        subscribe: () => () => {},
       }
 
       const store = create<TestState>(
@@ -367,11 +367,11 @@ describe("Middleware", () => {
         read: async () =>
           new Promise<TestState>((resolve) => {
             setTimeout(() => {
-              resolve({ data: "async-loaded", setData: () => { } })
+              resolve({ data: "async-loaded", setData: () => {} })
             }, 10)
           }),
-        write: async () => { },
-        subscribe: () => () => { },
+        write: async () => {},
+        subscribe: () => () => {},
       }
 
       const store = create<TestState>(
@@ -397,7 +397,7 @@ describe("Middleware", () => {
         write: async () => {
           throw new Error("Async write failed")
         },
-        subscribe: () => () => { },
+        subscribe: () => () => {},
       }
 
       const store = create<TestState>(
@@ -427,12 +427,12 @@ describe("Middleware", () => {
             setTimeout(() => {
               resolve({
                 data: "async-rehydrated",
-                setData: () => { },
+                setData: () => {},
               })
             }, 10)
           }),
-        write: async () => { },
-        subscribe: () => () => { },
+        write: async () => {},
+        subscribe: () => () => {},
       }
 
       create<TestState>(
@@ -453,7 +453,10 @@ describe("Middleware", () => {
     })
 
     it("should apply custom merge in async rehydration", async () => {
-      const customMerge = (_persisted: Partial<TestState>, initial: TestState) => ({
+      const customMerge = (
+        _persisted: Partial<TestState>,
+        initial: TestState
+      ) => ({
         ...initial,
         data: "custom-merged",
       })
@@ -462,11 +465,11 @@ describe("Middleware", () => {
         read: async () =>
           new Promise<TestState>((resolve) => {
             setTimeout(() => {
-              resolve({ data: "async-data", setData: () => { } })
+              resolve({ data: "async-data", setData: () => {} })
             }, 10)
           }),
-        write: async () => { },
-        subscribe: () => () => { },
+        write: async () => {},
+        subscribe: () => () => {},
       }
 
       const store = create<TestState>(
@@ -485,12 +488,12 @@ describe("Middleware", () => {
     })
 
     it("should handle async subscribe to external changes", async () => {
-      const persistedData = { data: "initial", setData: () => { } }
+      const persistedData = { data: "initial", setData: () => {} }
       let subscriber: (() => void) | null = null
 
       const asyncAdapter = {
         read: async () => Promise.resolve(persistedData),
-        write: async () => { },
+        write: async () => {},
         subscribe: (listener: () => void) => {
           subscriber = listener
           return () => {
@@ -522,12 +525,12 @@ describe("Middleware", () => {
     })
 
     it("should skip syncExternal when disabled in async", async () => {
-      const persistedData = { data: "initial", setData: () => { } }
-      const subscribeSpy = vi.fn(() => () => { })
+      const persistedData = { data: "initial", setData: () => {} }
+      const subscribeSpy = vi.fn(() => () => {})
 
       const asyncAdapter = {
         read: async () => Promise.resolve(persistedData),
-        write: async () => { },
+        write: async () => {},
         subscribe: subscribeSpy,
       }
 
@@ -557,8 +560,8 @@ describe("Middleware", () => {
       let externalSubscriber: (() => void) | null = null
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({ value: "initial", setValue: () => { } }),
-        write: () => { },
+        read: () => ({ value: "initial", setValue: () => {} }),
+        write: () => {},
         subscribe: (listener) => {
           externalSubscriber = listener
           return () => {
@@ -581,7 +584,7 @@ describe("Middleware", () => {
       if (externalSubscriber) {
         vi.spyOn(adapter, "read").mockReturnValue({
           value: "external-update",
-          setValue: () => { },
+          setValue: () => {},
         })
         externalSubscriber()
       }
@@ -593,11 +596,11 @@ describe("Middleware", () => {
       let subscribeCalled = false
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({ value: "initial", setValue: () => { } }),
-        write: () => { },
+        read: () => ({ value: "initial", setValue: () => {} }),
+        write: () => {},
         subscribe: () => {
           subscribeCalled = true
-          return () => { }
+          return () => {}
         },
       }
 
@@ -615,11 +618,11 @@ describe("Middleware", () => {
     })
 
     it("should attach cleanup function to store API", () => {
-      const unsubscribeSpy = vi.fn(() => { })
+      const unsubscribeSpy = vi.fn(() => {})
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({ value: "initial", setValue: () => { } }),
-        write: () => { },
+        read: () => ({ value: "initial", setValue: () => {} }),
+        write: () => {},
         subscribe: () => unsubscribeSpy,
       }
 
@@ -647,10 +650,10 @@ describe("Middleware", () => {
         read: () => {
           throw new Error("Read failed")
         },
-        write: () => { },
+        write: () => {},
         subscribe: (listener) => {
           externalSubscriber = listener
-          return () => { }
+          return () => {}
         },
       }
 
@@ -679,12 +682,12 @@ describe("Middleware", () => {
       const adapter: PersistenceAdapter<TestState> = {
         read: () => ({
           value: "updated",
-          setValue: () => { },
+          setValue: () => {},
         }),
-        write: () => { },
+        write: () => {},
         subscribe: (listener) => {
           externalSubscriber = listener
-          return () => { }
+          return () => {}
         },
       }
 
@@ -723,12 +726,12 @@ describe("Middleware", () => {
       const adapter: PersistenceAdapter<TestState> = {
         read: () => ({
           value: externalValue,
-          setValue: () => { },
+          setValue: () => {},
         }),
-        write: () => { },
+        write: () => {},
         subscribe: (listener) => {
           externalSubscriber = listener
-          return () => { }
+          return () => {}
         },
       }
 
@@ -761,12 +764,12 @@ describe("Middleware", () => {
       const adapter: PersistenceAdapter<TestState> = {
         read: () => ({
           value: "external",
-          setValue: () => { },
+          setValue: () => {},
         }),
-        write: () => { },
+        write: () => {},
         subscribe: (listener) => {
           externalSubscriber = listener
-          return () => { }
+          return () => {}
         },
       }
 
@@ -795,11 +798,11 @@ describe("Middleware", () => {
       const onError = vi.fn()
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({ value: "initial", setValue: () => { } }),
+        read: () => ({ value: "initial", setValue: () => {} }),
         write: () => {
           throw new Error("Write failed")
         },
-        subscribe: () => () => { },
+        subscribe: () => () => {},
       }
 
       const store = create<TestState>(
@@ -819,17 +822,17 @@ describe("Middleware", () => {
 
     it("should continue updating state even if write fails", () => {
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({ value: "initial", setValue: () => { } }),
+        read: () => ({ value: "initial", setValue: () => {} }),
         write: () => {
           throw new Error("Write failed")
         },
-        subscribe: () => () => { },
+        subscribe: () => () => {},
       }
 
       const store = create<TestState>(
         persistMiddleware({
           adapter,
-          onError: () => { },
+          onError: () => {},
         })((set) => ({
           value: "initial",
           setValue: (v) => set({ value: v }),
@@ -848,8 +851,8 @@ describe("Middleware", () => {
         read: () => {
           throw "string-error" // Non-Error thrown
         },
-        write: () => { },
-        subscribe: () => () => { },
+        write: () => {},
+        subscribe: () => () => {},
       }
 
       create<TestState>(
@@ -869,11 +872,14 @@ describe("Middleware", () => {
       const persistedValues: Partial<TestState> = {}
 
       const adapter: PersistenceAdapter<TestState> = {
-        read: () => ({ value: persistedValues.value || "initial", setValue: () => { } }),
+        read: () => ({
+          value: persistedValues.value || "initial",
+          setValue: () => {},
+        }),
         write: (state) => {
           persistedValues.value = state.value
         },
-        subscribe: () => () => { },
+        subscribe: () => () => {},
       }
 
       const store = create<TestState>(

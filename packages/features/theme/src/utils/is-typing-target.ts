@@ -13,6 +13,7 @@ export function isTypingTarget(
   )
 
   return (
-    finalTagNames.includes(target.tagName) || (target.isContentEditable ?? false)
+    finalTagNames.includes(target.tagName) ||
+    (target.isContentEditable ?? false)
   )
 }
