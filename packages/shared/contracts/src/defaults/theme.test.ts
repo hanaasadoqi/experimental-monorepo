@@ -13,7 +13,7 @@ describe("OKLCH_REGEX", () => {
       ]
 
       validFormats.forEach((format) => {
-        expect(OKLCH_REGEX.test(format)).toBe(true, `Should match "${format}"`)
+        expect(OKLCH_REGEX.test(format)).toBe(true)
       })
     })
 
@@ -119,8 +119,7 @@ describe("OKLCH_REGEX", () => {
 
       formats.forEach((format) => {
         expect(OKLCH_REGEX.test(format)).toBe(
-          false,
-          `Should reject "${format}"`
+          false
         )
       })
     })
@@ -205,8 +204,7 @@ describe("OKLCH_REGEX", () => {
 
       formats.forEach((format) => {
         expect(OKLCH_REGEX.test(format)).toBe(
-          false,
-          `Should reject "${format}"`
+          false
         )
       })
     })
@@ -304,8 +302,8 @@ describe("OKLCH_REGEX", () => {
         "oklch(50% 0.1 45)", // valid format
       ]
 
-      expect(OKLCH_REGEX.test(cssColors[0])).toBe(false) // variables don't match
-      expect(OKLCH_REGEX.test(cssColors[1])).toBe(true) // literal values work
+      expect(OKLCH_REGEX.test(cssColors[0] as string)).toBe(false) // variables don't match
+      expect(OKLCH_REGEX.test(cssColors[1] as string)).toBe(true) // literal values work
     })
 
     it("matches theme color definitions", () => {

@@ -56,7 +56,7 @@ describe("transformOklchToLMS", () => {
 
     // At least some component should be significantly different
     const hasDifference = baseLMS.some(
-      (val, i) => Math.abs(val - rotatedLMS[i]) > 0.01
+      (val, i) => Math.abs(val - (rotatedLMS[i] ?? 0)) > 0.01
     )
     expect(hasDifference).toBe(true)
   })

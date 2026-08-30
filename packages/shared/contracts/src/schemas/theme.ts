@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { OKLCH_REGEX } from "../defaults"
+import { OKLCH_REGEX } from "../defaults/theme.js"
 
 export const themeAppearanceSchema = z.enum(["light", "dark", "system"])
 

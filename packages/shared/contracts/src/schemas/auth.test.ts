@@ -21,7 +21,7 @@ describe("auth schemas", () => {
 
         validEmails.forEach((email) => {
           const result = loginFormSchema.safeParse({ ...validForm, email })
-          expect(result.success).toBe(true, `Should accept email "${email}"`)
+          expect(result.success).toBe(true)
         })
       })
 
@@ -42,7 +42,7 @@ describe("auth schemas", () => {
 
         invalidEmails.forEach((email) => {
           const result = loginFormSchema.safeParse({ ...validForm, email })
-          expect(result.success).toBe(false, `Should reject email "${email}"`)
+          expect(result.success).toBe(false)
         })
       })
 
@@ -100,7 +100,7 @@ describe("auth schemas", () => {
         edgeCases.forEach(({ email, shouldPass }) => {
           const result = loginFormSchema.safeParse({ ...validForm, email })
           if (shouldPass) {
-            expect(result.success).toBe(true, `Should accept email "${email}"`)
+            expect(result.success).toBe(true)
           }
         })
       })
@@ -132,8 +132,7 @@ describe("auth schemas", () => {
         validPasswords.forEach((password) => {
           const result = loginFormSchema.safeParse({ ...validForm, password })
           expect(result.success).toBe(
-            true,
-            `Should accept password with ${password.length} chars`
+            true
           )
         })
       })
@@ -149,8 +148,7 @@ describe("auth schemas", () => {
         shortPasswords.forEach((password) => {
           const result = loginFormSchema.safeParse({ ...validForm, password })
           expect(result.success).toBe(
-            false,
-            `Should reject password with ${password.length} chars`
+            false
           )
         })
       })
@@ -185,9 +183,7 @@ describe("auth schemas", () => {
         passwords.forEach((password) => {
           const result = loginFormSchema.safeParse({ ...validForm, password })
           expect(result.success).toBe(
-            true,
-            `Should accept password "${password}"`
-          )
+            true)
         })
       })
 

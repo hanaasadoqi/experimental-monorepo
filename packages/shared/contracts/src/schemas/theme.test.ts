@@ -46,8 +46,8 @@ describe("theme schemas", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toBeDefined()
-        expect(result.error.issues[0].code).toBe("invalid_enum_value")
+        expect(result.error.issues[0]?.message).toBeDefined()
+        expect(result.error.issues[0]?.code).toBe("invalid_enum_value")
       }
     })
 
@@ -89,7 +89,7 @@ describe("theme schemas", () => {
 
       validColors.forEach((color) => {
         const result = themeOklchColorSchema.safeParse(color)
-        expect(result.success).toBe(true, `Should accept "${color}"`)
+        expect(result.success).toBe(true)
         if (result.success) {
           expect(result.data).toBe(color)
         }
@@ -113,7 +113,7 @@ describe("theme schemas", () => {
 
       invalidColors.forEach((color) => {
         const result = themeOklchColorSchema.safeParse(color)
-        expect(result.success).toBe(false, `Should reject "${color}"`)
+        expect(result.success).toBe(false)
       })
     })
 
@@ -127,8 +127,7 @@ describe("theme schemas", () => {
       boundaryColors.forEach((color) => {
         const result = themeOklchColorSchema.safeParse(color)
         expect(result.success).toBe(
-          true,
-          `Should accept boundary color "${color}"`
+          true
         )
       })
     })
