@@ -10,19 +10,25 @@ import type { PersistenceAdapter } from "../types/index.ts"
  * - Testing mock
  * - Temporary state that shouldn't persist
  */
-export const createMemoryAdapter = <T>(_key: string): PersistenceAdapter<T> => {
-  let state: T | undefined
+export const createMemoryAdapter = <T>(defaultKey: string): PersistenceAdapter<T> => {
+  const store: Record<string, T | undefined> = {}
 
   return {
-    read(): T | undefined {
-      return state
+    read(key?: string): T | null {
+      const k = key ?? defaultKey
+      return (store[k] ?? null) as T | null
     },
 
-    write(newState: T): void {
-      state = newState
+    write(key: string | T, value?: T): void {
+      // Support both old (value-only) and new (key, value) signatures for backwards compatibility
+      if (typeof key === 'string') {
+        store[key] = value
+      } else {
+        store[defaultKey] = key
+      }
     },
 
-    subscribe(_listener: () => void): () => void {
+    subscribe(_key: string, _listener: (value: T | null) => void): () => void {
       // In-memory adapter can't listen to external changes
       // Return no-op unsubscribe function
       return () => {}

@@ -1,15 +1,7 @@
 import { appearancePreferenceSchema } from "@repo/shared-contracts"
-
 import { APPEARANCE_PREFERENCE_STORAGE_KEY } from "./constants"
 import type { PreferencesPersistenceAdapter } from "./types"
-
-function getStorage(): Storage | null {
-  try {
-    return typeof localStorage === "undefined" ? null : localStorage
-  } catch {
-    return null
-  }
-}
+import { getStorage } from "../server/server-utils";
 
 export function createLocalStoragePreferencesAdapter(): PreferencesPersistenceAdapter {
   return {

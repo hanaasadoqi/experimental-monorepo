@@ -4,45 +4,12 @@ import type {
   CookiePreferencesAdapterOptions,
   PreferencesPersistenceAdapter,
 } from "./types"
-
-
-function isHttps(): boolean {
-  try {
-    return typeof location !== "undefined" && location.protocol === "https:"
-  } catch {
-    return false
-  }
-}
-
-function readCookie(name: string): string | null {
-  try {
-    const cookies =
-      typeof document === "undefined" ? [] : document.cookie.split("; ")
-    for (const cookie of cookies) {
-      const separator = cookie.indexOf("=")
-      if (separator >= 0 && cookie.slice(0, separator) === name) {
-        return decodeURIComponent(cookie.slice(separator + 1))
-      }
-    }
-  } catch {
-    return null
-  }
-  return null
-}
-
-function createChannel(name: string): BroadcastChannel | null {
-  try {
-    return typeof BroadcastChannel === "undefined"
-      ? null
-      : new BroadcastChannel(`preferences-cookie:${name}`)
-  } catch {
-    return null
-  }
-}
+import { readCookie } from "@repo/shared-utils";
+import { createChannel, isHttps } from "../server/server-utils";
 
 export async function createCookiePreferencesAdapter(
   options: CookiePreferencesAdapterOptions = {}
-): PreferencesPersistenceAdapter {
+): PreferencesPersistenceAdapter{
   const name = options.name ?? APPEARANCE_PREFERENCE_COOKIE_NAME
   const maxAge = options.maxAge ?? DEFAULT_MAX_AGE
   const path = options.path ?? "/"

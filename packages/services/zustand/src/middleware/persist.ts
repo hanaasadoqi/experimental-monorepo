@@ -71,17 +71,19 @@ export const persistMiddleware = <T>(
   options: PersistMiddlewareOptions<T>
 ): Middleware<T> => {
   const {
-    _key,
+    key,
     adapter,
-    _version,
+    version,
     merge,
     onRehydrate,
     onError,
     syncExternal = true,
   } = options as PersistMiddlewareOptions<T> & {
-    _key?: string
-    _version?: number
+    key?: string
+    version?: number
   }
+
+  const persistenceKey = key ?? "default"
 
   return (next: StateCreator<T, []>) => {
     return (set, get, api: StoreApi<T>) => {
@@ -93,7 +95,9 @@ export const persistMiddleware = <T>(
           const merged = { ...get(), ...nextState }
 
           try {
-            adapter.write(merged)
+            if (adapter.write) {
+              adapter.write(persistenceKey, merged)
+            }
           } catch (error: unknown) {
             if (onError) {
               onError(error instanceof Error ? error : new Error(String(error)))
@@ -108,7 +112,7 @@ export const persistMiddleware = <T>(
 
       // Rehydrate on initialization
       try {
-        const persisted = adapter.read()
+        const persisted = adapter.read ? adapter.read(persistenceKey) : null
         if (persisted) {
           // Merge persisted state into the store object
           const initial = store as Record<string, unknown>
@@ -134,10 +138,10 @@ export const persistMiddleware = <T>(
       }
 
       // Subscribe to external storage changes if enabled
-      if (syncExternal) {
-        const unsubscribe = adapter.subscribe(() => {
+      if (syncExternal && adapter.subscribe) {
+        const unsubscribe = adapter.subscribe(persistenceKey, () => {
           try {
-            const persisted = adapter.read()
+            const persisted = adapter.read ? adapter.read(persistenceKey) : null
             if (persisted) {
               const initial = get()
               const merged = merge

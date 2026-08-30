@@ -41,7 +41,7 @@ export function PreferencesProvider({
   const storeRef = useRef<StoreApi<PreferencesState> | null>(null)
   if (storeRef.current === null) {
     const preference =
-      initialPreference ?? activeAdapter.read() ?? defaultPreference
+      initialPreference ?? activeAdapter.read?.("preferences") ?? defaultPreference
     storeRef.current = createPreferencesStore(preference)
   }
 

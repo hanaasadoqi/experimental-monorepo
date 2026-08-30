@@ -180,10 +180,10 @@ describe("Middleware", () => {
       )
 
       store.getState().increment()
-      expect(adapter.read()?.count).toBe(1)
+      expect(adapter.read?.("test-persist")?.count).toBe(1)
 
       store.getState().setText("hello")
-      expect(adapter.read()?.text).toBe("hello")
+      expect(adapter.read?.("test-persist")?.text).toBe("hello")
     })
 
     it("should rehydrate state from adapter on initialization", () => {
@@ -194,7 +194,7 @@ describe("Middleware", () => {
         setText: () => {},
       }
 
-      adapter.write(initialState)
+      adapter.write?.("test-persist", initialState)
 
       const store = create<any>(
         persistMiddleware({
@@ -214,7 +214,7 @@ describe("Middleware", () => {
     it("should call onRehydrate hook after rehydration", () => {
       const onRehydrate = vi.fn()
 
-      adapter.write({
+      adapter.write?.("test-persist", {
         count: 10,
         text: "test",
         increment: () => {},
@@ -267,7 +267,7 @@ describe("Middleware", () => {
 
     it("should use custom merge strategy", () => {
       const persisted: Partial<TestState> = { count: 99 }
-      adapter.write(persisted as TestState)
+      adapter.write?.("test-persist", persisted as TestState)
 
       const customMerge = (
         _persisted: Partial<TestState>,
@@ -307,7 +307,7 @@ describe("Middleware", () => {
 
       store.getState().increment()
       expect(store.getState().count).toBe(6)
-      expect(adapter.read()?.count).toBe(6)
+      expect(adapter.read?.("test-persist")?.count).toBe(6)
     })
 
     it("should handle partial state updates", () => {
@@ -323,7 +323,7 @@ describe("Middleware", () => {
       )
 
       store.getState().setText("updated")
-      const persisted = adapter.read()
+      const persisted = adapter.read?.("test-persist")
       expect(persisted?.text).toBe("updated")
       expect(persisted?.count).toBe(0)
     })
