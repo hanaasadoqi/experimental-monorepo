@@ -70,8 +70,13 @@ export function synchronizeAppearance(
     }
   }
 
-  // 1. Apply initial DOM state from the current store preference.
-  syncDom()
+  // 1. Trust the bootstrap script - only sync store state, don't re-apply DOM.
+  // The bootstrap script has already set the correct DOM state before hydration.
+  const { preference, resolvedColorScheme } = store.getState()
+  const initialScheme = resolveColorScheme(preference, systemMatches)
+  if (initialScheme !== resolvedColorScheme) {
+    store.setState({ resolvedColorScheme: initialScheme })
+  }
 
   // 2. Subscribe to store changes: update DOM, persist via adapter.
   const unsubscribeStore = store.subscribe((state, previousState) => {
