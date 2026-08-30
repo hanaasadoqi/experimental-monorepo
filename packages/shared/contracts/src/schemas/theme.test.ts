@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { themeFormSchema, type ThemeForm } from "./theme.js"
-import { type AppearancePreference } from "./preferences.js"
+import { type AppearancePreference } from "../../../../features/preferences/src/model/appearance/appearance.types.js"
 import { type OklchStr } from "./colors.js"
 
 describe("theme schemas", () => {

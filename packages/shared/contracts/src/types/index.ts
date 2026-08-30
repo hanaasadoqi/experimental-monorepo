@@ -22,12 +22,6 @@ export type {
   CookieAdapterOptions,
   SameSiteOptions,
 } from "./storage.js"
-export type {
-  ResolvedAppearance,
-  AppearanceSource,
-  SavedAppearancePreference,
-  UserPreferences,
-} from "./preference.js"
 
 // Utility types
 export type { ValidationError } from "../utils/schema-utils.js"

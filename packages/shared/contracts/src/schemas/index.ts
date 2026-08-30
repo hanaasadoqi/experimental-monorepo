@@ -4,12 +4,6 @@
  */
 
 export { loginFormSchema, type LoginForm } from "./auth"
-export {
-  appearancePreferenceSchema,
-  type AppearancePreference,
-  preferencesStateSchema,
-  type PreferencesState,
-} from "./preferences"
 export { themeFormSchema, type ThemeForm } from "./theme.js"
 export {
   oklchStrSchema,
