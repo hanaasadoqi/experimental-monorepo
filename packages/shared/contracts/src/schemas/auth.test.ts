@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { loginFormSchema, type LoginForm } from "./auth"
+import { loginFormSchema, type LoginForm } from "./auth.js"
 
 describe("auth schemas", () => {
   describe("loginFormSchema", () => {

@@ -13,12 +13,12 @@ export type {
   ThemeOklchColor,
   LoginForm,
   ValidationError,
-} from "./types/index"
+} from "./types"
 
 // Re-export all schemas
 export {
   themeFormSchema,
   themeOklchColorSchema,
   appearancePreferenceSchema,
-  preferencesStateSchema
-} from "./schemas/index"
+  preferencesStateSchema,
+} from "./schemas"

@@ -3,15 +3,15 @@
  * This is the public types directory. Re-exported through @repo/contracts main index.
  */
 
-export type { ThemeForm, LoginForm } from "./forms"
+export type { ThemeForm, LoginForm } from "./forms.js"
 export type {
   AppearancePreference,
   PreferencesState,
   Theme,
   ThemeAppearance,
   ThemeOklchColor,
-} from "./domain"
-export type { ValidationError } from "../utils/schema-utils"
+} from "./domain.js"
+export type { ValidationError } from "../utils/schema-utils.js"
 export type {
   StateCreator,
   StoreApi,
@@ -22,5 +22,5 @@ export type {
   SliceState,
   SliceExtractor,
   Selector,
-} from "./store"
-export type { PersistenceAdapter } from "./storage"
+} from "./store.js"
+export type { PersistenceAdapter } from "./storage.js"

@@ -13,7 +13,7 @@ import { createLocalStoragePreferencesAdapter } from "../persistence"
 import type { PreferencesPersistenceAdapter } from "../persistence"
 import { createPreferencesStore } from "../store"
 import type { AppearancePreference, PreferencesState } from "../types"
-import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/shared-contracts/defaults";
+import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/shared-contracts/defaults"
 
 export interface PreferencesProviderProps {
   children: ReactNode
@@ -81,11 +81,12 @@ export function PreferencesProvider({
 }
 
 export function usePreferencesStore(): StoreApi<PreferencesState> {
-  const store: StoreApi<PreferencesState> | null = useContext(PreferencesContext)
+  const store: StoreApi<PreferencesState> | null =
+    useContext(PreferencesContext)
   if (store === null) {
     throw new Error(
       "usePreferencesStore must be used within a PreferencesProvider"
     )
   }
-  return store;
+  return store
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { z, ZodType } from "zod"
-import { validateSchema, parseSchema, tryParseSchema } from "./schema-utils"
+import { validateSchema, parseSchema, tryParseSchema } from "./schema-utils.js"
 
 describe("schema-utils", () => {
   // Test schema for all utilities

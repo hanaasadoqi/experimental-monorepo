@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { appearancePreferenceSchema } from "@repo/shared-contracts"
 import { readCookie } from "@repo/shared-utils/server"

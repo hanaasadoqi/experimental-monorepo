@@ -12,9 +12,7 @@ import {
   AppearanceRuntimeProvider,
   ThemeToggleHotkey,
 } from "@repo/feature-theme"
-import type {
-  AppearancePreference,
-} from "@repo/shared-contracts/types"
+import type { AppearancePreference } from "@repo/shared-contracts/types"
 
 export interface ApplicationProvidersProps {
   children: ReactNode

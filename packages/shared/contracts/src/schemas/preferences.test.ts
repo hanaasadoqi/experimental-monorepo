@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest"
 
-import { AppearancePreference, appearancePreferenceSchema } from "./index"
-import { preferencesStateSchema } from "./preferences";
+import {
+  AppearancePreference,
+  appearancePreferenceSchema,
+} from "./preferences.js"
+import { preferencesStateSchema } from "./preferences.js"
 
 describe("appearancePreferenceSchema", () => {
   it.each(["light", "dark", "system"])(

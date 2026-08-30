@@ -128,16 +128,17 @@ export interface UiState {
 
 export interface AppState extends AuthState, ThemeState {}
 
-export const createAuthSlice: SliceCreator<AppState, AuthState> = (set) => ({
+export const createAuthSlice: SliceCreator<AppState, AuthState> = (
+  set: (partial: Partial<AppState>) => void
+) => ({
   user: null,
   login: (username: string) => set({ user: username }),
   logout: () => set({ user: null }),
 })
 
-export const createThemeSlice: SliceCreator<AppState, ThemeState> = (set) => ({
+export const createThemeSlice: SliceCreator<AppState, ThemeState> = (
+  set: (partial: Partial<ThemeState>) => void
+) => ({
   theme: "light",
-  toggleTheme: () =>
-    set((state) => ({
-      theme: state.theme === "light" ? "dark" : "light",
-    })),
+  toggleTheme: () => set({ theme: "dark" }),
 })

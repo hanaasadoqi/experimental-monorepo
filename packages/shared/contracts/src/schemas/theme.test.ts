@@ -7,7 +7,7 @@ import {
   type ThemeOklchColor,
   type ThemeForm,
   type Theme,
-} from "./theme"
+} from "./theme.js"
 
 describe("theme schemas", () => {
   describe("themeAppearanceSchema", () => {

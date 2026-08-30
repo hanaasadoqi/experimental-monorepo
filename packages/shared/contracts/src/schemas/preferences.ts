@@ -6,7 +6,10 @@ export type AppearancePreference = z.infer<typeof appearancePreferenceSchema>
 
 export const preferencesStateSchema = z.object({
   appearancePreference: appearancePreferenceSchema,
-  setAppearancePreference: z.function().args(appearancePreferenceSchema).returns(z.void()),
+  setAppearancePreference: z
+    .function()
+    .args(appearancePreferenceSchema)
+    .returns(z.void()),
 })
 
-export type PreferencesState = z.infer<typeof preferencesStateSchema>;
+export type PreferencesState = z.infer<typeof preferencesStateSchema>
