@@ -6,7 +6,7 @@
   "sideEffects": false,
   "scripts": {
     "lint": "eslint",
-    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
     "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "test:run": "vitest run --coverage",
     "test": "vitest run"

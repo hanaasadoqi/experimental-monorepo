@@ -25,13 +25,11 @@ interface AppState {
   decrement: () => void
 }
 
-export const useAppStore = createStore<AppState>(
-  (set) => ({
-    count: 0,
-    increment: () => set((state) => ({ count: state.count + 1 })),
-    decrement: () => set((state) => ({ count: state.count - 1 })),
-  })
-)
+export const useAppStore = createStore<AppState>((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+  decrement: () => set((state) => ({ count: state.count - 1 })),
+}))
 
 // Usage in components
 const count = useAppStore.getState().count
@@ -61,12 +59,10 @@ export const useStore = create<State>(
     key: "app-state",
     adapter,
     onRehydrate: (state) => console.log("Rehydrated:", state),
-  })(
-    (set) => ({
-      count: 0,
-      increment: () => set((state) => ({ count: state.count + 1 })),
-    })
-  )
+  })((set) => ({
+    count: 0,
+    increment: () => set((state) => ({ count: state.count + 1 })),
+  }))
 )
 ```
 
@@ -81,7 +77,10 @@ export const useStore = create<State>(
 All adapters automatically detect non-browser environments:
 
 ```typescript
-import { isBrowser, isLocalStorageAvailable } from "@repo/services-zustand/utils"
+import {
+  isBrowser,
+  isLocalStorageAvailable,
+} from "@repo/services-zustand/utils"
 
 // Gracefully handles server-side rendering
 if (isBrowser() && isLocalStorageAvailable()) {
@@ -113,7 +112,10 @@ export const useStore = create(
 #### Logger Middleware
 
 ```typescript
-import { loggerMiddleware, devLoggerMiddleware } from "@repo/services-zustand/middleware"
+import {
+  loggerMiddleware,
+  devLoggerMiddleware,
+} from "@repo/services-zustand/middleware"
 
 // Always logs
 const store = create(
@@ -127,9 +129,7 @@ const store = create(
 )
 
 // Only logs in development
-const store = create(
-  devLoggerMiddleware({ prefix: "DevStore" })(creator)
-)
+const store = create(devLoggerMiddleware({ prefix: "DevStore" })(creator))
 ```
 
 ### 3. Slice Pattern
@@ -208,14 +208,12 @@ import {
 } from "@repo/services-zustand/selectors"
 
 // Memoized selector - only returns new value if selected value changed
-const selectUserAge = createSelector(
-  (state) => state.user.age
-)
+const selectUserAge = createSelector((state) => state.user.age)
 
 // Derived selector - memoize computations
 const selectAdultStatus = createDerivedSelector(
   (state) => state.user.age,
-  (age) => age >= 18 ? "adult" : "minor"
+  (age) => (age >= 18 ? "adult" : "minor")
 )
 
 // Combined selector - select and combine multiple values
@@ -233,12 +231,10 @@ const selectUserProfile = createCombinedSelector(
 )
 
 // Shallow equality selector - compare objects by value
-const selectUserData = createShallowSelector(
-  (state) => ({
-    name: state.user.name,
-    email: state.user.email,
-  })
-)
+const selectUserData = createShallowSelector((state) => ({
+  name: state.user.name,
+  email: state.user.email,
+}))
 
 // Usage
 const age = selectUserAge(useStore.getState())
@@ -393,10 +389,11 @@ function MyComponent() {
 
 // Subscribe to changes
 const unsubscribe = useAppStore.subscribe(
-  (state) => state.count,
-  (count) => console.log("Count changed:", count)
+(state) => state.count,
+(count) => console.log("Count changed:", count)
 )
-```
+
+````
 
 ### Selectors
 
@@ -408,7 +405,7 @@ const useSelector = createUseSelector(useAppStore)
 // In components
 const count = useSelector((state) => state.count)
 const incremented = useSelector((state) => state.count + 1)
-```
+````
 
 ## Key Patterns
 

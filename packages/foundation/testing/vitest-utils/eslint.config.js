@@ -1,3 +1,3 @@
-import { minimalConfig } from "@repo/foundation-eslint-config/base";
+import { minimalConfig } from "@repo/foundation-eslint-config/base"
 
-export default minimalConfig;
+export default minimalConfig

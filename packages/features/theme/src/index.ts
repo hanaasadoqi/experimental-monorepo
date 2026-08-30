@@ -1,15 +1,30 @@
-// Appearance types (new, preferred)
+// =============================================================================
+// CANONICAL API — Appearance
+//
+// `AppearanceProvider` plus the `use*` hooks are the supported way to read and
+// change appearance. The provider owns the whole lifecycle: store creation,
+// persistence, the system media query, and DOM application.
+//
+// See `.docs/guides/appearance-api.md` for the full guide.
+// =============================================================================
+
+// Types
 export type {
   AppearancePreference,
   ResolvedColorScheme,
   AppearanceState,
 } from "./types"
 
-// Appearance provider and hooks (new, preferred)
+// Provider
 export {
   AppearanceProvider,
   useAppearanceStore,
 } from "./provider/appearance-provider"
+
+// Convenience wrapper: AppearanceProvider + bootstrap script + hotkey
+export { ThemeWrapper } from "./components"
+
+// Hooks
 export {
   useAppearance,
   useAppearancePreference,
@@ -18,7 +33,7 @@ export {
   useAppearanceControl,
 } from "./hooks/use-appearance"
 
-// Persistence adapters (new, public)
+// Persistence adapters
 export type { AppearancePersistenceAdapter } from "./persistence"
 export {
   createLocalStorageAppearanceAdapter,
@@ -26,7 +41,7 @@ export {
   type CookieAdapterOptions,
 } from "./persistence"
 
-// Runtime utilities (new, public)
+// Runtime utilities
 //
 // `synchronizeAppearance` and `createAppearanceStore` are deliberately NOT
 // exported here: AppearanceProvider owns store creation and the
@@ -42,15 +57,31 @@ export {
   resolveServerColorScheme,
 } from "./runtime"
 
+// Supporting utilities
+export { ThemeToggleHotkey } from "./components"
+export { isTypingTarget } from "./utils"
+
+// =============================================================================
+// DEPRECATED COMPATIBILITY SHIMS — Theme
+//
+// Everything below forwards to the canonical Appearance API above and is
+// scheduled for removal in v2.0. Each symbol carries an `@deprecated` tag at
+// its declaration site, so editors surface the warning at every call site.
+//
+//   ThemeProvider  → AppearanceProvider
+//   useTheme()     → useAppearance()
+//   themeStore     → AppearanceProvider's per-tree store
+//   Theme          → AppearancePreference
+//
+// Migration guide: README.md § Migration Guide
+// =============================================================================
+
 /**
- * @deprecated Module-level store retained for backward compatibility.
- * Prefer `AppearanceProvider`, which owns an isolated store per tree.
+ * @deprecated Use `AppearanceProvider`, which owns an isolated store per tree.
+ * This module-level singleton is shared process-wide. Removed in v2.0.
  */
 export { themeStore } from "./store/appearance-store"
 
-// Theme compatibility (existing, preserved for backward compatibility)
 export { useTheme } from "./hooks/use-theme"
-export type { Theme, ThemeConfig, ThemeContextValue } from "./types"
 export { ThemeProvider } from "./provider"
-export { ThemeToggleHotkey } from "./components"
-export { isTypingTarget } from "./utils"
+export type { Theme, ThemeConfig, ThemeContextValue } from "./types"

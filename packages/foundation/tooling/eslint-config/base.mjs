@@ -1,1 +1,1 @@
-export { baseConfig, minimalConfig } from './index.mjs'
+export { baseConfig, minimalConfig } from "./index.mjs"

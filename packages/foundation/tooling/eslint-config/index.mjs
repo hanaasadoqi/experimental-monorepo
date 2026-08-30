@@ -1,14 +1,14 @@
-import js from '@eslint/js'
-import prettierConfig from 'eslint-config-prettier'
-import globals from 'globals'
-import tseslint from 'typescript-eslint'
+import js from "@eslint/js"
+import prettierConfig from "eslint-config-prettier"
+import globals from "globals"
+import tseslint from "typescript-eslint"
 
 const sharedConfig = [
   js.configs.recommended,
   prettierConfig,
   ...tseslint.configs.recommended,
   {
-    files: ['**/*.{js,mjs,cjs,ts,tsx}'],
+    files: ["**/*.{js,mjs,cjs,ts,tsx}"],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -16,15 +16,21 @@ const sharedConfig = [
       },
     },
     rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-      'no-console': ['warn', { allow: ['error', 'info', 'warn'] }],
+      "no-console": ["warn", { allow: ["error", "info", "warn"] }],
     },
   },
   {
-    ignores: ['**/dist/**', '**/.next/**', '**/.turbo/**', '**/coverage/**', "**/node_modules/**"],
+    ignores: [
+      "**/dist/**",
+      "**/.next/**",
+      "**/.turbo/**",
+      "**/coverage/**",
+      "**/node_modules/**",
+    ],
   },
 ]
 
@@ -34,7 +40,7 @@ let turboPluginModule = null
 let turboPluginError = null
 
 try {
-  turboPluginModule = await import('eslint-plugin-turbo')
+  turboPluginModule = await import("eslint-plugin-turbo")
 } catch (e) {
   turboPluginError = e
 }
@@ -47,7 +53,7 @@ export const baseConfig = turboPluginModule
           turbo: turboPluginModule.default,
         },
         rules: {
-          'turbo/no-undeclared-env-vars': 'warn',
+          "turbo/no-undeclared-env-vars": "warn",
         },
       },
       sharedConfig[sharedConfig.length - 1],

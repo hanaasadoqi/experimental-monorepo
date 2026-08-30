@@ -30,9 +30,23 @@ interface ThemeProviderProps {
 /**
  * Legacy provider that applies the `dark` class from a theme store.
  *
- * Prefer `AppearanceProvider`, which owns the full appearance lifecycle
- * (store, persistence, system media query, DOM). This provider is retained
- * for backward compatibility.
+ * It covers only the DOM class toggle. `AppearanceProvider` owns the full
+ * appearance lifecycle — store creation, persistence, the system media query,
+ * and DOM application — and is the canonical entry point.
+ *
+ * @deprecated Use `AppearanceProvider` (or the `ThemeWrapper` convenience
+ * component) from `@repo/feature-theme`. Scheduled for removal in v2.0.
+ *
+ * @example
+ * ```tsx
+ * // Before (deprecated)
+ * <ThemeProvider>{children}</ThemeProvider>
+ *
+ * // After (canonical)
+ * <AppearanceProvider adapter={createCookieAppearanceAdapter()}>
+ *   {children}
+ * </AppearanceProvider>
+ * ```
  */
 export const ThemeProvider = ({
   children,

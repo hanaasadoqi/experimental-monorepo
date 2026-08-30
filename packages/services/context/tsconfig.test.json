@@ -5,6 +5,12 @@
     "moduleResolution": "bundler",
     "types": ["vitest/globals"]
   },
-  "include": ["src", "**/*.test.ts", "**/*.test.tsx", "@testing-library/react", "@types/**/*.d.ts"],
+  "include": [
+    "src",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "@testing-library/react",
+    "@types/**/*.d.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

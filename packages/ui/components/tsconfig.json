@@ -11,6 +11,13 @@
     },
     "types": ["react", "react-dom", "node"]
   },
-  "include": ["src", "@types/node", "@types/react", "@types/react-dom", "**/*.d.ts", "**/*.d.tsx"],
+  "include": [
+    "src",
+    "@types/node",
+    "@types/react",
+    "@types/react-dom",
+    "**/*.d.ts",
+    "**/*.d.tsx"
+  ],
   "exclude": ["node_modules", "dist"]
 }

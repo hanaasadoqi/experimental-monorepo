@@ -6,7 +6,7 @@
   "sideEffects": false,
   "scripts": {
     "lint": "eslint .",
-    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
     "check-types": "tsc --noEmit",
     "test": "vitest run",
     "test:run": "vitest run --coverage"

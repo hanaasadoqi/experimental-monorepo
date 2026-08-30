@@ -1,2 +1,2 @@
-import baseConfig from "@repo/foundation-prettier-config";
-export default baseConfig;
+import baseConfig from "@repo/foundation-prettier-config"
+export default baseConfig

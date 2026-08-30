@@ -31,11 +31,13 @@ Run `pnpm check:boundaries` after changing package manifests.
 ## Deletion Policy
 
 Never delete without asking, except:
+
 - Generated files (dist/, .next/, node_modules/)
 - Cache directories (.turbo/, coverage/)
 - Files explicitly marked for removal in git
 
 For everything else:
+
 - Ask first if unsure
 - Archive to .archives/ instead of deleting
 - Preserve untracked files that might be in-progress work

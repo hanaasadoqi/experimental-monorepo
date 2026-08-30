@@ -2,9 +2,12 @@
 
 Appearance and theme management for the monorepo with Zustand-backed persistence, flash-free rendering, and server-side integration.
 
+> **The Appearance API is canonical.** Use `AppearanceProvider` and the `useAppearance*` hooks. The `Theme`-prefixed exports (`ThemeProvider`, `useTheme`, `themeStore`, `Theme`) are deprecated compatibility shims scheduled for removal in v2.0 — see [Migration Guide](#migration-guide). Full guide: [`.docs/guides/appearance-api.md`](../../../.docs/guides/appearance-api.md).
+
 ## Overview
 
 This feature provides a complete appearance management system:
+
 - **Appearance Preferences**: Light, dark, or system-following modes
 - **Flash-Free Rendering**: Pre-hydration bootstrap script prevents color scheme flashing
 - **Persistent State**: Cookie and localStorage adapters for cross-session persistence
@@ -101,6 +104,7 @@ Isolated provider wrapping an appearance store with lifecycle management.
 ```
 
 **Props:**
+
 - `adapter`: `AppearancePersistenceAdapter` — Storage backend (localStorage, cookies, etc.)
 - `defaultPreference`: `AppearancePreference` — Default when nothing is persisted
 - `initialPreference`: `AppearancePreference` — Initial state (usually from server)
@@ -121,6 +125,7 @@ Convenience component for common setup with bootstrap script injection.
 ```
 
 **Props:**
+
 - `initialPreference`: Server-read preference
 - `bootstrapScript`: Pre-hydration script HTML
 - `useLocalStorage`: Use localStorage adapter (default: false/cookies)
@@ -169,9 +174,11 @@ Convenience hook returning `[preference, setPreference]` tuple.
 const [preference, setPreference] = useAppearanceControl()
 ```
 
-#### `useTheme()` (Deprecated)
+#### `useTheme()` (Deprecated — removed in v2.0)
 
-Legacy hook for backward compatibility. Use appearance hooks instead.
+Compatibility shim returning `{ preference, setTheme }`. Forwards to
+`useAppearancePreference()` and `useSetAppearancePreference()`. See
+[Migration Guide](#migration-guide).
 
 ### Persistence Adapters
 
@@ -198,6 +205,7 @@ const adapter = createCookieAppearanceAdapter({
 ```
 
 **Options:**
+
 - `name`: Cookie name (default: `'appearance-preference'`)
 - `maxAge`: Seconds (default: 1 year)
 - `path`: Cookie path (default: `'/'`)
@@ -216,6 +224,7 @@ const script = generateBootstrapScript("system", process.env.CSP_NONCE)
 ```
 
 Use in layout head to prevent flash:
+
 ```typescript
 <head>
   {/* CSP-safe nonce support */}
@@ -276,6 +285,7 @@ The store lifecycle is managed by `synchronizeAppearance()`:
 ### Flash Prevention
 
 The bootstrap script:
+
 1. Runs before React hydration
 2. Applies color scheme to `<html>` element
 3. Prevents white/dark flashes during hydration
@@ -284,6 +294,7 @@ The bootstrap script:
 ## Integration with Services
 
 This feature uses:
+
 - **`@repo/services-zustand`**: Store creation and persistence adapters (generic utilities now extracted)
 - **`@repo/services-context`**: Context provider pattern for injecting stores
 
@@ -292,28 +303,74 @@ Feature-specific logic (AppearancePreference validation, DOM manipulation, synch
 ## Testing
 
 All hooks and components are tested with:
+
 - Unit tests for store logic
 - Provider tests for React integration
 - Adapter contract tests for persistence implementations
 - 136+ passing tests with >70% coverage
 
 Run tests:
+
 ```bash
 pnpm test:run
 ```
 
-## Backward Compatibility
+## Migration Guide
 
-The `useTheme()` hook is preserved for legacy code:
+Every `Theme`-prefixed export forwards to the canonical Appearance API and still
+works in v1.x. Each carries an `@deprecated` tag, so editors flag call sites.
+
+| Deprecated          | Canonical replacement                                         |
+| ------------------- | ------------------------------------------------------------- |
+| `ThemeProvider`     | `AppearanceProvider` (or `ThemeWrapper` for the common setup) |
+| `useTheme()`        | `useAppearance()` / `useAppearancePreference()`               |
+| `themeStore`        | The per-tree store owned by `AppearanceProvider`              |
+| `Theme`             | `AppearancePreference`                                        |
+| `ThemeContextValue` | `AppearanceState`                                             |
+| `ThemeConfig`       | No replacement — the provider owns the system media query     |
+
+### Provider
+
+```tsx
+// Before (deprecated)
+<ThemeProvider defaultTheme="system">{children}</ThemeProvider>
+
+// After (canonical)
+<AppearanceProvider
+  adapter={createCookieAppearanceAdapter()}
+  defaultPreference="system"
+>
+  {children}
+</AppearanceProvider>
+```
+
+`ThemeProvider` only toggles the `dark` class. `AppearanceProvider` additionally
+owns persistence, the system media query, and cross-tab synchronization, so the
+migration also removes wiring you previously had to supply yourself.
+
+### Hook
 
 ```typescript
-// Old API (still works)
+// Before (deprecated)
 const { preference, setTheme } = useTheme()
 
-// New API (preferred)
+// After (canonical)
+const { preference, resolvedColorScheme, setPreference } = useAppearance()
+
+// Or, for selective re-renders
 const preference = useAppearancePreference()
 const setPreference = useSetAppearancePreference()
 ```
+
+`useTheme()` cannot expose `resolvedColorScheme` — the resolved `light`/`dark`
+value after `system` is applied. Reach for `useResolvedColorScheme()` when you
+need to render the current scheme rather than the stated preference.
+
+### Deprecation Timeline
+
+- **v1.x** — Appearance is canonical; the Theme API is deprecated but fully
+  functional. No breaking changes.
+- **v2.0** — The Theme API is removed. Migrate before upgrading.
 
 ## Common Patterns
 
@@ -356,12 +413,14 @@ const setPreference = useSetAppearancePreference()
 ## When to Use
 
 ✅ Use this feature for:
+
 - Appearance/theme management across your app
 - Multiple persistence backends (cookies for SSR, localStorage for SPA)
 - Server-side rendering with theme preference
 - Cross-tab theme synchronization
 
 ❌ Don't use for:
+
 - Single-use app-specific state (create in app instead)
 - Tightly-coupled UI state (keep in component)
 - State without cross-session persistence needs

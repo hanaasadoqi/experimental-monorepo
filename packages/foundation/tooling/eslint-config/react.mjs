@@ -1,18 +1,18 @@
-import js from '@eslint/js'
-import prettierConfig from 'eslint-config-prettier'
-import react from 'eslint-plugin-react'
-import reactHooks from 'eslint-plugin-react-hooks'
-import globals from 'globals'
-import tseslint from 'typescript-eslint'
+import js from "@eslint/js"
+import prettierConfig from "eslint-config-prettier"
+import react from "eslint-plugin-react"
+import reactHooks from "eslint-plugin-react-hooks"
+import globals from "globals"
+import tseslint from "typescript-eslint"
 
 export const reactConfig = [
   js.configs.recommended,
   prettierConfig,
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
-  react.configs.flat['jsx-runtime'],
+  react.configs.flat["jsx-runtime"],
   {
-    files: ['**/*.{js,mjs,cjs,ts,tsx}'],
+    files: ["**/*.{js,mjs,cjs,ts,tsx}"],
     languageOptions: {
       ...react.configs.flat.recommended.languageOptions,
       globals: {
@@ -22,27 +22,33 @@ export const reactConfig = [
       },
     },
     rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-      'no-console': ['warn', { allow: ['error', 'info', 'warn'] }],
+      "no-console": ["warn", { allow: ["error", "info", "warn"] }],
     },
   },
   {
     plugins: {
-      'react-hooks': reactHooks,
+      "react-hooks": reactHooks,
     },
     settings: {
-      react: { version: 'detect' },
+      react: { version: "detect" },
     },
     rules: {
       ...reactHooks.configs.flat.recommended.rules,
-      'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
     },
   },
   {
-    ignores: ['dist/**', '.next/**', '**/.turbo/**', '**/coverage/**', 'node_modules/**'],
+    ignores: [
+      "dist/**",
+      ".next/**",
+      "**/.turbo/**",
+      "**/coverage/**",
+      "node_modules/**",
+    ],
   },
 ]

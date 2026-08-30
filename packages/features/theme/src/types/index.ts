@@ -1,10 +1,16 @@
+/** @deprecated Use {@link AppearancePreference} instead. Removed in v2.0. */
 export type Theme = "light" | "dark" | "system"
 
+/**
+ * @deprecated Superseded by `AppearanceProvider`, which owns the system media
+ * query internally. Removed in v2.0.
+ */
 export interface ThemeConfig {
   mode: Theme
   systemPreference: MediaQueryList | null
 }
 
+/** @deprecated Use {@link AppearanceState} instead. Removed in v2.0. */
 export interface ThemeContextValue {
   theme: Theme
   setTheme: (theme: Theme) => void

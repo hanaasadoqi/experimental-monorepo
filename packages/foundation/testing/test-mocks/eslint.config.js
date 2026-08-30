@@ -1,2 +1,2 @@
-import { baseConfig } from "@repo/foundation-eslint-config/base";
-export default baseConfig;
+import { baseConfig } from "@repo/foundation-eslint-config/base"
+export default baseConfig
