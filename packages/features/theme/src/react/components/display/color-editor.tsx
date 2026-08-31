@@ -1,8 +1,9 @@
 "use client"
+
 import { HuePresetGrid } from "./hue-preset-grid"
 import { ContrastIndicator } from "./contrast-indicator"
 import { Slider } from "@repo/ui-components/base/slider"
-import type { OklchColor } from "../../../model/color"
+import type { OklchColor } from "../../../domain/core/colors/model"
 
 export interface ColorObject {
   key: string

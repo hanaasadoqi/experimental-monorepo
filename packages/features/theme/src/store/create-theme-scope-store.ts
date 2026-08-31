@@ -4,8 +4,8 @@ import {
   persist,
   type StateStorage,
 } from "zustand/middleware"
+import { ThemeOverrides } from "../domain";
 
-import type { ThemeOverrides } from "../model/colors"
 
 export interface ThemeScopeState {
   overrides: ThemeOverrides

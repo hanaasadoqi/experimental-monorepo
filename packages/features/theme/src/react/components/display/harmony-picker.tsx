@@ -4,7 +4,7 @@ import {
   type OKLCH,
   type ColorHarmony,
   getHarmonies,
-} from "../shade-generation"
+} from "../../../domain/core/colors/shade-generation"
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface HarmonyPickerProps {

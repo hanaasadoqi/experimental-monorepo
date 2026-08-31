@@ -44,7 +44,7 @@ import { Switch } from "@repo/ui-components/base/switch"
 import { Textarea } from "@repo/ui-components/base/textarea"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { SearchIcon } from "@hugeicons/core-free-icons"
-import { SplitButtonDropdownMenu } from "./split-button-dropdown-menu"
+import { SplitButtonDropdownMenu } from "../../shared/split-button-dropdown-menu"
 
 export function UiComponentPreview() {
   const [sliderValue, setSliderValue] = React.useState<number[]>([500])

@@ -4,7 +4,7 @@ import {
   IconButtonPreview,
   TypographyPreview,
   UiComponentPreview,
-} from "./ui-component-preview"
+} from "./ui-preview"
 
 export function Demo() {
   return (

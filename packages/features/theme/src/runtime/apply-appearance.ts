@@ -1,4 +1,4 @@
-import type { ResolvedAppearance } from "../model/colors"
+import type { ResolvedAppearance } from "../domain/core/appearance"
 
 export function applyAppearance(
   appearance: ResolvedAppearance,

@@ -4,7 +4,7 @@ import { useRehydrateStore } from "@repo/services-zustand/react"
 import { useId, useRef, type CSSProperties, type ReactNode } from "react"
 import type { StateStorage } from "zustand/middleware"
 
-import type { ThemeOverrides } from "../../model/colors"
+import type { ThemeOverrides } from "../../domain/core/theme/model-overrides"
 import { createThemeScopeStore, type ThemeScopeStoreApi } from "../../store"
 
 import {

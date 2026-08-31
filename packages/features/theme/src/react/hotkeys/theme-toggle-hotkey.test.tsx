@@ -5,7 +5,7 @@ import { ThemeToggleHotkey } from "./theme-toggle-hotkey"
 import { AppearancePreference } from "@repo/features-preferences"
 
 // Mock the hooks
-vi.mock("../appearance", () => ({
+vi.mock("../../domain/core/appearance", () => ({
   useResolvedAppearance: vi.fn(),
 }))
 vi.mock("@repo/features-preferences", () => ({
@@ -18,7 +18,7 @@ vi.mock("./is-typing-target", () => ({
 
 import { useSetAppearancePreference } from "@repo/features-preferences"
 import { isTypingTarget } from "./is-typing-target"
-import { useResolvedAppearance } from "../appearance"
+import { useResolvedAppearance } from "../../domain/core/appearance"
 
 describe("ThemeToggleHotkey", () => {
   let setPreferenceCallback: Mock<(preference: AppearancePreference) => void>

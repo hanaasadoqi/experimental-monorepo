@@ -4,7 +4,7 @@ import { useEffect } from "react"
 
 import { useSetAppearancePreference } from "@repo/features-preferences"
 
-import { useResolvedAppearance } from "../appearance"
+import { useResolvedAppearance } from "../../domain/core/appearance"
 
 import { isTypingTarget } from "./is-typing-target"
 

@@ -7,7 +7,7 @@ import {
   toCss,
   autoForeground,
   deriveScale,
-} from "../shade-generation"
+} from "../../../domain/core/colors/shade-generation"
 import { cn } from "@repo/ui-components/lib/utils"
 import { useState, useMemo } from "react"
 

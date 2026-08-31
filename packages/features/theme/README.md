@@ -1,4 +1,4 @@
-# @repo/feature-theme
+# @repo/features-theme
 
 Derived Appearance runtime and Theme compatibility for the monorepo, including operating-system resolution, atomic DOM synchronization, and flash-free bootstrap generation.
 
@@ -27,7 +27,7 @@ import {
   useAppearancePreference,
   useSetAppearancePreference,
 } from "@repo/feature-preferences"
-import { AppearanceRuntimeProvider } from "@repo/feature-theme"
+import { AppearanceRuntimeProvider } from "@repo/features-theme"
 
 export function AppearanceBridge({ children }) {
   const preference = useAppearancePreference()
@@ -50,7 +50,7 @@ export function AppearanceBridge({ children }) {
 "use client"
 
 import { useSetAppearancePreference } from "@repo/feature-preferences/hooks"
-import { useResolvedColorScheme } from "@repo/feature-theme/hooks"
+import { useResolvedColorScheme } from "@repo/features-theme/hooks"
 
 export function ThemeToggle() {
   const colorScheme = useResolvedColorScheme()

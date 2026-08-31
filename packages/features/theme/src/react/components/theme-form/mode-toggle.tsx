@@ -3,24 +3,24 @@
 import { type AppearancePreference } from "@repo/features-preferences"
 import { Toggle } from "@repo/ui-components/base/toggle"
 
-export interface ModeToggleProps {
-  mode: AppearancePreference
-  setMode: (pref: AppearancePreference) => void
+export interface AppearanceToggleProps {
+  appearance: AppearancePreference
+  setAppearance: (pref: AppearancePreference) => void
 }
 
-export function ModeToggle({ mode, setMode }: ModeToggleProps) {
+export function AppearanceToggle({ appearance, setAppearance }: AppearanceToggleProps) {
   return (
     <Toggle
       size="sm"
-      pressed={mode === "dark"}
+      pressed={appearance === "dark"}
       onPressedChange={(pressed: boolean) => {
-        setMode(pressed ? "dark" : "light")
+        setAppearance(pressed ? "dark" : "light")
       }}
-      aria-label="Toggle theme mode between light and dark"
+      aria-label="Toggle theme appearance between light and dark"
     >
-      {mode === "dark" ? "🌙" : "☀️"}
+      {appearance === "dark" ? "🌙" : "☀️"}
     </Toggle>
   )
 }
 
-export default ModeToggle
+export default AppearanceToggle

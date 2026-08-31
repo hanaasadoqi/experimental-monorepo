@@ -1,6 +1,6 @@
 "use client"
 
-import { type OKLCH, toCss, deriveScale } from "@/lib/shade-generation"
+import { type OKLCH, toCss, deriveScale } from "../../../domain/core/colors/shade-generation"
 
 type Props = {
   color: OKLCH

@@ -2,6 +2,7 @@
 
 import React from "react"
 import { SketchPicker } from "react-color"
+import { convert, oklch } from "culori"
 
 interface ColorValue {
   r: number
@@ -41,21 +42,24 @@ export function Picker({ value, onChange }: PickerProps) {
   const handleChange = (newColor: SketchPickerColor) => {
     setColor(newColor.rgb)
 
-    // const oklch = validateOklch(newColor.rgb)
+    const rgbString = `rgb(${newColor.rgb.r}, ${newColor.rgb.g}, ${newColor.rgb.b})`
+    const oklchColor = convert(rgbString, "oklch")
 
-    let chroma = oklch.chroma
+    if (!oklchColor || typeof oklchColor === "string") return
 
-    if (oklch.l > 70) {
-      const lightnessFactor = (oklch.l - 52) / 48
-      chroma = oklch.c * (1 + lightnessFactor * 3)
-    } else if (oklch.l < 40) {
-      const darknessFactor = (52 - oklch.l) / 52
-      chroma = oklch.c * (1 + darknessFactor * 2)
+    let chroma = oklchColor.c || 0
+
+    if (oklchColor.l && oklchColor.l > 70) {
+      const lightnessFactor = (oklchColor.l - 52) / 48
+      chroma = (oklchColor.c || 0) * (1 + lightnessFactor * 3)
+    } else if (oklchColor.l && oklchColor.l < 40) {
+      const darknessFactor = (52 - oklchColor.l) / 52
+      chroma = (oklchColor.c || 0) * (1 + darknessFactor * 2)
     }
 
     chroma = Math.min(0.4, Math.max(0.08, chroma))
 
-    onChange({ h: oklch.h, c: chroma })
+    onChange({ h: oklchColor.h || 0, c: chroma })
   }
 
   return (

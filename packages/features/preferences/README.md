@@ -41,7 +41,7 @@ Applications that server-render may pass validated request-time intent through `
 
 ## Appearance composition
 
-Feature packages do not import other feature packages. The application composition root reads Preferences and supplies the active value to `AppearanceRuntimeProvider` from `@repo/feature-theme`.
+Feature packages do not import other feature packages. The application composition root reads Preferences and supplies the active value to `AppearanceRuntimeProvider` from `@repo/features-theme`.
 
 ## Verification
 

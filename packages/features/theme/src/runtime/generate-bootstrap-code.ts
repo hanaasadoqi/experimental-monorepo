@@ -1,5 +1,5 @@
 import { AppearancePreference } from "@repo/features-preferences"
-import { ResolvedAppearance } from "../model/appearance"
+import { ResolvedAppearance } from "../domain"
 
 /**
  * Generate executable code to reconcile appearance before hydration.

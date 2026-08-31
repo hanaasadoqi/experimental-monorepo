@@ -1,6 +1,6 @@
 "use client"
 
-import { type OKLCH, getContrastRatio, getWcagLevel } from "../shade-generation"
+import { type OKLCH, getContrastRatio, getWcagLevel } from "../../../domain/core/colors/shade-generation"
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface ContrastIndicatorProps {
