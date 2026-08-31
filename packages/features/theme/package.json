@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "peerDependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -15,11 +17,17 @@
     }
   },
   "dependencies": {
+    "@hugeicons/core-free-icons": "^4.3.0",
+    "@hugeicons/react": "^1.1.10",
     "@repo/services-persistence": "workspace:*",
     "@repo/shared-contracts": "workspace:*",
     "@repo/services-zustand": "workspace:*",
-    "@repo/feature-preferences": "workspace:*",
-    "zustand": "^4.5.2"
+    "@repo/features-preferences": "workspace:*",
+    "@repo/ui-components": "workspace:*",
+    "zustand": "^5.0.0",
+    "culori": "^4.0.1",
+    "sonner": "^2.0.0",
+    "react-color": "^2.19.3"
   },
   "scripts": {
     "lint": "eslint .",
@@ -51,13 +59,17 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^7.9.0",
     "vitest": "^4.1.11",
-    "@vitest/coverage-v8": "^4.1.11"
+    "@vitest/coverage-v8": "^4.1.11",
+    "@types/culori": "^4.0.1",
+    "@types/react-color": "3.0.13"
   },
   "exports": {
     ".": "./src/index.ts",
     "./types": "./src/model/index.ts",
     "./react": "./src/react/index.ts",
+    "./store": "./src/store/index.ts",
     "./resolution": "./src/resolution/index.ts",
-    "./runtime": "./src/runtime/index.ts"
+    "./runtime": "./src/react/runtime/index.ts",
+    "./editor": "./src/react/editor/index.ts"
   }
 }

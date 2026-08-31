@@ -1,3 +1,4 @@
+"use client";
 import { createContext, useContext, type Context, type ReactNode } from "react"
 import type { StoreApi } from "zustand/vanilla"
 

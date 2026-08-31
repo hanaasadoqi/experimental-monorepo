@@ -2,12 +2,12 @@
 
 import type { ReactNode } from "react"
 
-import { useAppearancePreference } from "@repo/feature-preferences"
+import { useAppearancePreference } from "@repo/features-preferences"
 
 import {
   AppearanceRuntimeProvider,
   ThemeToggleHotkey,
-} from "@repo/feature-theme"
+} from "@repo/features-theme"
 
 export interface AppearanceBridgeProps {
   children: ReactNode

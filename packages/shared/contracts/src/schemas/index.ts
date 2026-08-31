@@ -4,11 +4,3 @@
  */
 
 export { loginFormSchema, type LoginForm } from "./auth"
-export {
-  oklchStrSchema,
-  type OklchStr,
-  oklchColorSchema,
-  type oklchColor,
-  lmsColorSchema,
-  type lmsColor,
-} from "./colors.js"

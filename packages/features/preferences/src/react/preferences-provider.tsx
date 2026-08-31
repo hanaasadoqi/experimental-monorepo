@@ -6,7 +6,7 @@ import type { AppearancePreference } from "../model"
 
 import { createPreferencesStore, type PreferencesStoreApi } from "../store"
 
-import { PreferencesStoreContext } from "./preferences-context"
+import { PreferencesStoreContextProvider } from "./preferences-context"
 
 export interface PreferencesProviderProps {
   children: ReactNode
@@ -31,8 +31,8 @@ export function PreferencesProvider({
   }
 
   return (
-    <PreferencesStoreContext value={storeRef.current}>
+    <PreferencesStoreContextProvider value={storeRef.current}>
       {children}
-    </PreferencesStoreContext>
+    </PreferencesStoreContextProvider>
   )
 }

@@ -15,8 +15,9 @@
   },
   "exports": {
     ".": "./src/index.css",
-    "./index.css": "./src/index.css",
-    "./postcss.config": "./postcss.config.mjs"
+    "./index.css": "./src/theme.css",
+    "./postcss.config": "./postcss.config.mjs",
+    "./global.css": "./src/theme.css"
   },
   "dependencies": {
     "@repo/ui-design-system": "workspace:*",

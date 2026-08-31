@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 
-import { useAppearancePreference } from "@repo/feature-preferences"
+import { useAppearancePreference } from "@repo/features-preferences"
 
 import { persistAppearancePreference } from "../preferences/persist-appearance-preference"
 

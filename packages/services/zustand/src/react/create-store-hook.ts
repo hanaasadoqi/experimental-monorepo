@@ -1,3 +1,5 @@
+"use client";
+
 import { useStore } from "zustand"
 import type { StoreApi } from "zustand/vanilla"
 

@@ -1,16 +1,16 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google"
-import "./globals.css"
 import { cn } from "@repo/ui-components/lib/utils"
 import type { ReactNode } from "react"
 import Script from "next/script"
 
-import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/feature-preferences"
-
-import { generateBootstrapCode } from "@repo/feature-theme"
-
 import { ApplicationProviders } from "../providers/application-providers"
 
+import { generateBootstrapCode } from "@repo/features-theme/runtime";
 import { readAppearancePreferenceCookie } from "../server/preferences/read-appearance-preference-cookie"
+
+import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/features-preferences"
+
+import "./globals.css"
 
 export interface RootLayoutProps {
   children: ReactNode
@@ -50,6 +50,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         geist.variable,
         {
           dark: explicitAppearance === "dark",
+          light: explicitAppearance === "light",
         }
       )}
       data-theme={explicitAppearance}

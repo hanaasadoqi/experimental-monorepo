@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { appearancePreferenceSchema } from "@repo/feature-preferences"
+import { appearancePreferenceSchema } from "@repo/features-preferences"
 
 export const preferencesCookieSchema = z.object({
   appearance: appearancePreferenceSchema,

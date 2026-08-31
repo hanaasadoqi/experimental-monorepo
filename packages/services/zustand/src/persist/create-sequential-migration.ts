@@ -1,4 +1,4 @@
-import type { StoreMigrations } from "./types.js"
+import type { StoreMigrations } from "./types"
 
 export function createSequentialMigration<TState>(migrations: StoreMigrations<TState>) {
   const versions = Object.keys(migrations)

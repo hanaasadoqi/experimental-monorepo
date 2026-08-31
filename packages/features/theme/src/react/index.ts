@@ -1,2 +1,5 @@
 export * from "./appearance"
-export * from "./hotkeys"
+export { ThemeToggleHotkey, isTypingTarget } from "./hotkeys"
+export * from "./theme-scope"
+export * from "./components/preview/ui-component-preview";
+export * from "./components/preview/demo-preview";

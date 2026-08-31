@@ -1,6 +1,6 @@
-import type { AppearancePreference } from "@repo/feature-preferences"
+import type { AppearancePreference } from "@repo/features-preferences"
 
-import type { ResolvedAppearance } from "../model"
+import type { ResolvedAppearance } from "../model/colors"
 
 export function resolveAppearance(
   preference: AppearancePreference,

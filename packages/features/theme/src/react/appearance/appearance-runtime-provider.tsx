@@ -2,7 +2,7 @@
 
 import { useEffect, type ReactNode } from "react"
 
-import type { AppearancePreference } from "@repo/feature-preferences"
+import type { AppearancePreference } from "@repo/features-preferences"
 
 import { resolveAppearance } from "../../resolution"
 

@@ -1,4 +1,4 @@
-import type { PersistedStoreLike } from "../persist/types.js"
+import type { PersistedStoreLike } from "../persist/types"
 
 export function isStoreHydrated(store: PersistedStoreLike): boolean {
   return store.persist.hasHydrated()

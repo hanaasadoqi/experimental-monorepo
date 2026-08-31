@@ -1,4 +1,4 @@
-import { AppearancePreference } from "@repo/feature-preferences"
+import { AppearancePreference } from "@repo/features-preferences"
 import { ResolvedAppearance } from "../model/appearance"
 
 /**

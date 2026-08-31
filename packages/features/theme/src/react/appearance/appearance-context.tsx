@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from "react"
 
-import type { ResolvedAppearance } from "../../model"
+import type { ResolvedAppearance } from "../../model/appearance"
 
 export const AppearanceContext = createContext<ResolvedAppearance | null>(null)
 

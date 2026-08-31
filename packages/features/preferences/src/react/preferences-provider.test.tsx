@@ -80,7 +80,7 @@ describe("PreferencesProvider", () => {
 
   it("throws when a preferences hook is used without a provider", () => {
     expect(() => render(<PreferenceConsumer testId="orphan" />)).toThrow(
-      "PreferencesStoreContext is unavailable. Ensure this component is rendered within PreferencesProvider."
+      "PreferencesStoreContext provider is missing"
     )
   })
 })

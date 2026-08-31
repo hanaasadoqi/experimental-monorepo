@@ -1,4 +1,4 @@
-import { appearancePreferenceSchema } from "@repo/feature-preferences"
+import { appearancePreferenceSchema } from "@repo/features-preferences"
 import { defineCookie } from "@repo/services-cookies"
 
 export const APPEARANCE_PREFERENCE_COOKIE = "appearance"

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import type { AppearancePreference } from "@repo/feature-preferences"
+import type { AppearancePreference } from "@repo/features-preferences"
 
 export interface AppearanceRuntimeProviderProps {
   preference: AppearancePreference

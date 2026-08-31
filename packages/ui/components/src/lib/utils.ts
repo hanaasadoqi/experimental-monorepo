@@ -1,1 +1,1 @@
-export { cn, type ClassValue } from "@repo/shared-utils/classnames"
+export { cn, type ClassValue } from "@repo/shared-utils"

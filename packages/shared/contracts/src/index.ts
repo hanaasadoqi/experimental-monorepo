@@ -13,50 +13,30 @@ export type {
   SliceState,
   SliceExtractor,
   Selector,
-} from "./types/store.js"
-export type { LoginMethod, AuthProvider } from "./types/auth.js"
-export { loginFormSchema, type LoginForm } from "./schemas/auth.js"
-export {
-  oklchStrSchema,
-  type OklchStr,
-  oklchColorSchema,
-  type oklchColor,
-  lmsColorSchema,
-  type lmsColor,
-} from "./schemas/colors.js"
-export {
-  OKLCH_REGEX,
-  DEFAULT_PRIMARY_BASE,
-  OKLCH_CONSTRAINTS,
-  MIN_CHROMA,
-  MAX_CHROMA,
-  MIN_HUE,
-  MAX_HUE,
-  MIN_LIGHTNESS,
-  MAX_LIGHTNESS,
-  CONTRAST_THRESHOLDS,
-} from "./defaults/colors.js"
+} from "./types/store"
+export type { LoginMethod, AuthProvider } from "./types/auth"
+export { loginFormSchema, type LoginForm } from "./schemas/auth"
 // Utility types
-export type { ValidationError } from "./utils/schema-utils.js"
+export type { ValidationError } from "./utils/schema-utils"
 export {
   validateSchema,
   parseSchema,
   tryParseSchema,
-} from "./utils/schema-utils.js"
+} from "./utils/schema-utils"
 export type {
   GuardSchema,
   SchemaInput,
   SchemaOutput,
-} from "./utils/validate-utils.js"
+} from "./utils/validate-utils"
 export {
   assertMatchesSchema,
   createSchemaGuard,
   matchesSchema,
   parseUnknown,
   safeParseUnknown,
-} from "./utils/validate-utils.js"
+} from "./utils/validate-utils"
 export {
   HTTP_URL_PATTERN,
   EMAIL_PATTERN,
   UUID_PATTERN,
-} from "./defaults/storage.js"
+} from "./defaults/storage"

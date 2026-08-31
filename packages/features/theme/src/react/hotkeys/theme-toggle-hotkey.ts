@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 
-import { useSetAppearancePreference } from "@repo/feature-preferences"
+import { useSetAppearancePreference } from "@repo/features-preferences"
 
 import { useResolvedAppearance } from "../appearance"
 

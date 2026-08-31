@@ -2,8 +2,14 @@
 
 import { Moon, Sun } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useSetAppearancePreference } from "@repo/feature-preferences/react"
-import { useResolvedAppearance } from "@repo/feature-theme"
+import { useSetAppearancePreference } from "@repo/features-preferences/react"
+import {
+  ThemeForm,
+  ThemePreview,
+  ThemeScopeProvider,
+  useResolvedAppearance,
+  Demo,
+} from "@repo/features-theme"
 import { Button } from "@repo/ui-components/base/button"
 import {
   Card,
@@ -20,29 +26,59 @@ export default function Page() {
   const setPreference = useSetAppearancePreference()
   const isDark = colorScheme === "dark"
   const Icon = isDark ? Sun : Moon
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
+    <main className="grid min-h-svh gap-8 p-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,40rem)]">
+      <section
+        className="min-w-0 text-sm leading-loose"
+        aria-labelledby="application-appearance-heading"
+      >
         <Card>
           <CardHeader>
-            <CardTitle>Card Title</CardTitle>
-            <CardDescription>Card Description</CardDescription>
+            <CardTitle id="application-appearance-heading">
+              Application appearance
+            </CardTitle>
+            <CardDescription>
+              This control changes the resolved light or dark appearance for the
+              whole application.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <p>
-              This is some content inside the card. It can be any React
-              component or HTML element.
+              This card remains outside the scoped Theme preview and does not
+              consume its primary color override.
             </p>
           </CardContent>
           <CardFooter>
             <CardAction>
-              <Button onClick={() => setPreference(isDark ? "light" : "dark")}>
+              <Button
+                size={"icon-lg"}
+                onClick={() => setPreference(isDark ? "light" : "dark")}
+              >
                 <HugeiconsIcon icon={Icon} />
               </Button>
             </CardAction>
           </CardFooter>
         </Card>
-      </div>
-    </div>
+      </section>
+
+      <ThemeScopeProvider scopeId="preview">
+        <section
+          className="bg-card text-card-foreground rounded-xl border p-6 shadow-sm"
+          aria-labelledby="theme-scope-heading"
+        >
+          <header className="mb-6">
+            <h1 id="theme-scope-heading" className="text-xl font-semibold">
+              Scoped Theme preview
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              This durable override applies only inside this preview boundary.
+            </p>
+          </header>
+          <ThemeForm />
+          <ThemePreview />
+        </section>
+      </ThemeScopeProvider>
+    </main>
   )
 }

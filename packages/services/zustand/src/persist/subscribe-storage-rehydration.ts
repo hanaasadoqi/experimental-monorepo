@@ -1,4 +1,4 @@
-import type { StorageEventTargetLike, StoragePersistedStoreLike } from "./types.js"
+import type { StorageEventTargetLike, StoragePersistedStoreLike } from "./types"
 
 export function subscribeToStorageRehydration(
   store: StoragePersistedStoreLike,

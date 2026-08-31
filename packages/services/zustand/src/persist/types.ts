@@ -1,10 +1,12 @@
 export type MaybePromise<T> = T | Promise<T>
 
 export type StoreMigration<TState> = (state: unknown) => MaybePromise<TState>
-export type StoreMigrations<TState> = Readonly<Record<number, StoreMigration<TState>>>
+export type StoreMigrations<TState> = Readonly<
+  Record<number, StoreMigration<TState>>
+>
 
 export interface PersistLifecycle {
-  rehydrate(): Promise<void>
+  rehydrate(): MaybePromise<void>
   hasHydrated(): boolean
   onHydrate(listener: () => void): () => void
   onFinishHydration(listener: () => void): () => void
@@ -33,6 +35,12 @@ export interface StorageEventLike {
 }
 
 export interface StorageEventTargetLike {
-  addEventListener(type: "storage", listener: (event: StorageEventLike) => void): void
-  removeEventListener(type: "storage", listener: (event: StorageEventLike) => void): void
+  addEventListener(
+    type: "storage",
+    listener: (event: StorageEventLike) => void
+  ): void
+  removeEventListener(
+    type: "storage",
+    listener: (event: StorageEventLike) => void
+  ): void
 }

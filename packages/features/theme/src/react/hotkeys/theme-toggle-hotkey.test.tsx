@@ -2,13 +2,13 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import type { Mock } from "vitest"
 import { render } from "@testing-library/react"
 import { ThemeToggleHotkey } from "./theme-toggle-hotkey"
-import { AppearancePreference } from "@repo/feature-preferences"
+import { AppearancePreference } from "@repo/features-preferences"
 
 // Mock the hooks
 vi.mock("../appearance", () => ({
   useResolvedAppearance: vi.fn(),
 }))
-vi.mock("@repo/feature-preferences", () => ({
+vi.mock("@repo/features-preferences", () => ({
   useSetAppearancePreference: vi.fn(),
 }))
 
@@ -16,7 +16,7 @@ vi.mock("./is-typing-target", () => ({
   isTypingTarget: vi.fn(),
 }))
 
-import { useSetAppearancePreference } from "@repo/feature-preferences"
+import { useSetAppearancePreference } from "@repo/features-preferences"
 import { isTypingTarget } from "./is-typing-target"
 import { useResolvedAppearance } from "../appearance"
 

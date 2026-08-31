@@ -1,5 +1,6 @@
 @import "@repo/ui-tailwind-config";
-@import "@repo/ui-components/theme.css";
+@import "@repo/ui-design-system/index.css";
 
 @source "../**/*.{ts,tsx}";
 @source "../../../../packages/ui/components/src/**/*.{ts,tsx}";
+@source "../../../../packages/features/**/*.{ts,tsx}";

@@ -1,4 +1,4 @@
-import type { AppearancePreference } from "@repo/feature-preferences"
+import type { AppearancePreference } from "@repo/features-preferences"
 
 import { serializeCookie } from "@repo/services-cookies"
 

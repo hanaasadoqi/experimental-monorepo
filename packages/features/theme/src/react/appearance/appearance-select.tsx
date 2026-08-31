@@ -1,12 +1,10 @@
-// features/theme/src/react/appearance/appearance-select.tsx
-
 "use client"
 
 import {
   appearancePreferenceSchema,
   useAppearancePreference,
   useSetAppearancePreference,
-} from "@repo/feature-preferences"
+} from "@repo/features-preferences"
 
 export function AppearanceSelect() {
   const preference = useAppearancePreference()

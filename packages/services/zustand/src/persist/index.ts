@@ -1,6 +1,6 @@
-export { clearPersistedStore } from "./clear-persisted-store.js"
-export { createSequentialMigration } from "./create-sequential-migration.js"
-export { subscribeToStorageRehydration } from "./subscribe-storage-rehydration.js"
+export { clearPersistedStore } from "./clear-persisted-store"
+export { createSequentialMigration } from "./create-sequential-migration"
+export { subscribeToStorageRehydration } from "./subscribe-storage-rehydration"
 export type {
   MaybePromise,
   PersistedStoreLike,
@@ -12,4 +12,4 @@ export type {
   StoragePersistedStoreLike,
   StoreMigration,
   StoreMigrations,
-} from "./types.js"
+} from "./types"

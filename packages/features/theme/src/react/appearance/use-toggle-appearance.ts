@@ -1,6 +1,6 @@
 "use client"
 
-import { useSetAppearancePreference } from "@repo/feature-preferences"
+import { useSetAppearancePreference } from "@repo/features-preferences"
 
 import { useResolvedAppearance } from "./use-resolved-appearance"
 

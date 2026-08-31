@@ -1,15 +1,11 @@
 "use client"
 
-import { useStore } from "zustand"
+import { createStoreHook } from "@repo/services-zustand/react"
 
 import type { PreferencesStore } from "../store"
 
 import { usePreferencesStoreApi } from "./preferences-context"
 
-export function usePreferencesStore<T>(
-  selector: (state: PreferencesStore) => T
-): T {
-  const store = usePreferencesStoreApi()
-
-  return useStore(store, selector)
-}
+export const usePreferencesStore = createStoreHook<PreferencesStore>(
+  usePreferencesStoreApi
+)

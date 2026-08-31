@@ -5,7 +5,7 @@ import type { ReactNode } from "react"
 import {
   PreferencesProvider,
   type AppearancePreference,
-} from "@repo/feature-preferences"
+} from "@repo/features-preferences"
 
 import { AppearanceBridge } from "./appearance-bridge"
 

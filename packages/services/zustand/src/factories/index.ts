@@ -1,3 +1,3 @@
-export * from "./selection/index.js"
-export * from "./operation/index.js"
-export * from "./collection/index.js"
+export * from "./selection/index"
+export * from "./operation/index"
+export * from "./collection/index"
