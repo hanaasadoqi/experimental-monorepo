@@ -1,18 +1,15 @@
 "use client"
 import { HuePresetGrid } from "./hue-preset-grid"
-import { HarmonyPicker } from "./harmony-picker"
 import { ContrastIndicator } from "./contrast-indicator"
 import { Slider } from "@repo/ui-components/base/slider"
 import type { OklchColor } from "../../../model/color"
 
-interface ColorObject {
+export interface ColorObject {
   key: string
   label: string
   color: OklchColor | undefined
   onChange: (color: OklchColor) => void
-  onClear?: () => void
   optional?: boolean
-  isPrimary?: boolean
 }
 
 export interface ColorEditorProps {
@@ -33,13 +30,7 @@ function ColorSwatch({ color }: { color: OklchColor | undefined }) {
   )
 }
 
-function ColorSection({
-  item,
-  primaryColor,
-}: {
-  item: ColorObject
-  primaryColor: OklchColor | undefined
-}) {
+function ColorSection({ item }: { item: ColorObject }) {
   return (
     <section className="space-y-4">
       <div className="flex items-center gap-2">
@@ -62,28 +53,16 @@ function ColorSection({
           <ContrastIndicator color={item.color} />
         </>
       )}
-
-      {!item.isPrimary && primaryColor && (
-        <HarmonyPicker
-          primaryColor={primaryColor}
-          accentColor={item.color}
-          onAccentColorChange={item.onChange}
-          onAccentClear={item.onClear}
-        />
-      )}
     </section>
   )
 }
 
 export function ColorEditor({ colors }: ColorEditorProps) {
-  const primaryColorObj = colors.find((c) => c.isPrimary)
-  const primaryColor = primaryColorObj?.color
-
   return (
     <div className="space-y-6">
       {colors.map((item, index) => (
         <div key={item.key}>
-          <ColorSection item={item} primaryColor={primaryColor} />
+          <ColorSection item={item} />
           {index < colors.length - 1 && <div className="border-t border-border mt-6" />}
         </div>
       ))}
