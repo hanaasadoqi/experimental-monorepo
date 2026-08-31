@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react"
 
-import type { ResolvedAppearance } from "../../model/colors"
+import type { ResolvedAppearance } from "../../model/appearance"
 
 const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
 
