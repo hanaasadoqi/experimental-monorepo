@@ -16,16 +16,15 @@
   "exports": {
     "./index.css": "./src/styles/index.css"
   },
-  "dependencies": {
-    "@repo/shared-utils": "workspace:*"
-  },
   "devDependencies": {
     "@repo/foundation-eslint-config": "workspace:*",
     "@repo/foundation-prettier-config": "workspace:*",
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
+    "@types/culori": "^4.0.1",
     "@types/node": "^26.4.0",
+    "culori": "^4.0.1",
     "eslint": "^9.39.5",
     "@eslint/js": "^10.0.1",
     "eslint-config-prettier": "^10.1.8",

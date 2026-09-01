@@ -16,11 +16,11 @@
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.3.0",
     "@hugeicons/react": "^1.1.10",
+    "@repo/ui-tailwind-config": "workspace:*",
+    "@repo/ui-components": "workspace:*",
     "@repo/features-preferences": "workspace:*",
     "@repo/features-theme": "workspace:*",
     "@repo/services-cookies": "workspace:*",
-    "@repo/ui-components": "workspace:*",
-    "@repo/ui-tailwind-config": "workspace:*",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-color": "^2.19.3",

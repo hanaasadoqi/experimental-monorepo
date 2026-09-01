@@ -4,29 +4,7 @@ import {
   persist,
   type StateStorage,
 } from "zustand/middleware"
-import { ThemeOverrides } from "../domain";
-
-
-export interface ThemeScopeState {
-  overrides: ThemeOverrides
-}
-
-export interface ThemeScopeActions {
-  setPrimaryColor: (primaryColor: string) => void
-}
-
-export type ThemeScopeStore = ThemeScopeState & ThemeScopeActions
-
-export type ThemeScopeStoreApi = Mutate<
-  StoreApi<ThemeScopeStore>,
-  [["zustand/persist", ThemeScopeState]]
->
-
-export interface CreateThemeScopeStoreOptions {
-  scopeId: string
-  initialOverrides?: ThemeOverrides
-  storage?: StateStorage
-}
+import { ThemeOverrides } from "../domain"
 
 const THEME_SCOPE_STORAGE_PREFIX = "synapcity:theme-scope:"
 
@@ -51,6 +29,28 @@ function readPersistedOverrides(value: unknown): ThemeOverrides | undefined {
   return typeof overrides.primaryColor === "string"
     ? { primaryColor: overrides.primaryColor }
     : undefined
+}
+
+
+export interface ThemeScopeState {
+  overrides: ThemeOverrides
+}
+
+export interface ThemeScopeActions {
+  setPrimaryColor: (primaryColor: string) => void
+}
+
+export type ThemeScopeStore = ThemeScopeState & ThemeScopeActions
+
+export type ThemeScopeStoreApi = Mutate<
+  StoreApi<ThemeScopeStore>,
+  [["zustand/persist", ThemeScopeState]]
+>
+
+export interface CreateThemeScopeStoreOptions {
+  scopeId: string
+  initialOverrides?: ThemeOverrides
+  storage?: StateStorage
 }
 
 export function createThemeScopeStore({

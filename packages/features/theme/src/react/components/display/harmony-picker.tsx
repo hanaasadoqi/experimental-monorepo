@@ -1,17 +1,14 @@
 "use client"
 
-import {
-  type OKLCH,
-  type ColorHarmony,
-  getHarmonies,
-} from "../../../domain/core/colors/shade-generation"
+import type { OklchColor } from "../../../domain/core/colors/model"
+import { getHarmonies, type ColorHarmony } from "../../../domain/core/colors/shade-generation"
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface HarmonyPickerProps {
-  accentColor?: OKLCH
-  onAccentColorChange: (color: OKLCH) => void
+  accentColor?: OklchColor
+  onAccentColorChange: (color: OklchColor) => void
   onAccentClear?: () => void
-  primaryColor?: OKLCH
+  primaryColor?: OklchColor
 }
 
 export function HarmonyPicker({
@@ -56,7 +53,7 @@ export function HarmonyPicker({
       </div>
 
       <div className="space-y-1.5">
-        {harmonies.map((harmony) => {
+        {harmonies.map((harmony: ColorHarmony) => {
           const isSelected = accentColor?.h === harmony.colors[0]?.h
 
           return (
@@ -70,9 +67,8 @@ export function HarmonyPicker({
               )}
               onClick={() => handleToggleHarmony(harmony)}
             >
-              {/* Color dots */}
               <div className="flex gap-1 shrink-0">
-                {harmony.colors.map((color, i) => (
+                {harmony.colors.map((color: OklchColor, i: number) => (
                   <button
                     key={`${harmony.type}-${i}`}
                     className="w-5 h-5 rounded-full border border-white/20 shadow-sm hover:scale-110 transition-transform"
@@ -88,7 +84,6 @@ export function HarmonyPicker({
                 ))}
               </div>
 
-              {/* Label */}
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium text-foreground">
                   {harmony.name}

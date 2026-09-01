@@ -1,4 +1,4 @@
-export * from "./model";
+export * from "./model"
 export {
   contrastRatio,
   meetsContrastRequirement,
@@ -6,18 +6,14 @@ export {
   calculateContrastRatio,
   suggestTextColorForBackground,
   getWCAGLevel,
-  meetsWCAG
-} from "./contrast";
-export {
-  luminance,
-  luminanceFromOklch,
-  tryLuminance
-} from "./luminance"
+  meetsWCAG,
+} from "./contrast"
+export { luminance, luminanceFromOklch, tryLuminance } from "./luminance"
 export {
   validateOklch,
   isValidOklch,
   parseOklch,
-  assertOklch
+  assertOklch,
 } from "./parse-oklch"
 export {
   transformOklchToLMS,

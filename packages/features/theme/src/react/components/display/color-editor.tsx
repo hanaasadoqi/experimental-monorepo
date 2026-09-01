@@ -1,9 +1,9 @@
 "use client"
 
+import type { OklchColor } from "../../../domain/core/colors/model"
 import { HuePresetGrid } from "./hue-preset-grid"
 import { ContrastIndicator } from "./contrast-indicator"
-import { Slider } from "@repo/ui-components/base/slider"
-import type { OklchColor } from "../../../domain/core/colors/model"
+import { OklchSliders } from "./oklch-sliders"
 
 export interface ColorObject {
   key: string
@@ -19,7 +19,9 @@ export interface ColorEditorProps {
 
 function ColorSwatch({ color }: { color: OklchColor | undefined }) {
   if (!color) {
-    return <div className="w-4 h-4 rounded-full border-2 border-dashed border-border" />
+    return (
+      <div className="w-4 h-4 rounded-full border-2 border-dashed border-border" />
+    )
   }
   return (
     <div
@@ -46,11 +48,8 @@ function ColorSection({ item }: { item: ColorObject }) {
 
       {item.color && (
         <>
-          <HuePresetGrid
-            color={item.color}
-            onColorSelect={item.onChange}
-          />
-          <Slider value={item.color} onChange={item.onChange} />
+          <HuePresetGrid color={item.color} onColorSelect={item.onChange} />
+          <OklchSliders color={item.color} onChange={item.onChange} />
           <ContrastIndicator color={item.color} />
         </>
       )}
@@ -64,7 +63,9 @@ export function ColorEditor({ colors }: ColorEditorProps) {
       {colors.map((item, index) => (
         <div key={item.key}>
           <ColorSection item={item} />
-          {index < colors.length - 1 && <div className="border-t border-border mt-6" />}
+          {index < colors.length - 1 && (
+            <div className="border-t border-border mt-6" />
+          )}
         </div>
       ))}
     </div>

@@ -1,32 +1,29 @@
 "use client"
 
-import { type OKLCH, toCss, deriveScale } from "../../../domain/core/colors/shade-generation"
+import type { OklchColor } from "../../../domain/core/colors/model"
+import { toCss, deriveScale } from "../../../domain/core/colors/shade-generation"
 
-type Props = {
-  color: OKLCH
-  onChange: (color: OKLCH) => void
+export interface OklchSlidersProps {
+  color: OklchColor
+  onChange: (color: OklchColor) => void
   mode?: "light" | "dark"
 }
 
-export function OklchSliders({ color, onChange, mode = "light" }: Props) {
+export function OklchSliders({ color, onChange, mode = "light" }: OklchSlidersProps) {
   const { h, c, l } = color
 
-  // Build hue gradient background from the current chroma/lightness
   const hueGradientStops = [
     0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360,
   ]
     .map((deg) => toCss({ l, c: Math.max(c, 0.12), h: deg }))
     .join(", ")
 
-  // Build chroma gradient (gray → saturated at current hue/lightness)
   const chromaGradient = `${toCss({ l, c: 0, h })}, ${toCss({ l, c: 0.4, h })}`
 
-  // Build lightness gradient (black → white at current hue/chroma)
   const lightnessGradient = `${toCss({ l: 5, c: Math.min(c, 0.08), h })}, ${toCss({ l: 60, c, h })}, ${toCss({ l: 97, c: Math.min(c, 0.06), h })}`
 
   return (
     <div className="space-y-5">
-      {/* Hue */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -52,7 +49,6 @@ export function OklchSliders({ color, onChange, mode = "light" }: Props) {
             className="absolute inset-0 w-full opacity-0 cursor-pointer h-full"
             style={{ WebkitAppearance: "none" }}
           />
-          {/* Thumb indicator */}
           <div
             className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-white shadow-md pointer-events-none"
             style={{
@@ -64,7 +60,6 @@ export function OklchSliders({ color, onChange, mode = "light" }: Props) {
         </div>
       </div>
 
-      {/* Chroma */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -98,7 +93,6 @@ export function OklchSliders({ color, onChange, mode = "light" }: Props) {
         </div>
       </div>
 
-      {/* Lightness */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -134,7 +128,6 @@ export function OklchSliders({ color, onChange, mode = "light" }: Props) {
         </div>
       </div>
 
-      {/* Color preview strip */}
       <div className="flex gap-0.5 rounded-lg overflow-hidden h-6">
         {[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map((step) => {
           const scale = deriveScale(color, mode)

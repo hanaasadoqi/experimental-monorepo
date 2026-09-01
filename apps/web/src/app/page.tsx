@@ -3,13 +3,14 @@
 import { Moon, Sun } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useSetAppearancePreference } from "@repo/features-preferences/react"
-import {
-  ThemeForm,
-  ThemePreview,
-  ThemeScopeProvider,
-  useResolvedAppearance,
-  Demo,
-} from "@repo/features-theme"
+import { ResolvedAppearance } from "@repo/features-theme";
+// import { ResolvedAppearance } from "@repo/features-theme";
+// import {
+//   ThemeForm,
+//   ThemePreview,
+//   ThemeScopeProvider,
+//   useResolvedAppearance,
+// } from "@repo/features-theme/store"
 import { Button } from "@repo/ui-components/base/button"
 import {
   Card,
@@ -22,9 +23,12 @@ import {
 } from "@repo/ui-components/base/card"
 
 export default function Page() {
-  const colorScheme = useResolvedAppearance()
+  // const colorScheme = useResolvedAppearance()
+  const colorScheme
+    = "light" // / Placeholder until the theme store is implemented;
+  // / Placeholder until the theme store is implemented
   const setPreference = useSetAppearancePreference()
-  const isDark = colorScheme === "dark"
+  const isDark = colorScheme === "dark" as ResolvedAppearance;
   const Icon = isDark ? Sun : Moon
 
   return (
@@ -62,7 +66,7 @@ export default function Page() {
         </Card>
       </section>
 
-      <ThemeScopeProvider scopeId="preview">
+      {/* <ThemeScopeProvider scopeId="preview"> */}
         <section
           className="bg-card text-card-foreground rounded-xl border p-6 shadow-sm"
           aria-labelledby="theme-scope-heading"
@@ -75,10 +79,10 @@ export default function Page() {
               This durable override applies only inside this preview boundary.
             </p>
           </header>
-          <ThemeForm />
-          <ThemePreview />
+        {/* <ThemePreview /> */}
+        {/* <ThemeForm /> */}
         </section>
-      </ThemeScopeProvider>
+      {/* </ThemeScopeProvider> */}
     </main>
   )
 }

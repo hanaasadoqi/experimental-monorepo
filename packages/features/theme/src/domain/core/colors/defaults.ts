@@ -1,3 +1,5 @@
+import { z } from "zod"
+
 /**
  * OKLch Color Space Representation
  *
@@ -7,14 +9,6 @@
  * @see {@link https://oklab.github.io|OKLab specification}
  */
 
-// Local type definitions for color utilities
-export type oklchColor = {
-  lightness: number
-  chroma: number
-  hue: number
-  alpha?: number
-}
-
 export type OklchStr = `oklch(${string})`
 
 export type lmsColor = {
@@ -23,39 +17,21 @@ export type lmsColor = {
   s: number
 }
 
-// OKLch regex and schemas (basic placeholder)
 export const OKLCH_REGEX = /^oklch\(([\d.]+)(%?)?\s+([\d.]+)\s+([\d.]+)\)$/
 
-// Placeholder schemas - actual validation can be done at runtime
-export const oklchColorSchema = {
-  safeParse: (value: unknown): { success: boolean; data?: oklchColor } => {
-    if (
-      typeof value === "object" &&
-      value !== null &&
-      "lightness" in value &&
-      "chroma" in value &&
-      "hue" in value
-    ) {
-      return {
-        success: true,
-        data: value as oklchColor,
-      }
-    }
-    return { success: false }
-  },
-}
+export const oklchColorSchema = z.object({
+  lightness: z.number(),
+  chroma: z.number(),
+  hue: z.number(),
+  alpha: z.number().min(0).max(1).optional(),
+})
 
-export const oklchStrSchema = {
-  safeParse: (value: unknown): { success: boolean; data?: OklchStr } => {
-    if (typeof value === "string" && OKLCH_REGEX.test(value)) {
-      return {
-        success: true,
-        data: value as OklchStr,
-      }
-    }
-    return { success: false }
-  },
-}
+export type oklchColor = z.infer<typeof oklchColorSchema>
+
+export const oklchStrSchema = z
+  .string()
+  .regex(OKLCH_REGEX)
+  .transform((value) => value as OklchStr)
 
 // WCAG compliance level contrast ratio thresholds
 export const CONTRAST_THRESHOLDS = {

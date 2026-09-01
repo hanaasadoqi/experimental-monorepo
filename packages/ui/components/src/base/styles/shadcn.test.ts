@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest"
 const stylesheetPath = path.join(import.meta.dirname, "shadcn.css")
 const designSystemColorsPath = path.resolve(
   import.meta.dirname,
-  "../../../../../design-system/src/styles/colors.css"
+  "../../../../design-system/src/styles/colors.css"
 )
 
 function declarationsForRule(css: string, selector: string) {

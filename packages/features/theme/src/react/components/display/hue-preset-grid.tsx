@@ -1,11 +1,12 @@
 "use client"
 
-import { type OKLCH, HUE_PRESETS } from "../../../domain/core/colors/shade-generation"
+import type { OklchColor } from "../../../domain/core/colors/model"
+import { HUE_PRESETS } from "../../../domain/core/colors/shade-generation"
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface HuePresetGridProps {
-  color: OKLCH
-  onColorSelect: (color: OKLCH) => void
+  color: OklchColor
+  onColorSelect: (color: OklchColor) => void
 }
 
 export function HuePresetGrid({ color, onColorSelect }: HuePresetGridProps) {
@@ -26,8 +27,8 @@ export function HuePresetGrid({ color, onColorSelect }: HuePresetGridProps) {
       <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
         Quick Presets
       </span>
-      {categories.map((category) => {
-        const presets = HUE_PRESETS.filter((p) => p.category === category)
+      {categories.map((category: string) => {
+        const presets = HUE_PRESETS.filter((p: (typeof HUE_PRESETS)[0]) => p.category === category)
         if (!presets.length) return null
 
         return (
@@ -36,7 +37,7 @@ export function HuePresetGrid({ color, onColorSelect }: HuePresetGridProps) {
               {category}
             </p>
             <div className="flex flex-wrap gap-1.5">
-              {presets.map((preset) => {
+              {presets.map((preset: (typeof HUE_PRESETS)[0]) => {
                 const isActive = isPresetActive(preset)
                 const bgColor = getPresetCss(preset)
 

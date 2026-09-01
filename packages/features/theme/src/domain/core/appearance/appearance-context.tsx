@@ -14,8 +14,8 @@ export function useAppearanceContext(): ResolvedAppearance {
   if (appearance === null) {
     throw new Error(
       "AppearanceContext is unavailable. " +
-      "Ensure this component is rendered " +
-      "within AppearanceRuntimeProvider."
+        "Ensure this component is rendered " +
+        "within AppearanceRuntimeProvider."
     )
   }
 

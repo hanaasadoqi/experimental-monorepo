@@ -1,7 +1,7 @@
-import type { ResolvedAppearance } from "../domain/core/appearance"
+import type { ThemeMode } from "@workspace/domain-theme"
 
 export function applyAppearance(
-  appearance: ResolvedAppearance,
+  appearance: ThemeMode,
   root: HTMLElement = document.documentElement
 ): void {
   root.classList.toggle("dark", appearance === "dark")

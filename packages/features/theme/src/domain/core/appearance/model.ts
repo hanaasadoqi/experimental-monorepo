@@ -1,1 +1,1 @@
-export type ResolvedAppearance = "light" | "dark"
+export type { ThemeMode as ResolvedAppearance } from "@workspace/domain-theme"

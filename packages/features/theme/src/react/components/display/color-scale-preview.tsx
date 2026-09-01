@@ -1,24 +1,17 @@
 "use client"
 
-import {
-  type OKLCH,
-  type ColorScale,
-  SCALE_STEPS,
-  toCss,
-  autoForeground,
-  deriveScale,
-} from "../../../domain/core/colors/shade-generation"
+import type { OklchColor, ColorScale } from "../../../domain/core/colors/model"
+import { SCALE_STEPS, toCss, deriveScale } from "../../../domain/core/colors/shade-generation"
 import { cn } from "@repo/ui-components/lib/utils"
 import { useState, useMemo } from "react"
 
-type SwatchProps = {
+export interface SwatchProps {
   step: number
-  color: OKLCH
+  color: OklchColor
   isBase?: boolean
 }
 
 function Swatch({ step, color, isBase }: SwatchProps) {
-  const _fg = autoForeground(color)
   const title = `Step ${step} — L${color.l.toFixed(0)} C${color.c.toFixed(2)} H${color.h.toFixed(0)}°`
 
   return (
@@ -35,7 +28,7 @@ function Swatch({ step, color, isBase }: SwatchProps) {
   )
 }
 
-type ScaleRowProps = {
+interface ScaleRowProps {
   label: string
   scale: ColorScale
   baseStep?: number
@@ -65,18 +58,17 @@ function ScaleRow({
         )}
       </div>
       <div className="grid grid-cols-11 gap-1">
-        {SCALE_STEPS.map((step) => (
+        {SCALE_STEPS.map((step: number) => (
           <Swatch
             key={step}
             step={step}
-            color={scale[step]}
+            color={scale[step as keyof ColorScale]}
             isBase={step === baseStep}
           />
         ))}
       </div>
-      {/* Step labels row */}
       <div className="grid grid-cols-11 gap-1">
-        {SCALE_STEPS.map((step) => (
+        {SCALE_STEPS.map((step: number) => (
           <div
             key={step}
             className="text-center text-[9px] text-muted-foreground font-mono"
@@ -89,19 +81,19 @@ function ScaleRow({
   )
 }
 
-// ─── Semantic Color Rows ──────────────────────────────────────────────────────
+interface SemanticRowProps {
+  label: string
+  hue: number
+  chroma: number
+  mode: "light" | "dark"
+}
 
 function SemanticRow({
   label,
   hue,
   chroma,
   mode,
-}: {
-  label: string
-  hue: number
-  chroma: number
-  mode: "light" | "dark"
-}) {
+}: SemanticRowProps) {
   const scale = deriveScale({ h: hue, c: chroma, l: 55 }, mode)
   return (
     <div className="flex items-center gap-3">
@@ -109,11 +101,11 @@ function SemanticRow({
         {label}
       </span>
       <div className="flex flex-1 rounded-lg overflow-hidden h-7">
-        {SCALE_STEPS.map((step) => (
+        {SCALE_STEPS.map((step: number) => (
           <div
             key={step}
             className="flex-1"
-            style={{ backgroundColor: toCss(scale[step]) }}
+            style={{ backgroundColor: toCss(scale[step as keyof ColorScale]) }}
             title={`${label} ${step}`}
           />
         ))}
@@ -123,8 +115,8 @@ function SemanticRow({
 }
 
 export interface ColorScalePreviewProps {
-  primaryColor: OKLCH
-  accentColor?: OKLCH
+  primaryColor: OklchColor
+  accentColor?: OklchColor
   mode?: "light" | "dark"
 }
 
@@ -231,7 +223,6 @@ export function ColorScaleViewer({
 
   return (
     <div className="space-y-4">
-      {/* Tab switcher */}
       <div className="flex gap-1 p-1 bg-muted/50 rounded-lg w-fit">
         {tabs.map((tab) => (
           <button

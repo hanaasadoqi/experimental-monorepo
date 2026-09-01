@@ -1,9 +1,10 @@
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 
+import { wcagContrast } from "culori"
 import { describe, expect, it } from "vitest"
 
-import { contrastRatio, declarationsFor, resolveToken } from "../utils"
+import { declarationsFor, resolveToken } from "../utils"
 
 const scales = ["default", "primary", "secondary", "accent"]
 const steps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
@@ -62,7 +63,7 @@ describe("design-system colors", () => {
       }
       for (const [foreground, background] of pairs) {
         expect(
-          contrastRatio(
+          wcagContrast(
             resolveToken(foreground, theme),
             resolveToken(background, theme)
           )

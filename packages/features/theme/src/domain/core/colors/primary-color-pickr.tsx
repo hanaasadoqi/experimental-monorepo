@@ -1,6 +1,6 @@
 "use client"
 
-import { Picker } from "../../../react/components/theme-form/picker"
+// import { P } from "../../../react/providers/index"
 import { OklchColor } from "./model"
 import { transformLMStoRgb, transformOklchToLMS } from "./transforms"
 
@@ -11,7 +11,7 @@ interface PrimaryColorPickerProps {
 
 export function PrimaryColorPicker({
   primary,
-  onPrimaryChange,
+  onPrimaryChange: _,
 }: PrimaryColorPickerProps) {
   const displayOklch = {
     lightness: 52,
@@ -22,18 +22,19 @@ export function PrimaryColorPicker({
   const lms = transformOklchToLMS(displayOklch)
   const [r, g, b] = transformLMStoRgb(lms)
 
-  const displayValue = {
+  const _displayValue = {
     r: Math.round(r * 255),
     g: Math.round(g * 255),
     b: Math.round(b * 255),
   }
 
   return (
-    <Picker
-      value={displayValue}
-      onChange={({ h, c }) => {
-        onPrimaryChange({ h, c, l: primary.l ?? 60 })
-      }}
-    />
+    // <Picker
+    //   value={displayValue}
+    //   onChange={({ h, c }: { h: number; c: number }) => {
+    //     onPrimaryChange({ h, c, l: primary.l ?? 60 })
+    //   }}
+    // />
+    <></>
   )
 }

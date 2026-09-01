@@ -41,4 +41,4 @@ export const themeFormSchema = z.object({
   accent: oklchColorSchema.optional(),
 })
 
-export type ThemeForm = z.infer<typeof themeFormSchema>
+export type ThemeFormValues = z.infer<typeof themeFormSchema>

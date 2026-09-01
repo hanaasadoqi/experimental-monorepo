@@ -5,12 +5,13 @@ import Script from "next/script"
 
 import { ApplicationProviders } from "../providers/application-providers"
 
-import { generateBootstrapCode } from "@repo/features-theme/runtime";
+import { generateBootstrapCode } from "@repo/features-theme/runtime"
 import { readAppearancePreferenceCookie } from "../server/preferences/read-appearance-preference-cookie"
 
 import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/features-preferences"
 
 import "./globals.css"
+import { Viewport } from "next";
 
 export interface RootLayoutProps {
   children: ReactNode
@@ -30,6 +31,14 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-family-mono",
 })
+
+export const viewport: Viewport = {
+  colorScheme: 'light dark',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: 'white' },
+    { media: '(prefers-color-scheme: dark)', color: 'black' },
+  ],
+}
 
 export default async function RootLayout({ children }: RootLayoutProps) {
   const storedPreference = await readAppearancePreferenceCookie()

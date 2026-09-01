@@ -1,10 +1,9 @@
 import type { AppearancePreference } from "@repo/features-preferences"
-
-import type { ResolvedAppearance } from "../domain/core/appearance"
+import type { ThemeMode } from "@workspace/domain-theme"
 
 export function resolveAppearance(
   preference: AppearancePreference,
-  systemAppearance: ResolvedAppearance
-): ResolvedAppearance {
+  systemAppearance: ThemeMode
+): ThemeMode {
   return preference === "system" ? systemAppearance : preference
 }

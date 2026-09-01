@@ -9,7 +9,9 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "jsx": "react-jsx",
+    "types": ["node", "react", "react-dom", "next"]
   },
   "include": [
     "src",
@@ -17,7 +19,6 @@
     "next.config.ts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "server"
-  ],
+     "@types/**/*.d.ts"],
   "exclude": ["node_modules", ".next", ".turbo"]
 }
