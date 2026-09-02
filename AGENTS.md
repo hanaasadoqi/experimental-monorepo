@@ -64,3 +64,15 @@ pnpm build
 ```
 
 Report exactly what ran and investigate failures rather than weakening tests or rules.
+
+## Architecture: Theme & Preferences Boundaries
+
+See `.docs/architecture-boundaries.md` for the definitive rules on separating domain/runtime/ui/adapter layers.
+
+**One rule:** Domain packages are pure (no React, no Next.js, no browser APIs). Each layer above adds one capability:
+- Domain: Types & logic
+- Runtime: React state & hooks
+- UI: Components
+- Adapters: Next.js specifics (`cookies()`, `headers()`)
+
+When in doubt about where code belongs, consult that document first. It prevents the spaghetti we just cleaned up.
