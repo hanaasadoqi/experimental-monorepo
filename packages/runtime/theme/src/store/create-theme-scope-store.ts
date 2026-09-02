@@ -4,7 +4,7 @@ import {
   persist,
   type StateStorage,
 } from "zustand/middleware"
-import { ThemeOverrides } from "../domain"
+import { ThemeOverrides } from "@repo/domain-theme"
 
 const THEME_SCOPE_STORAGE_PREFIX = "synapcity:theme-scope:"
 

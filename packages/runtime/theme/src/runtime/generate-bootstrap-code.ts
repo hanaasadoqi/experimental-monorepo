@@ -1,5 +1,5 @@
-import type { AppearancePreference } from "../domain"
-import { ResolvedAppearance } from "../domain"
+import type { AppearancePreference } from "@repo/domain-theme"
+import { ResolvedAppearance } from "@repo/domain-theme"
 
 /**
  * Generate executable code to reconcile appearance before hydration.

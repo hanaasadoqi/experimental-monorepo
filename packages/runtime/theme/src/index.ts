@@ -1,3 +1,5 @@
-export { applyAppearance } from "./apply-appearance"
-
-export { generateBootstrapCode } from "./generate-bootstrap-code"
+// Re-exports for backward compatibility
+export * from "./resolution"
+export * from "./runtime"
+export * from "./store"
+export * from "./providers"
