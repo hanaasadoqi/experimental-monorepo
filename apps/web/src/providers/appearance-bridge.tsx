@@ -5,9 +5,9 @@ import type { ReactNode } from "react"
 import { useAppearancePreference } from "@repo/features-preferences"
 
 import {
-  AppearanceRuntimeProvider,
   ThemeToggleHotkey,
-} from "@repo/features-theme"
+} from "@repo/ui-theme"
+import { resolveAppearance, useSystemAppearance } from "@repo/runtime-theme";
 
 export interface AppearanceBridgeProps {
   children: ReactNode
@@ -15,11 +15,19 @@ export interface AppearanceBridgeProps {
 
 export function AppearanceBridge({ children }: AppearanceBridgeProps) {
   const preference = useAppearancePreference()
+  const systemAppearance = useSystemAppearance()
+  const resolvedPreference = resolveAppearance(preference, systemAppearance)
 
   return (
-    <AppearanceRuntimeProvider preference={preference}>
+    <div
+      data-theme={
+        resolvedPreference
+      }
+      color-scheme={resolvedPreference}
+      className={resolvedPreference}
+    >
       <ThemeToggleHotkey />
       {children}
-    </AppearanceRuntimeProvider>
+    </div>
   )
 }

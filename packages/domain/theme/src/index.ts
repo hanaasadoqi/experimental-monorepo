@@ -1,3 +1,2 @@
-export * from "./model"
-export * from "./color"
+export * from "./core"
 export * from "./compiler"

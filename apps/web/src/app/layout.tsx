@@ -1,11 +1,11 @@
+import React, { type ReactNode } from "react"
 import { Geist, Geist_Mono, Inter } from "next/font/google"
 import { cn } from "@repo/ui-components/lib/utils"
-import type { ReactNode } from "react"
 import Script from "next/script"
 
 import { ApplicationProviders } from "../providers/application-providers"
 
-import { generateBootstrapCode } from "@repo/features-theme/runtime"
+import { generateBootstrapCode } from "@repo/runtime-theme"
 import { readAppearancePreferenceCookie } from "../server/preferences/read-appearance-preference-cookie"
 
 import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/features-preferences"

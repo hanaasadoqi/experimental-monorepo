@@ -1,4 +1,4 @@
-import type { ThemeMode } from "@workspace/domain-theme"
+import type { ThemeMode } from "@repo/domain-theme";
 
 export function applyAppearance(
   appearance: ThemeMode,

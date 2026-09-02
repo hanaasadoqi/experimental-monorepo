@@ -11,22 +11,34 @@
     "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json}\"",
     "check-types": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
-    "test:run": "vitest run --coverage"
+    "test:run": "vitest run --coverage",
+    "bundle:analyze": "pnpm next experimental-analyze",
+    "bundle:coverage": "pnpm next experimental-analyze --coverage"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.3.0",
     "@hugeicons/react": "^1.1.10",
-    "@repo/ui-tailwind-config": "workspace:*",
-    "@repo/ui-components": "workspace:*",
+    "@repo/domain-theme": "workspace:*",
     "@repo/features-preferences": "workspace:*",
-    "@repo/features-theme": "workspace:*",
+    "@repo/runtime-theme": "workspace:*",
     "@repo/services-cookies": "workspace:*",
-    "next": "16.2.6",
+    "@repo/ui-components": "workspace:*",
+    "@repo/ui-tailwind-config": "workspace:*",
+    "@repo/ui-theme": "workspace:*",
     "react": "19.2.4",
     "react-color": "^2.19.3",
-    "react-dom": "19.2.4",
-    "tailwindcss": "^4.3.2",
+    "react-dom": "19.2.4"
+  },
+  "peerDependencies": {
+    "react": "^19.2.4",
+    "next": "16.2.6",
+    "react-dom": "^19.2.4",
     "zod": "^4.5.4"
+  },
+    "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@repo/foundation-eslint-config": "workspace:*",
@@ -34,14 +46,14 @@
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
-    "@testing-library/react": "^16.3.3",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.4.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9",
-    "prettier-plugin-tailwindcss": "^0.8.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11"
-  }
+  },
+  "sideEffects": ["@repo/foundation-vitest-utils/setup"]
 }

@@ -53,7 +53,8 @@
     "@vitest/coverage-v8": "^4.1.11"
   },
   "exports": {
-    "./*": "./srcomponents/*.tsx",
+    ".": "./src/index.ts",
+    "./*": "./src/components/*.tsx",
     "./theme.css": "./src/base/styles/shadcn.css",
     "./lib/*": "./src/lib/*.ts",
     "./base": "./src/base/ui/index.ts",

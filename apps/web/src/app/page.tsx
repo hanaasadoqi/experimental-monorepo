@@ -3,14 +3,7 @@
 import { Moon, Sun } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useSetAppearancePreference } from "@repo/features-preferences/react"
-import { ResolvedAppearance } from "@repo/features-theme";
-// import { ResolvedAppearance } from "@repo/features-theme";
-// import {
-//   ThemeForm,
-//   ThemePreview,
-//   ThemeScopeProvider,
-//   useResolvedAppearance,
-// } from "@repo/features-theme/store"
+import type { ResolvedAppearance } from "@repo/domain-theme"
 import { Button } from "@repo/ui-components/base/button"
 import {
   Card,

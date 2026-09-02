@@ -1,38 +1,38 @@
 {
-  "name": "@workspace/domain-theme",
-  "version": "0.1.0",
-  "description": "Pure theme domain kernel—types, schemas, color science, and compilation",
+  "name": "@repo/domain-theme",
+  "version": "0.0.0",
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./color": {
-      "types": "./dist/color/index.d.ts",
-      "import": "./dist/color/index.js"
-    },
-    "./compiler": {
-      "types": "./dist/compiler/index.d.ts",
-      "import": "./dist/compiler/index.js"
-    }
+  "private": true,
+  "sideEffects": false,
+  "dependencies": {
+    "@repo/features-preferences": "workspace:*",
+    "culori": "^4.0.1",
+    "zod": "^4.5.4"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
   "scripts": {
-    "build": "tsc",
-    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
+    "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "test:run": "vitest run --coverage",
     "test": "vitest run"
   },
-  "dependencies": {
-    "culori": "^4.0.1",
-    "zod": "^3.23.8"
-  },
   "devDependencies": {
+    "@repo/foundation-eslint-config": "workspace:*",
+    "@repo/foundation-prettier-config": "workspace:*",
+    "@repo/foundation-typescript-config": "workspace:*",
+    "@repo/foundation-vitest-config": "workspace:*",
+    "@repo/foundation-vitest-utils": "workspace:*",
+    "@repo/foundation-test-mocks": "workspace:*",
+    "@types/node": "^26.4.0",
+    "eslint": "^9.39.5",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11",
-    "@types/node": "^20.12.0"
+    "@vitest/coverage-v8": "^4.1.11",
+    "@types/culori": "^4.0.1"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./colors": "./src/core/colors/index.ts",
+    "./model": "./src/core/theme/model.ts"
   }
 }

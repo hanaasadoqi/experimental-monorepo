@@ -16,4 +16,8 @@ declare module "culori" {
   }
 
   export function converter(target: "oklch" | "rgb"): (color: any) => any
+  export function clampChroma(color: any, mode?: string): any
+  export function displayable(color: any): boolean
+  export function formatHex(color: any): string | null
+  export function parseOklch(str: string): Oklch | null
 }

@@ -1,5 +1,5 @@
-import type { AppearancePreference } from "@repo/features-preferences"
-import type { ThemeMode } from "@workspace/domain-theme"
+import { ThemeMode } from "@repo/domain-theme";
+import { AppearancePreference } from "../domain";
 
 export function resolveAppearance(
   preference: AppearancePreference,

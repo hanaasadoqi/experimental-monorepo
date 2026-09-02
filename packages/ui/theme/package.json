@@ -1,0 +1,64 @@
+{
+  "name": "@repo/ui-theme",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "sideEffects": false,
+  "peerDependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "next": "^16.0.0"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@repo/domain-theme": "workspace:*",
+    "@repo/runtime-theme": "workspace:*",
+    "@repo/ui-components": "workspace:*",
+    "@repo/features-preferences": "workspace:*",
+    "@hugeicons/core-free-icons": "^4.3.0",
+    "@hugeicons/react": "^1.1.10",
+    "sonner": "^2.0.0",
+    "react-color": "^2.19.3",
+    "zod": "^4.5.4"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
+    "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "test:run": "vitest run --coverage",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@repo/foundation-eslint-config": "workspace:*",
+    "@repo/foundation-prettier-config": "workspace:*",
+    "@repo/foundation-typescript-config": "workspace:*",
+    "@repo/foundation-vitest-config": "workspace:*",
+    "@repo/foundation-vitest-utils": "workspace:*",
+    "@repo/foundation-test-mocks": "workspace:*",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/node": "^26.4.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "eslint": "^9.39.5",
+    "globals": "^15.2.0",
+    "jsdom": "^27.0.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.11",
+    "@types/react-color": "3.0.13"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./providers": "./src/providers/index.ts",
+    "./components": "./src/components/index.ts",
+    "./hooks": "./src/hooks/index.ts",
+    "./theme-scope": "./src/theme-scope/index.ts"
+  }
+}

@@ -216,11 +216,11 @@ describe("cn", () => {
       const result = cn(
         "before:content-['*']",
         "after:content-['']",
-        "bg-gradient-to-r"
+        "bg-linear-to-r"
       )
       expect(result).toContain("before:content-['*']")
       expect(result).toContain("after:content-['']")
-      expect(result).toContain("bg-gradient-to-r")
+      expect(result).toContain("bg-linear-to-r")
     })
 
     it("handles negated values", () => {
