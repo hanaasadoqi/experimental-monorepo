@@ -1,7 +1,7 @@
 "use client"
 
 import { useSyncExternalStore } from "react"
-import type { ResolvedAppearance } from "./types"
+import type { ResolvedAppearance } from "../theme.types"
 
 const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
 

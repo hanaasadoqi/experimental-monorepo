@@ -1,8 +1,8 @@
   "use client"
 
-import { useResolvedAppearance } from "./use-resolved-appearance"
+import { useResolvedAppearance } from "./providers/use-resolved-appearance"
 
-import { useToggleAppearance } from "./use-toggle-appearance"
+import { useToggleAppearance } from "./providers/use-toggle-appearance"
 
 export function AppearanceToggle() {
   const appearance = useResolvedAppearance()

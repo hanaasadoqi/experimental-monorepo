@@ -1,4 +1,4 @@
-import { ThemeMode } from "../resolution/resolve-appearance";
+import {  } from "./resolution/resolve-appearance";
 
 export function applyAppearance(
   appearance: ThemeMode,

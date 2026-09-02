@@ -1,6 +1,6 @@
 "use client"
 
-import { AppearancePreference } from "./model";
+import type { AppearancePreference } from "@repo/features-preferences/model"
 import { useState } from "react"
 
 import { useResolvedAppearance } from "./use-resolved-appearance"

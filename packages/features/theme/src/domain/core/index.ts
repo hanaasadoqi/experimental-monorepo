@@ -1,4 +1,0 @@
-export * from "./appearance";
-export * from "./colors";
-export * from "./theme";
-export * from "./design";
