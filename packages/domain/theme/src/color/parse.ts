@@ -88,8 +88,6 @@ export function validateOklch(
   }
 }
 
-export const isValidOklch = (value: OklchInput | unknown): boolean =>
-  validateOklch(value).success
 
 /* -------------------------------------------------------------------------- */
 /* Parsing: Strict CSS oklch() string                                        */
@@ -292,4 +290,12 @@ export function parseColorInput(input: string): Oklch | null {
     c: clampC(c),
     h: clampH(h),
   }
+}
+
+/**
+ * Boolean validator wrapper around validateOklch.
+ * Returns true if the value is valid in any OKLCH input format.
+ */
+export function isValidOklch(value: OklchInput | unknown): boolean {
+  return validateOklch(value).success
 }
