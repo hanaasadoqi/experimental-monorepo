@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { getColorHarmonies } from "./harmony"
+import { getColorHarmonies } from "./get-color-harmonies"
 
 describe("getColorHarmonies", () => {
   it("rotates complementary to the opposite hue", () => {

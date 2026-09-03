@@ -1,10 +1,9 @@
-import { clampH } from "./gamut"
-import type { Oklch, ColorHarmony } from "./model"
+import { clampH } from "@repo/domain-theme/color"
+import type { Oklch, ColorHarmony } from "@repo/domain-theme/color"
 
 /**
- * Named hue-rotation sets. Ported from the pre-canonical shade-generation
- * reference implementation — pure hue math, so no unit conversion applies
- * (hue is already degrees 0..360 on both sides).
+ * Named hue-rotation sets for color harmony generation.
+ * Used for color picker preview and harmony visualization.
  */
 export interface ColorHarmonyResult {
   type: ColorHarmony
@@ -53,11 +52,11 @@ export function getColorHarmonies(base: Oklch): ColorHarmonyResult[] {
     {
       type: "tetradic",
       name: "Tetradic",
-      description: "Four hues at 90° intervals — rich palette",
+      description: "Four hues in a rectangle — complex but balanced",
       colors: [
-        { ...base, h: hue(90) },
+        { ...base, h: hue(60) },
+        { ...base, h: hue(120) },
         { ...base, h: hue(180) },
-        { ...base, h: hue(270) },
       ],
     },
   ]

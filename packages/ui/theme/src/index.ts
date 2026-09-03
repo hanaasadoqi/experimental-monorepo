@@ -1,4 +1,3 @@
-export * from "./providers"
 export * from "./components"
 export * from "./hooks"
-export * from "./theme-scope"
+export * from "./preview"

@@ -1,16 +1,12 @@
-import { MAX_CHROMA, MAX_HUE } from "./constants"
-import { oklchToHex } from "./convert"
-import { fitToGamut, isInSrgbGamut } from "./gamut"
-import type { Oklch } from "./model"
+import { MAX_CHROMA, MAX_HUE } from "@repo/domain-theme/color"
+import { oklchToHex } from "@repo/domain-theme/color"
+import { fitToGamut, isInSrgbGamut } from "@repo/domain-theme/color"
+import type { Oklch } from "@repo/domain-theme/color"
 
 /**
  * Build a CSS `linear-gradient()` previewing how one channel varies while the
  * other two are held at the given base values. Used as the background of a
  * slider track so it reflects the current color.
- *
- * NOTE: this is the one function here that emits presentation markup rather
- * than color data. It currently has no consumers; if a UI package starts
- * needing it, that is the better home for it.
  */
 export function buildChannelGradient(
   channel: "l" | "c" | "h",

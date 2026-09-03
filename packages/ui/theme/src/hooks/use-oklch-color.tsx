@@ -10,7 +10,9 @@ import {
   Oklch,
   oklchToCss,
   oklchToHex,
+  oklchToRgb,
   parseColorInput,
+  convert
 } from "@repo/domain-theme/colors"
 
 
@@ -39,12 +41,20 @@ export function useOklchColor(initial: OklchNoMode = DEFAULT_OKLCH_COLOR): {
   cssFocused: ReturnType<typeof useRef<boolean>>
   commitCss: () => void
   randomize: () => void
+  rgb: ReturnType<typeof oklchToRgb>
+  oklch: Oklch
+  rgbFocused: ReturnType<typeof useRef<boolean>>
+  rgbText: string
+  setRgbText: Dispatch<SetStateAction<string>>
+  commitRgb: () => void
 } {
   const [color, setColor] = useState(initial)
 
   const inGamut = isInSrgbGamut(color)
   const displayColor = inGamut ? color : fitToGamut(color)
-  const hex = useMemo(() => oklchToHex(displayColor), [displayColor])
+  const hex = useMemo(() => convert.toHex(displayColor), [displayColor])
+  const rgb = useMemo(() => convert.toRgb(displayColor), [displayColor])
+  const oklch = useMemo(() => convert.toOklch(displayColor), [displayColor])
   const css = useMemo(() => oklchToCss(color), [color])
   const shades = useMemo(() => generateShades(color), [color])
 
@@ -52,6 +62,7 @@ export function useOklchColor(initial: OklchNoMode = DEFAULT_OKLCH_COLOR): {
   const [cssText, setCssText] = useState(css)
   const hexFocused = useRef(false)
   const cssFocused = useRef(false)
+  const rgbFocused = useRef(false)
 
   if (!hexFocused.current && hexText !== hex) setHexText(hex)
   if (!cssFocused.current && cssText !== css) setCssText(css)
@@ -101,6 +112,33 @@ export function useOklchColor(initial: OklchNoMode = DEFAULT_OKLCH_COLOR): {
     cssFocused,
     commitCss,
     randomize,
+    rgb,
+    oklch,
+    hex,
+    rgbFocused,
+    rgbText: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+    setRgbText: (value) => {
+      const match = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/)
+      if (match) {
+        const r = parseInt(match[1], 10)
+        const g = parseInt(match[2], 10)
+        const b = parseInt(match[3], 10)
+        if (
+          !isNaN(r) &&
+          !isNaN(g) &&
+          !isNaN(b) &&
+          r >= 0 &&
+          r <= 255 &&
+          g >= 0 &&
+          g <= 255 &&
+          b >= 0 &&
+          b <= 255
+        ) {
+          const newColor = convert.toOklch({ r, g, b })
+          setColor(newColor)
+        }
+      }
+    }
   }
 }
 

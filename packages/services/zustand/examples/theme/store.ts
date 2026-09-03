@@ -22,7 +22,11 @@ export function createThemeScopeStore(scopeId: string, initial: ThemeOverrides =
     persist(
       (set) => ({
         overrides: initial,
-        setPrimaryColor: (primaryColor) => set((state) => ({ overrides: { ...state.overrides, primaryColor } })),
+        setPrimaryColor: (primaryColor) => {
+          set((state) => ({
+            overrides: { ...state.overrides, primaryColor }
+          }))
+        },
         resetOverrides: () => set({ overrides: initial }),
       }),
       {
