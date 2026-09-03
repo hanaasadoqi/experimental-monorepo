@@ -171,7 +171,7 @@ export function parseOklchString(oklchString: string): Oklch | null {
   try {
     let l = parseFloat(match[1] ?? "0")
     const c = parseFloat(match[2] ?? "0")
-    let h = parseFloat(match[3] ?? "0")
+    const h = parseFloat(match[3] ?? "0")
 
     // Handle percentage lightness (e.g., 50% → 0.5)
     if (match[1]?.includes("%")) {

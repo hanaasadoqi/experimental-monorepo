@@ -1,27 +1,37 @@
-import { Oklch, Rgb, formatHex } from "culori";
-import { converter } from ".";
-import { fitToGamut, isInSrgbGamut } from "./gamut";
+import { type Oklch as CuloriOklch, type Rgb as CuloriRgb, formatHex } from "culori"
 
-export const toRgb = (color: Oklch | Rgb): Rgb => converter("rgb")(color) as Rgb
-export const toOklch = (color: Oklch | Rgb): Oklch => converter("oklch")(color) as Oklch
-export const toHex = (color: Oklch | Rgb): string => convertHex(color)
+import { converter } from "."
+import { fitToGamut, isInSrgbGamut } from "./gamut"
+import type { Oklch } from "./model"
 
-export const convert = {
-  toHex,
-  toOklch,
-  toRgb,
+export const toRgb = (color: CuloriOklch | CuloriRgb): CuloriRgb =>
+  converter("rgb")(color) as CuloriRgb
+export const toOklch = (color: CuloriOklch | CuloriRgb): Oklch => {
+  const result = converter("oklch")(color) as CuloriOklch
+  // Ensure result has all required properties (shouldn't be undefined from converter)
+  return {
+    l: result.l ?? 0,
+    c: result.c ?? 0,
+    h: result.h ?? 0,
+  }
 }
+export const toHex = (color: CuloriOklch | CuloriRgb): string =>
+  convertHex(color)
 /**
  * Convert OKLch or RGB color to hex, ensuring it stays in sRGB gamut.
  * Accepts any input format, converts to target mode, fits to gamut, returns hex.
  */
-export function convertHex(color: Oklch | Rgb): string {
+export function convertHex(color: CuloriOklch | CuloriRgb): string {
   // Detect if input is OKLch (has l, c, h properties) or RGB (has r, g, b)
   const isInputOklch = "l" in color && "c" in color && "h" in color
 
   // Always work in OKLch for gamut operations (gamut functions expect Oklch)
   const oklchColor: Oklch = isInputOklch
-    ? (color as Oklch)
+    ? ({
+      l: (color as CuloriOklch).l ?? 0,
+      c: (color as CuloriOklch).c ?? 0,
+      h: (color as CuloriOklch).h ?? 0,
+    } as Oklch)
     : toOklch(color)
 
   // Verify gamut and fit if needed
@@ -84,14 +94,14 @@ export const hexRgb = (value: string) => {
     }
   }
 }
-export const oklchToRgb = (color: Oklch) => {
+export const oklchToRgb = (color: Oklch): CuloriRgb => {
   const fitted = isInSrgbGamut(color) ? color : fitToGamut(color)
   return toRgb({
     mode: "oklch" as const,
     l: fitted.l,
     c: fitted.c,
     h: fitted.h,
-  } as Oklch)
+  } as CuloriOklch)
 }
 /**
  * Convert to 0-255 sRGB bytes, clamping into gamut first.
