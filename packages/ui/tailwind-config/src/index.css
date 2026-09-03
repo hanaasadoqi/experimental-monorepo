@@ -88,7 +88,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   /* Generated reference ramps; replace these with the picker output */
-  /* --primary-50: oklch(0.97 0.02 250);
+/* --primary-50: oklch(0.97 0.02 250);
   --primary-100: oklch(0.93 0.04 250);
   --primary-200: oklch(0.87 0.08 250);
   --primary-300: oklch(0.79 0.12 250);
@@ -123,7 +123,7 @@
   --accent-950: oklch(0.17 0.06 35);
 
   /* Semantic roles mapped from the generated ramps */
-  /* --background: var(--secondary-50);
+/* --background: var(--secondary-50);
   --foreground: var(--secondary-950);
   --card: var(--secondary-50);
   --card-foreground: var(--secondary-950);

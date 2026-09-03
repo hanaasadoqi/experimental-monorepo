@@ -10,7 +10,7 @@
     "zod": "^4.5.4"
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint src --ext .ts,.tsx --max-warnings 0",
     "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
     "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "test:run": "vitest run --coverage",
@@ -32,7 +32,14 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./colors": "./src/core/colors/index.ts",
-    "./model": "./src/core/theme/model.ts"
+    "./color": "./src/color/index.ts",
+    "./appearance": "./src/appearance/index.ts",
+    "./density": "./src/density/index.ts",
+    "./theme": "./src/theme/index.ts",
+    "./compiler": "./src/compiler/index.ts",
+    "./colors": "./src/color/index.ts",
+    "./model": "./src/index.ts",
+    "./resolution": "./src/appearance/index.ts",
+    "./core/resolution": "./src/appearance/index.ts"
   }
 }

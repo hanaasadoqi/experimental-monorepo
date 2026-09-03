@@ -3,6 +3,14 @@ import prettierConfig from "eslint-config-prettier"
 import globals from "globals"
 import tseslint from "typescript-eslint"
 
+export const GLOBAL_IGNORES = [
+      "**/dist/**",
+      "**/.next/**",
+      "**/.turbo/**",
+      "**/coverage/**",
+      "**/node_modules/**",
+      "**/.archives/**"
+    ]
 const sharedConfig = [
   js.configs.recommended,
   prettierConfig,
@@ -25,11 +33,7 @@ const sharedConfig = [
   },
   {
     ignores: [
-      "**/dist/**",
-      "**/.next/**",
-      "**/.turbo/**",
-      "**/coverage/**",
-      "**/node_modules/**",
+      ...GLOBAL_IGNORES,
     ],
   },
 ]

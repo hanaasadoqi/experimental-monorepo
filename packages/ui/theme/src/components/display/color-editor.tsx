@@ -1,9 +1,9 @@
 "use client"
 
-import type { OklchColor } from "../../../domain/core/colors/model"
 import { HuePresetGrid } from "./hue-preset-grid"
 import { ContrastIndicator } from "./contrast-indicator"
 import { OklchSliders } from "./oklch-sliders"
+import { OklchColor } from "@repo/domain-theme/colors";
 
 export interface ColorObject {
   key: string

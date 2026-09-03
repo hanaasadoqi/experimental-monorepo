@@ -1,7 +1,7 @@
 "use client"
 
-import type { OklchColor } from "../../../domain/core/colors/model"
-import { toCss, deriveScale } from "../../../domain/core/colors/shade-generation"
+import type { OklchColor } from "@repo/domain-theme";
+import { toCss, deriveScale } from "../shade-generation";
 
 export interface OklchSlidersProps {
   color: OklchColor

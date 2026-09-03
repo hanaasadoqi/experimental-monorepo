@@ -1,20 +1,46 @@
 "use client"
 
 import { useMemo, useRef, useState } from "react"
+import type { Dispatch, SetStateAction } from "react"
 import { toast } from "sonner"
-import { fitToGamut, generateShades, isInSrgbGamut, Oklch, oklchToCss, oklchToHex, parseColorInput } from "@repo/domain-theme";
+import {
+  fitToGamut,
+  generateShades,
+  isInSrgbGamut,
+  Oklch,
+  oklchToCss,
+  oklchToHex,
+  parseColorInput,
+} from "@repo/domain-theme/colors"
 
 
-export const DEFAULT_OKLCH_COLOR: Oklch = { l: 0.64, c: 0.14, h: 250 }
-
+export const DEFAULT_OKLCH_COLOR = { l: 0.64, c: 0.14, h: 250 }
+export type OklchNoMode = Omit<Oklch, "mode">
 /**
  * Shared state + derived values for an OKLCH color editor: current color,
  * gamut-safe display values, synced hex/oklch() text inputs, and the
  * generated shade ramp. Used by every picker view (full, compact, popover,
  * sheet, card, dialog, tabs) so they stay behaviorally identical.
  */
-export function useOklchColor(initial: Oklch = DEFAULT_OKLCH_COLOR) {
-  const [color, setColor] = useState<Oklch>(initial)
+export function useOklchColor(initial: OklchNoMode = DEFAULT_OKLCH_COLOR): {
+  color: Oklch
+  setColor: Dispatch<SetStateAction<Oklch>>
+  inGamut: boolean
+  displayColor: Oklch
+  hex: string
+  css: string
+  shades: ReturnType<typeof generateShades>
+  hexText: string
+  setHexText: Dispatch<SetStateAction<string>>
+  hexFocused: ReturnType<typeof useRef<boolean>>
+  commitHex: () => void
+  cssText: string
+  setCssText: Dispatch<SetStateAction<string>>
+  cssFocused: ReturnType<typeof useRef<boolean>>
+  commitCss: () => void
+  randomize: () => void
+} {
+  const [color, setColor] = useState(initial)
 
   const inGamut = isInSrgbGamut(color)
   const displayColor = inGamut ? color : fitToGamut(color)

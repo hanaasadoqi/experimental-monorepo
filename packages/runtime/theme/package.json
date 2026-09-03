@@ -4,10 +4,6 @@
   "type": "module",
   "private": true,
   "sideEffects": false,
-  "peerDependencies": {
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
-  },
   "dependencies": {
     "@repo/domain-theme": "workspace:*",
     "@repo/features-preferences": "workspace:*",

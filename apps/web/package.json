@@ -20,6 +20,7 @@
     "@hugeicons/react": "^1.1.10",
     "@repo/domain-theme": "workspace:*",
     "@repo/features-preferences": "workspace:*",
+    "@repo/features-theme-react": "workspace:*",
     "@repo/runtime-theme": "workspace:*",
     "@repo/services-cookies": "workspace:*",
     "@repo/ui-components": "workspace:*",
@@ -30,12 +31,12 @@
     "react-dom": "19.2.4"
   },
   "peerDependencies": {
-    "react": "^19.2.4",
     "next": "16.2.6",
+    "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "zod": "^4.5.4"
   },
-    "peerDependenciesMeta": {
+  "peerDependenciesMeta": {
     "next": {
       "optional": true
     }
@@ -47,13 +48,17 @@
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
     "@tailwindcss/postcss": "^4.3.3",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^26.4.0",
     "@types/react": "^19.2.18",
+    "@types/react-color": "^3.0.13",
     "@types/react-dom": "^19.2.5",
     "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11"
   },
-  "sideEffects": ["@repo/foundation-vitest-utils/setup"]
+  "sideEffects": [
+    "@repo/foundation-vitest-utils/setup"
+  ]
 }

@@ -11,7 +11,6 @@ type AppearanceSelectProps = {
   onValidChange?: (preference: AppearancePreference) => void
 }
 
-
 export function AppearanceSelect({
   preference,
   setAppearance,

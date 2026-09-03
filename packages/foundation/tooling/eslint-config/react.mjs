@@ -4,6 +4,7 @@ import react from "eslint-plugin-react"
 import reactHooks from "eslint-plugin-react-hooks"
 import globals from "globals"
 import tseslint from "typescript-eslint"
+import { GLOBAL_IGNORES } from "./index.mjs"
 
 export const reactConfig = [
   js.configs.recommended,
@@ -44,11 +45,9 @@ export const reactConfig = [
   },
   {
     ignores: [
-      "dist/**",
-      ".next/**",
-      "**/.turbo/**",
-      "**/coverage/**",
-      "node_modules/**",
+      ...GLOBAL_IGNORES,
+      "**/.next/**",
+      "**/next"
     ],
   },
 ]

@@ -1,11 +1,12 @@
 "use client"
 
-import type { OklchColor, ColorScale } from "../../../domain/core/colors/model"
-import { SCALE_STEPS, toCss, deriveScale } from "../../../domain/core/colors/shade-generation"
+
 import { cn } from "@repo/ui-components/lib/utils"
 import { useState, useMemo } from "react"
 import { HuePresetGrid } from "./hue-preset-grid";
 import { OklchSliders } from "./oklch-sliders";
+import type { OklchColor } from "@repo/domain-theme";
+import { type ColorScale, SCALE_STEPS, deriveScale, toCss } from "../shade-generation";
 
 export interface SwatchProps {
   step: number

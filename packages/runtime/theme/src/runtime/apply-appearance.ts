@@ -1,4 +1,4 @@
-import {  } from "./resolution/resolve-appearance";
+import type { ThemeMode } from "@repo/domain-theme/appearance"
 
 export function applyAppearance(
   appearance: ThemeMode,

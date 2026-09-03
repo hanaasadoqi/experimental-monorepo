@@ -3,5 +3,5 @@ export type {
   ThemeCompilationReport,
   ThemeCompilationResult,
   ResolvedTheme,
-  CssVariables
-} from './types'
+  CssVariables,
+} from "./model"

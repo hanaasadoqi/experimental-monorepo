@@ -1,1 +1,1 @@
-export {}
+export * from "./use-click-outside"

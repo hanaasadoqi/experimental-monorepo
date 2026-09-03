@@ -9,11 +9,23 @@
 // import { DialogColorPicker } from "../../color-picker/views/dialog-color-picker"
 
 import { useOklchColor } from "@repo/ui-theme"
-import { ChevronDown} from "@hugeicons/core-free-icons"
+import { ChevronDown } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@repo/ui-components/base/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@repo/ui-components/base/collapsible"
 // import { HoverCard, HoverCardContent, HoverCardTrigger } from "@repo/ui-components/base/hover-card"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui-components/base/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@repo/ui-components/base/card"
+import { ColorPicker } from "@/components/color-picker";
+import { HexColor, Oklch, oklchToCss, parseOklch, parseColorInput } from "@repo/domain-theme";
 export const VIEWS = [] as const
 // const VIEWS = [
 //   {
@@ -34,47 +46,65 @@ export const VIEWS = [] as const
 // ] as const
 
 export default function Page() {
-  const primary = useOklchColor({ l: 0.64, c: 0.14, h: 250 })
-
+  const _primary = useOklchColor({ l: 0.64, c: 0.14, h: 250 })
   return (
     <main className="min-h-screen px-4 py-5 sm:px-6 sm:py-8">
       <div className="mx-auto grid w-full max-w-5xl gap-6">
         <header className="grid max-w-2xl gap-2">
-          <span className="text-xs font-medium tracking-[0.08em] text-muted-foreground uppercase">
+          <span className="text-muted-foreground text-xs font-medium tracking-[0.08em] uppercase">
             Color instrument
           </span>
-          <h1 className="text-balance font-mono text-2xl leading-tight sm:text-3xl">OKLCH color picker</h1>
-          <p className="max-w-lg text-pretty text-sm leading-relaxed text-muted-foreground">
-            Dial in lightness, chroma, and hue — or paste a hex or oklch() value directly. A perceptually
-            even shade scale generates automatically from whatever you select.
+          <h1 className="font-mono text-2xl leading-tight text-balance sm:text-3xl">
+            OKLCH color picker
+          </h1>
+          <p className="text-muted-foreground max-w-lg text-sm leading-relaxed text-pretty">
+            Dial in lightness, chroma, and hue — or paste a hex or oklch() value
+            directly. A perceptually even shade scale generates automatically
+            from whatever you select.
           </p>
         </header>
 
         <Card size="sm" className="gap-3">
           <CardHeader className="gap-1 px-4 py-3">
             <CardTitle className="font-mono text-sm">Color system</CardTitle>
-            <CardDescription className="text-xs">Choose a primary color, then generate a compact accent pairing.</CardDescription>
+            <CardDescription className="text-xs">
+              Choose a primary color, then generate a compact accent pairing.
+            </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 px-4">
             {/* <OklchPicker colorState={primary} compact /> */}
             {/* <AccentHarmonyPicker baseColor={primary.color} className="gap-3 p-3" /> */}
           </CardContent>
+
+          <ColorPicker
+            color={_primary.css}
+            onChange={(nextCss) => {
+              const parsed = parseColorInput(nextCss)
+              if (parsed) _primary.setColor(parsed)
+            }}
+          />
         </Card>
 
         <section className="grid gap-3">
           <Collapsible defaultOpen>
-            <div className="flex items-center justify-between gap-4 border-y border-border/70 py-3">
+            <div className="border-border/70 flex items-center justify-between gap-4 border-y py-3">
               <div className="grid gap-1">
-                <h2 className="text-xs font-medium tracking-[0.08em] text-muted-foreground uppercase">
+                <h2 className="text-muted-foreground text-xs font-medium tracking-[0.08em] uppercase">
                   Five ways to surface it
                 </h2>
-                <p className="text-xs text-muted-foreground">Progressive disclosure for compact product surfaces.</p>
+                <p className="text-muted-foreground text-xs">
+                  Progressive disclosure for compact product surfaces.
+                </p>
               </div>
               <CollapsibleTrigger
-                className="inline-flex size-9 shrink-0 items-center justify-center rounded-sm border border-border/70 text-muted-foreground transition hover:border-foreground/40 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                className="border-border/70 text-muted-foreground hover:border-foreground/40 hover:text-foreground focus-visible:ring-ring inline-flex size-9 shrink-0 items-center justify-center rounded-sm border transition focus-visible:ring-2"
                 aria-label="Toggle picker view examples"
               >
-                <HugeiconsIcon icon={ChevronDown} className="size-4 transition-transform data-panel-open:rotate-180" aria-hidden />
+                <HugeiconsIcon
+                  icon={ChevronDown}
+                  className="size-4 transition-transform data-panel-open:rotate-180"
+                  aria-hidden
+                />
               </CollapsibleTrigger>
             </div>
             <CollapsibleContent className="pt-5">

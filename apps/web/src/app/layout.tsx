@@ -11,7 +11,7 @@ import { readAppearancePreferenceCookie } from "../server/preferences/read-appea
 import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/features-preferences"
 
 import "./globals.css"
-import { Viewport } from "next";
+import { Viewport } from "next"
 
 export interface RootLayoutProps {
   children: ReactNode
@@ -33,10 +33,10 @@ const fontMono = Geist_Mono({
 })
 
 export const viewport: Viewport = {
-  colorScheme: 'light dark',
+  colorScheme: "light dark",
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
 }
 

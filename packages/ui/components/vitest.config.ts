@@ -10,6 +10,7 @@ export default mergeConfig(baseConfig, {
       node: true,
     },
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+    exclude: ["node_modules", "dist", ".archives"],
     setupFiles: ["./vitest.setup.ts"],
   },
 })

@@ -1,4 +1,4 @@
-import type { FontDefinition, FontId, FontName, FontSet } from "./types";
+import type { FontDefinition, FontId, FontName, FontSet } from "./types"
 
 export const fontDefinitions: Record<FontName, FontDefinition> = {
   // Sans-serif fonts (29)
@@ -31,7 +31,8 @@ export const fontDefinitions: Record<FontName, FontDefinition> = {
     weights: [100, 200, 300, 400],
     googleFontName: "Playwrite AR",
     fallback: "ui-serif, Georgia, serif",
-    description: "Argentinian primary-school handwriting style, casual and warm",
+    description:
+      "Argentinian primary-school handwriting style, casual and warm",
   },
 
   haskoy: {
@@ -519,7 +520,8 @@ export const fontDefinitions: Record<FontName, FontDefinition> = {
     italicWeights: [400, 500, 600, 700],
     googleFontName: "Chakra Petch",
     fallback: "ui-sans-serif, system-ui, sans-serif",
-    description: "Squared techno sans serif with a futuristic Thai-Latin design",
+    description:
+      "Squared techno sans serif with a futuristic Thai-Latin design",
   },
 
   sora: {
@@ -922,7 +924,8 @@ export const fontDefinitions: Record<FontName, FontDefinition> = {
     italicWeights: [400, 500, 600, 700],
     googleFontName: "Source Serif 4",
     fallback: "ui-serif, Georgia, serif",
-    description: "Adobe's open-source transitional serif, excellent for body text",
+    description:
+      "Adobe's open-source transitional serif, excellent for body text",
   },
 
   // Monospace fonts (3)
@@ -1043,37 +1046,37 @@ export const fontDefinitions: Record<FontName, FontDefinition> = {
       "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
     description: "Fixed-width font designed for coders",
   },
-};
+}
 
 // Default font set
 export const defaultFontSet: FontSet = {
   sans: fontDefinitions.geist,
   serif: fontDefinitions.lora,
   mono: fontDefinitions["geist-mono"],
-};
+}
 
 // Font utility functions
 export const getSansSerifFonts = (): FontDefinition[] => {
   return Object.values(fontDefinitions).filter(
     (font) => font.category === "sans-serif"
-  );
-};
+  )
+}
 
 export const getSerifFonts = (): FontDefinition[] => {
   return Object.values(fontDefinitions).filter(
     (font) => font.category === "serif"
-  );
-};
+  )
+}
 
 export const getMonospaceFonts = (): FontDefinition[] => {
   return Object.values(fontDefinitions).filter(
     (font) => font.category === "monospace"
-  );
-};
+  )
+}
 
 export const getAllFonts = (): FontDefinition[] => {
-  return Object.values(fontDefinitions);
-};
+  return Object.values(fontDefinitions)
+}
 
 /**
  * Looks a name up in the catalogue, and says so when it is not there.
@@ -1084,72 +1087,72 @@ export const getAllFonts = (): FontDefinition[] => {
  * added would quietly render as Inter forever.
  */
 export const findFontByName = (name: FontId): FontDefinition | undefined =>
-  fontDefinitions[name as FontName];
+  fontDefinitions[name as FontName]
 
 /** The catalogue font, or Inter for a name that is not in it. */
 export const getFontByName = (name: FontId): FontDefinition => {
-  const font = findFontByName(name);
+  const font = findFontByName(name)
   if (!font) {
-    console.warn(`Font not found: ${name}, falling back to default`);
-    return fontDefinitions.inter;
+    console.warn(`Font not found: ${name}, falling back to default`)
+    return fontDefinitions.inter
   }
-  return font;
-};
+  return font
+}
 
 // Google Fonts URL generator
 export const generateGoogleFontsURL = (fontSet: FontSet): string => {
-  const fonts = [fontSet.sans, fontSet.serif, fontSet.mono];
+  const fonts = [fontSet.sans, fontSet.serif, fontSet.mono]
   const fontParams = fonts
     .filter(
       (font) => font?.weights && font.googleFontName && !font.isCustomFont
     ) // Exclude custom fonts
     .map((font) => {
-      const family = font.googleFontName?.replace(/\s+/g, "+");
+      const family = font.googleFontName?.replace(/\s+/g, "+")
 
       // Fonts with a true italic face request the `ital` axis so that
       // applying italic resolves to the designed italic, not a synthetic
       // oblique. css2 requires axis tuples sorted: ital asc, then wght asc.
       if (font.italicWeights && font.italicWeights.length > 0) {
-        const italicSet = new Set(font.italicWeights);
+        const italicSet = new Set(font.italicWeights)
         const allWeights = Array.from(
           new Set([...font.weights, ...font.italicWeights])
-        ).sort((a, b) => a - b);
+        ).sort((a, b) => a - b)
 
-        const tuples: string[] = [];
+        const tuples: string[] = []
         for (const weight of allWeights) {
-          tuples.push(`0,${weight}`); // upright
+          tuples.push(`0,${weight}`) // upright
         }
         for (const weight of allWeights) {
           if (italicSet.has(weight)) {
-            tuples.push(`1,${weight}`); // italic
+            tuples.push(`1,${weight}`) // italic
           }
         }
-        return `${family}:ital,wght@${tuples.join(";")}`;
+        return `${family}:ital,wght@${tuples.join(";")}`
       }
 
-      const weights = font.weights.join(";");
-      return `${family}:wght@${weights}`;
+      const weights = font.weights.join(";")
+      return `${family}:wght@${weights}`
     })
-    .join("&family=");
+    .join("&family=")
 
   // Return empty string if no Google Fonts are needed
-  if (!fontParams) return "";
+  if (!fontParams) return ""
 
-  return `https://fonts.googleapis.com/css2?family=${fontParams}&display=swap`;
-};
+  return `https://fonts.googleapis.com/css2?family=${fontParams}&display=swap`
+}
 
 // Generate @font-face rules for a single custom font
 const generateFontFaceRules = (font: FontDefinition): string => {
-  if (!font?.customFontPath) return "";
+  if (!font?.customFontPath) return ""
 
-  const ext = font.fontFileExtension || "ttf";
-  const format = ext === "woff2" ? "woff2" : "truetype";
-  const fontBaseName = font.displayName.replace(/\s+/g, "");
+  const ext = font.fontFileExtension || "ttf"
+  const format = ext === "woff2" ? "woff2" : "truetype"
+  const fontBaseName = font.displayName.replace(/\s+/g, "")
 
   // Generate @font-face rules for different weights
   const fontFaceRules = font.weights
     .map((weight) => {
-      const weightName = getWeightName(weight);
+      const weightName = getWeightName(weight)
       return `
             @font-face {
               font-family: "${font.displayName}";
@@ -1157,9 +1160,9 @@ const generateFontFaceRules = (font: FontDefinition): string => {
               font-weight: ${weight};
               font-style: normal;
               font-display: swap;
-            }`;
+            }`
     })
-    .join("\n");
+    .join("\n")
 
   // Add variable font support only for ttf fonts
   if (ext === "ttf") {
@@ -1170,38 +1173,34 @@ const generateFontFaceRules = (font: FontDefinition): string => {
           font-weight: 100 900;
           font-style: normal;
           font-display: swap;
-        }`;
-    return fontFaceRules + variableFontRule;
+        }`
+    return fontFaceRules + variableFontRule
   }
 
-  return fontFaceRules;
-};
+  return fontFaceRules
+}
 
 // Generate @font-face rules for custom fonts
 export const generateCustomFontCSS = (fontSet: FontSet): string => {
   const customFonts = [fontSet.sans, fontSet.serif, fontSet.mono].filter(
     (font) => font?.isCustomFont
-  );
+  )
 
-  if (customFonts.length === 0) return "";
+  if (customFonts.length === 0) return ""
 
-  return customFonts
-    .map((font) => generateFontFaceRules(font))
-    .join("\n");
-};
+  return customFonts.map((font) => generateFontFaceRules(font)).join("\n")
+}
 
 // Generate @font-face rules for ALL custom fonts (not just selected ones)
 export const generateAllCustomFontsCSS = (): string => {
   const allCustomFonts = Object.values(fontDefinitions).filter(
     (font) => font.isCustomFont
-  );
+  )
 
-  if (allCustomFonts.length === 0) return "";
+  if (allCustomFonts.length === 0) return ""
 
-  return allCustomFonts
-    .map((font) => generateFontFaceRules(font))
-    .join("\n");
-};
+  return allCustomFonts.map((font) => generateFontFaceRules(font)).join("\n")
+}
 
 // Helper function to map weights to font file names
 const getWeightName = (weight: number): string => {
@@ -1215,22 +1214,22 @@ const getWeightName = (weight: number): string => {
     700: "Bold",
     800: "ExtraBold",
     900: "ExtraBold", // Using ExtraBold for 900 as that's what's available
-  };
-  return weightMap[weight] || "Regular";
-};
+  }
+  return weightMap[weight] || "Regular"
+}
 
 // CSS generator
 export const generateFontCSS = (fontSet: FontSet): string => {
   // Ensure fonts exist before generating CSS
-  const sans = fontSet.sans || defaultFontSet.sans;
-  const serif = fontSet.serif || defaultFontSet.serif;
-  const mono = fontSet.mono || defaultFontSet.mono;
+  const sans = fontSet.sans || defaultFontSet.sans
+  const serif = fontSet.serif || defaultFontSet.serif
+  const mono = fontSet.mono || defaultFontSet.mono
 
   // Get font family names (use displayName for custom fonts, googleFontName for Google fonts)
   const getFontName = (font: FontDefinition) =>
-    font.isCustomFont ? font.displayName : font.googleFontName;
+    font.isCustomFont ? font.displayName : font.googleFontName
 
-  const customFontCSS = generateCustomFontCSS(fontSet);
+  const customFontCSS = generateCustomFontCSS(fontSet)
 
   return `
     ${customFontCSS}
@@ -1275,5 +1274,5 @@ export const generateFontCSS = (fontSet: FontSet): string => {
     .themed-content .font-mono {
       font-family: var(--font-mono);
     }
-  `;
-};
+  `
+}

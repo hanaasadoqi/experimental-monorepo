@@ -193,9 +193,7 @@ function CodeBlockChanges({
       {...props}
     >
       {addedCount > 0 && <Badge variant="default">+{addedCount}</Badge>}
-      {removedCount > 0 && (
-        <Badge variant="destructive">-{removedCount}</Badge>
-      )}
+      {removedCount > 0 && <Badge variant="destructive">-{removedCount}</Badge>}
     </div>
   )
 }

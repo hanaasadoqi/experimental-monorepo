@@ -31,7 +31,6 @@ function readPersistedOverrides(value: unknown): ThemeOverrides | undefined {
     : undefined
 }
 
-
 export interface ThemeScopeState {
   overrides: ThemeOverrides
 }

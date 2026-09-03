@@ -1,7 +1,7 @@
 "use client"
 
-import type { OklchColor } from "../../../domain/core/colors/model"
-import { getHarmonies, type ColorHarmony } from "../../../domain/core/colors/shade-generation"
+import type { OklchColor } from "@repo/domain-theme";
+import { getHarmonies, type ColorHarmony } from "../shade-generation";
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface HarmonyPickerProps {

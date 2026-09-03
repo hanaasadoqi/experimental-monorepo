@@ -1,7 +1,7 @@
 "use client"
 
-import type { OklchColor } from "../../../domain/core/colors/model"
-import { HUE_PRESETS } from "../../../domain/core/colors/shade-generation"
+import type { OklchColor } from "@repo/domain-theme";
+import { HUE_PRESETS } from "../shade-generation";
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface HuePresetGridProps {

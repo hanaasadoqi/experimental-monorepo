@@ -3,14 +3,14 @@ import { useState } from "react"
 
 import { Button } from "@repo/ui-components/base/button"
 
-import { Card, CardContent, CardFooter } from "@repo/ui-components/base/card";
+import { Card, CardContent, CardFooter } from "@repo/ui-components/base/card"
 import {
   CodeBlock,
   CodeBlockChanges,
   CodeBlockContent,
   CodeBlockHeader,
   CodeBlockTitle,
-} from "@repo/ui-components/code-block";
+} from "@repo/ui-components/code-block"
 
 const patch = `export async function retryPayment(orderId: string) {
   await payments.charge(order)

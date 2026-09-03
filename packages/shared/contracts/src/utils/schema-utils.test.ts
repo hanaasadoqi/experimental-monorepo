@@ -11,21 +11,21 @@ describe("schema-utils", () => {
   })
 
   describe("validateSchema", () => {
+    const validData = { name: "John", age: 30, email: "john@example.com" }
     it("returns success with typed data when valid", () => {
-      const data = { name: "John", age: 30, email: "john@example.com" }
-      const result = validateSchema(testSchema, data)
+      const result = validateSchema(testSchema, validData)
 
       expect(result.success).toBe(true)
       if (result.success) {
-        expect(result.data).toEqual(data)
+        expect(result.data).toEqual(validData)
         expect(result.data.name).toBe("John")
         expect(result.data.age).toBe(30)
       }
     })
 
+    const invalidData = { name: "", age: -5, email: "invalid-email" }
     it("returns failure with ValidationError array when invalid", () => {
-      const data = { name: "", age: -5, email: "invalid-email" }
-      const result = validateSchema(testSchema, data)
+      const result = validateSchema(testSchema, invalidData)
 
       expect(result.success).toBe(false)
       if (!result.success) {
@@ -34,24 +34,37 @@ describe("schema-utils", () => {
       }
     })
 
+    const incompleteFieldData = {
+      name: "Amy",
+      age: 25,
+      email: "",
+    }
+
+    const incompleteField = {
+      data: incompleteFieldData,
+      success: false,
+      error: {
+        field: "email",
+        message: "Invalid email format",
+      },
+    }
+
     it("formats ValidationError with field path and message", () => {
-      const data = { name: "", age: -5, email: "invalid" }
-      const result = validateSchema(testSchema, data)
+      const result = validateSchema(testSchema, incompleteFieldData)
 
       expect(result.success).toBe(false)
       if (!result.success) {
         const errors = result.errors
         expect(errors).toContainEqual(
           expect.objectContaining({
-            field: expect.any(String),
-            message: expect.any(String),
+            ...incompleteField.error,
           })
         )
 
         // Verify error structure matches ValidationError type
         errors.forEach((error) => {
-          expect(typeof error.field).toBe("string")
-          expect(typeof error.message).toBe("string")
+          expect(typeof error.field).toBe("email")
+          expect(typeof error.message).toBe("Invalid email format")
         })
       }
     })
@@ -125,6 +138,30 @@ describe("schema-utils", () => {
       if (!result.success) {
         const error = result.errors.find((e) => e.field === "value")
         expect(error?.message).toContain("Custom error")
+      }
+    })
+
+    it("handles deeply nested validation errors", () => {
+      const deepSchema = z.object({
+        level1: z.object({
+          level2: z.object({
+            level3: z.object({
+              value: z.number().positive(),
+            }),
+          }),
+        }),
+      })
+
+      const data = { level1: { level2: { level3: { value: -1 } } } }
+      const result = validateSchema(deepSchema, data)
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        const error = result.errors.find(
+          (e) => e.field === "level1.level2.level3.value"
+        )
+        expect(error).toBeDefined()
+        expect(error?.message).toContain("positive")
       }
     })
   })

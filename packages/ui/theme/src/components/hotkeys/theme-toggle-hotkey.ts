@@ -1,19 +1,20 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
-// import { useSetAppearancePreference } from "@repo/features-preferences"
+import type { ThemeMode } from "@repo/domain-theme/appearance"
 
 import { isTypingTarget } from "./is-typing-target"
-import { useResolvedAppearance } from "../../../domain/core/appearance";
-// import { useResolvedAppearance } from "../../../domain";
 
-export function ThemeToggleHotkey() {
-  const resolvedAppearance = useResolvedAppearance()
-  const [_, setAppearance] = useState(resolvedAppearance)
+export interface ThemeToggleHotkeyProps {
+  resolvedAppearance: ThemeMode
+  onAppearanceChange: (next: ThemeMode) => void
+}
 
-  // const setAppearance = useSetAppearancePreference()
-
+export function ThemeToggleHotkey({
+  resolvedAppearance,
+  onAppearanceChange,
+}: ThemeToggleHotkeyProps) {
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (
@@ -34,8 +35,7 @@ export function ThemeToggleHotkey() {
         return
       }
 
-      setAppearance(resolvedAppearance === "dark" ? "light" : "dark")
-
+      onAppearanceChange(resolvedAppearance === "dark" ? "light" : "dark")
     }
 
     window.addEventListener("keydown", onKeyDown)
@@ -43,7 +43,7 @@ export function ThemeToggleHotkey() {
     return () => {
       window.removeEventListener("keydown", onKeyDown)
     }
-  }, [resolvedAppearance, setAppearance])
+  }, [resolvedAppearance, onAppearanceChange])
 
   return null
 }

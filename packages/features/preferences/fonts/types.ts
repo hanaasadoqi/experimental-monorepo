@@ -101,7 +101,7 @@ export type FontName =
   | "space-mono"
   | "courier-prime"
   | "ibm-plex-mono"
-  | "anonymous-pro";
+  | "anonymous-pro"
 
 /**
  * What a font may be called.
@@ -114,36 +114,36 @@ export type FontName =
  * `string & {}` rather than plain `string`: the union survives for editor
  * completion, which is the reason to keep it.
  */
-export type FontId = FontName | (string & {});
+export type FontId = FontName | (string & {})
 
 export interface FontDefinition {
-  name: FontId;
-  displayName: string;
-  category: "sans-serif" | "serif" | "monospace";
-  weights: number[];
+  name: FontId
+  displayName: string
+  category: "sans-serif" | "serif" | "monospace"
+  weights: number[]
   /**
    * Weights that ship a real italic face (same family, font-style: italic).
    * When set, the Google Fonts URL requests the `ital` axis so applying
    * italic uses the true designed italic instead of a synthetic oblique.
    */
-  italicWeights?: number[];
-  googleFontName?: string; // Optional for custom fonts
-  customFontPath?: string; // Path to custom font files
-  isCustomFont?: boolean; // Flag to identify custom fonts
-  fontFileExtension?: "ttf" | "woff2"; // Font file extension (default: "ttf")
-  fallback: string;
-  description: string;
+  italicWeights?: number[]
+  googleFontName?: string // Optional for custom fonts
+  customFontPath?: string // Path to custom font files
+  isCustomFont?: boolean // Flag to identify custom fonts
+  fontFileExtension?: "ttf" | "woff2" // Font file extension (default: "ttf")
+  fallback: string
+  description: string
 }
 
 export interface FontSet {
-  sans: FontDefinition;
-  serif: FontDefinition;
-  mono: FontDefinition;
+  sans: FontDefinition
+  serif: FontDefinition
+  mono: FontDefinition
 }
 
 export interface FontContextType {
-  currentFontSet: FontSet;
-  setFontSet: (fontSet: Partial<FontSet>) => void;
-  availableFonts: FontDefinition[];
-  getFontCSS: () => string;
+  currentFontSet: FontSet
+  setFontSet: (fontSet: Partial<FontSet>) => void
+  availableFonts: FontDefinition[]
+  getFontCSS: () => string
 }

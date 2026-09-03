@@ -3,10 +3,8 @@ import {
   ToggleGroupItem,
 } from "@repo/ui-components/base/toggle-group"
 
-
-import { Monitor, Moon, Sun } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
-
+import { Monitor, Moon, Sun } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 
 export const planBirthdayParty = () => {
   return (
