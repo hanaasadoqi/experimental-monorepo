@@ -41,5 +41,7 @@ export type ThemeColors = z.infer<typeof themeColorsSchema>
 
 /** Per-scope theme overrides, persisted by the runtime theme-scope store. */
 export interface ThemeOverrides {
+  darkModeEnabled?: boolean
+  darkMode?: boolean
   primaryColor?: string
 }

@@ -18,6 +18,7 @@ export * from "./parse"
 export * from "./normalize"
 export * from "./convert"
 export * from "./gamut"
+export * from "./harmony"
 export * from "./transforms"
 export * from "./luminance"
 export * from "./accessibility"
@@ -28,4 +29,8 @@ export * from "./shades"
  * since an explicit named re-export wins over a wildcard `export *`. Only
  * `converter`-based conversion code should need these raw culori shapes.
  */
-export { type Oklch as CuloriOklch, type Rgb as CuloriRgb, converter } from "culori"
+export {
+  type Oklch as CuloriOklch,
+  type Rgb as CuloriRgb,
+  converter,
+} from "culori"

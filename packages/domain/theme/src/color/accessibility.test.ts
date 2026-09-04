@@ -200,6 +200,22 @@ describe("CONTRAST_THRESHOLDS", () => {
   })
 })
 
+describe("suggestTextColorForBackground direction (regression: finding #2, threshold)", () => {
+  it("picks whichever of black/white actually has higher contrast, not just luminance > 0.5", () => {
+    // oklch(58% 0 0)'s WCAG relative luminance sits below 0.5 (OKLCH
+    // lightness is not linear luminance), so the old `> 0.5` threshold
+    // picked white text here — but black text has the higher contrast
+    // against this background (matches run-2's focused reproduction).
+    const background = "oklch(58% 0 0)"
+    const result = suggestTextColorForBackground(background)
+    const blackRatio = contrastRatio("oklch(5% 0 0)", background)
+    const whiteRatio = contrastRatio("oklch(95% 0 0)", background)
+    const expected =
+      blackRatio >= whiteRatio ? "oklch(5% 0 0)" : "oklch(95% 0 0)"
+    expect(result).toBe(expected)
+  })
+})
+
 describe("suggestTextColorForBackground", () => {
   it("returns either light or dark text", () => {
     const result = suggestTextColorForBackground("oklch(60% 0.1 120)")

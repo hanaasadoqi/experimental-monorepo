@@ -1,9 +1,10 @@
 "use client"
 
-import { createContext, useContext, useRef, type ReactNode } from "react"
+import { createContext, useContext, useId, useRef, type ReactNode } from "react"
 import type { ThemeScopeStoreApi } from "@repo/runtime-theme"
 import { createThemeScopeStore } from "@repo/runtime-theme"
 import { useScopedAppearance } from "../hooks/use-scoped-appearance"
+import { useThemeStore } from "@repo/runtime-theme/store";
 
 interface ThemeScopeContextValue {
   store: ThemeScopeStoreApi
@@ -17,8 +18,9 @@ const ThemeScopeContext = createContext<ThemeScopeContextValue | undefined>(
 export interface ThemeScopeProviderProps {
   scopeId: string
   children: ReactNode
-  initialDarkMode?: boolean
+  darkModeEnabled?: boolean
   className?: string
+  themeId?: string
 }
 
 /**
@@ -29,16 +31,22 @@ export interface ThemeScopeProviderProps {
 export function ThemeScopeProvider({
   scopeId,
   children,
-  initialDarkMode,
+  darkModeEnabled,
+  themeId,
   className,
 }: ThemeScopeProviderProps) {
   const storeRef = useRef<ThemeScopeStoreApi | null>(null)
   const elementRef = useRef<HTMLDivElement>(null)
+  const theme = useThemeStore(
+    (state) => state.theme
+  )
+  const scopedThemeId = themeId ?? useId()
 
   if (storeRef.current === null) {
     storeRef.current = createThemeScopeStore({
+      themeId: scopedThemeId,
       scopeId,
-      initialDarkMode,
+      darkModeEnabled,
     })
   }
 
@@ -46,7 +54,7 @@ export function ThemeScopeProvider({
 
   return (
     <ThemeScopeContext.Provider value={{ store: storeRef.current, scopeId }}>
-      <div ref={elementRef} className={className}>
+      <div ref={elementRef} className={className} data-theme={theme} data-scope-id={scopeId} data-theme-id={scopedThemeId}>
         {children}
       </div>
     </ThemeScopeContext.Provider>

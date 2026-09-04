@@ -22,6 +22,8 @@ function readPersistedOverrides(value: unknown): ThemeOverrides | undefined {
     return undefined
   }
 
+
+
   if (!("primaryColor" in overrides)) {
     return {}
   }
@@ -58,31 +60,38 @@ export type ThemeScopeStoreApi = Mutate<
 >
 
 export interface CreateThemeScopeStoreOptions {
+  themeId?: string
   scopeId: string
   initialOverrides?: ThemeOverrides
-  initialDarkMode?: boolean
+  darkModeEnabled?: boolean
   storage?: StateStorage
 }
 
 export function createThemeScopeStore({
+  themeId,
   scopeId,
   initialOverrides = {},
-  initialDarkMode,
+  darkModeEnabled,
   storage,
 }: CreateThemeScopeStoreOptions): ThemeScopeStoreApi {
   return createStore<ThemeScopeStore>()(
     persist<ThemeScopeStore, [], [], ThemeScopeState>(
       (set) => ({
+        themeId,
+        scopeId,
         overrides: initialOverrides,
-        isDarkModeEnabled: initialDarkMode,
+        isDarkModeEnabled: darkModeEnabled,
         setPrimaryColor: (primaryColor) => {
           set((state) => ({
             overrides: { ...state.overrides, primaryColor },
           }))
         },
         setDarkMode: (isDarkMode) => {
-          set({ isDarkModeEnabled: isDarkMode })
+          set({ isDarkModeEnabled: isDarkMode, overrides: { ...initialOverrides, darkMode: isDarkMode } })
         },
+        setDarkModeEnabled: (isDarkMode: boolean) => {
+          set({ isDarkModeEnabled: isDarkMode })
+        }
       }),
       {
         name: getThemeScopeStorageKey(scopeId),

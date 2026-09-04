@@ -1,8 +1,11 @@
-import { MAX_CHROMA, MAX_HUE } from "@repo/domain-theme/color"
-import { oklchToHex } from "@repo/domain-theme/color"
-import { fitToGamut, isInSrgbGamut } from "@repo/domain-theme/color"
-import type { Oklch } from "@repo/domain-theme/color"
-
+import {
+  MAX_CHROMA,
+  MAX_HUE,
+  fitToGamut,
+  isInSrgbGamut,
+  oklchToHex,
+  type Oklch,
+} from "@repo/domain-theme/color"
 /**
  * Build a CSS `linear-gradient()` previewing how one channel varies while the
  * other two are held at the given base values. Used as the background of a

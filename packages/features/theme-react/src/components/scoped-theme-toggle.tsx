@@ -2,7 +2,7 @@
 
 import { useThemeScopeStore } from "@repo/features-theme-react"
 import { useCallback, useState, type ReactNode } from "react"
-
+// import { Button } from "../"
 export interface ScopedThemeToggleProps {
   children?: ReactNode
   className?: string
@@ -19,44 +19,61 @@ export function ScopedThemeToggle({
   className,
   showAlert = true,
 }: ScopedThemeToggleProps) {
-  const store = useThemeScopeStore()
-  const isDarkMode = store.getState().isDarkModeEnabled
+  // const store = useThemeScopeStore()
+  // const isDarkMode = store.getState().isDarkModeEnabled
   const [showWarning, setShowWarning] = useState(false)
+  const { isDarkModeEnabled, } = useThemeScopeStore().getState()
+
+  // const handleToggle = useCallback(() => {
+  //   const currentState = store.getState().isDarkModeEnabled
+
+  //   if (currentState === undefined) {
+  //     if (showAlert) {
+  //       setShowWarning(true)
+  //       setTimeout(() => setShowWarning(false), 3000)
+  //     }
+  //     store.getState().setDarkMode(true)
+  //   } else if (currentState === true) {
+  //     store.getState().setDarkMode(false)
+  //   } else {
+  //     store.getState().setDarkMode(undefined)
+  //   }
+  // }, [store, showAlert])
+
+  // const getLabel = () => {
+  //   if (isDarkMode === undefined) return "Inherit Theme"
+  //   if (isDarkMode === true) return "Dark Mode (Override)"
+  //   return "Light Mode (Override)"
+  // }
 
   const handleToggle = useCallback(() => {
-    const currentState = store.getState().isDarkModeEnabled
+    const currentState = useThemeScopeStore().getState().isDarkModeEnabled
 
     if (currentState === undefined) {
       if (showAlert) {
         setShowWarning(true)
         setTimeout(() => setShowWarning(false), 3000)
       }
-      store.getState().setDarkMode(true)
+      useThemeScopeStore().getState().setDarkMode(true)
     } else if (currentState === true) {
-      store.getState().setDarkMode(false)
+      useThemeScopeStore().getState().setDarkMode(false)
     } else {
-      store.getState().setDarkMode(undefined)
+      useThemeScopeStore().getState().setDarkMode(undefined)
     }
-  }, [store, showAlert])
-
-  const getLabel = () => {
-    if (isDarkMode === undefined) return "Inherit Theme"
-    if (isDarkMode === true) return "Dark Mode (Override)"
-    return "Light Mode (Override)"
-  }
+  }, [showAlert])
 
   return (
     <div className={className}>
       <button
-        onClick={handleToggle}
+        onClick={() => handleToggle()}
         className="px-3 py-2 rounded-md text-sm font-medium transition-colors bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
         title={
-          isDarkMode !== undefined
+          isDarkModeEnabled !== undefined
             ? "Click to inherit global theme"
             : "Click to override theme"
         }
       >
-        {children || getLabel()}
+        {children || (isDarkModeEnabled === undefined ? "Inherit Theme" : isDarkModeEnabled ? "Dark Mode (Override)" : "Light Mode (Override)")}
       </button>
 
       {showWarning && (

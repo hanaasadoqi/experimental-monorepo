@@ -7,9 +7,9 @@
 // import { TabsColorPicker } from "@/components/color-picker/views/tabs-color-picker"
 // import { CardColorPicker } from "@/components/color-picker/views/card-color-picker"
 // import { DialogColorPicker } from "../../color-picker/views/dialog-color-picker"
-
-import { useOklchColor } from "@repo/ui-theme"
-import { ChevronDown } from "@hugeicons/core-free-icons"
+import { ColorEditor } from "@/components/colors/color-editor"
+import { HarmonyPicker, useOklchColor } from "@repo/ui-theme"
+import { ChevronDown, Info } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Collapsible,
@@ -24,29 +24,67 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui-components/base/card"
-import { ColorPicker } from "@/components/color-picker";
-import { HexColor, Oklch, oklchToCss, parseOklch, parseColorInput } from "@repo/domain-theme";
-export const VIEWS = [] as const
-// const VIEWS = [
-//   {
-//     title: "Popover",
-//     description: "A compact swatch trigger that expands into the full editor inline. Best for toolbars.",
-//     render: () => <PopoverColorPicker defaultColor={{ l: 0.64, c: 0.14, h: 250 }} onChange={() => { }} />,
-//   },
-//   {
-//     title: "Sheet",
-//     description: "Opens a full-height side panel with room for every control at once.",
-//     render: () => <SheetColorPicker defaultColor={{ l: 0.7, c: 0.17, h: 25 }} onChange={() => { }} />,
-//   },
-//   {
-//     title: "Modal",
-//     description: "A centered dialog that blocks the page — for deliberate, focused color selection.",
-//     render: () => <DialogColorPicker defaultColor={{ l: 0.75, c: 0.16, h: 140 }} onChange={() => { }} />,
-//   },
-// ] as const
+import type { Oklch } from "@repo/domain-theme"
+import React from "react"
+import {
+  CardColorPicker,
+  DialogColorPicker,
+  OklchPicker,
+  PopoverColorPicker,
+  SheetColorPicker,
+  TabsColorPicker,
+} from "@/components/colors"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@repo/ui-components/base/hover-card"
+
+const colors = [
+  { l: 0.64, c: 0.14, h: 250 },
+  { l: 0.7, c: 0.17, h: 25 },
+  { l: 0.75, c: 0.16, h: 140 },
+  { l: 0.6, c: 0.12, h: 300 },
+  { l: 0.95, c: 0.43, h: 200 },
+] as const
+
+const VIEWS = [
+  {
+    title: "Popover",
+    description:
+      "A compact swatch trigger that expands into the full editor inline. Best for toolbars.",
+    render: () => <PopoverColorPicker defaultColor={colors[0]} />,
+  },
+  {
+    title: "Sheet",
+    description:
+      "Opens a full-height side panel with room for every control at once.",
+    render: () => <SheetColorPicker defaultColor={colors[1]} />,
+  },
+  {
+    title: "Modal",
+    description:
+      "A centered dialog that blocks the page — for deliberate, focused color selection.",
+    render: () => <DialogColorPicker defaultColor={colors[2]} />,
+  },
+  {
+    title: "Tabs",
+    description:
+      "Spectrum, shades, and raw values stay separated until needed.",
+    render: () => <TabsColorPicker defaultColor={colors[3]} />,
+  },
+  {
+    title: "Card",
+    description:
+      "A permanent, self-contained editor for settings and dashboards.",
+    render: () => <CardColorPicker defaultColor={colors[0]} />,
+  },
+] as const
 
 export default function Page() {
+  const [accent, setAccent] = React.useState<Oklch | null>(null)
   const _primary = useOklchColor({ l: 0.64, c: 0.14, h: 250 })
+
   return (
     <main className="min-h-screen px-4 py-5 sm:px-6 sm:py-8">
       <div className="mx-auto grid w-full max-w-5xl gap-6">
@@ -72,17 +110,16 @@ export default function Page() {
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 px-4">
-            {/* <OklchPicker colorState={primary} compact /> */}
-            {/* <AccentHarmonyPicker baseColor={primary.color} className="gap-3 p-3" /> */}
+            <OklchPicker defaultColor={_primary.color} compact />
+            <ColorEditor />
+            {accent && (
+              <HarmonyPicker
+                primaryColor={_primary.color}
+                onAccentColorChange={(color: Oklch) => setAccent(color)}
+                accentColor={accent}
+              />
+            )}
           </CardContent>
-
-          <ColorPicker
-            color={_primary.css}
-            onChange={(nextCss) => {
-              const parsed = parseColorInput(nextCss)
-              if (parsed) _primary.setColor(parsed)
-            }}
-          />
         </Card>
 
         <section className="grid gap-3">
@@ -108,23 +145,29 @@ export default function Page() {
               </CollapsibleTrigger>
             </div>
             <CollapsibleContent className="pt-5">
-              {/* <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {VIEWS.map((view) => (
                   <HoverCard key={view.title}>
-                    <div className="grid gap-2 rounded-md border border-border/70 p-3">
+                    <div className="border-border/70 grid gap-2 rounded-md border p-3">
                       <div className="flex items-start justify-between gap-3">
                         <div className="grid gap-1">
                           <h3 className="font-mono text-sm">{view.title}</h3>
-                          <p className="text-xs leading-relaxed text-muted-foreground">{view.description}</p>
+                          <p className="text-muted-foreground text-xs leading-relaxed">
+                            {view.description}
+                          </p>
                         </div>
                         <HoverCardTrigger
                           render={
                             <button
                               type="button"
-                              className="inline-flex size-7 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                              className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring inline-flex size-7 shrink-0 items-center justify-center rounded-sm focus-visible:ring-2"
                               aria-label={`More about the ${view.title} view`}
                             >
-                              <HugeiconsIcon icon={Info} className="size-3.5" aria-hidden />
+                              <HugeiconsIcon
+                                icon={Info}
+                                className="size-3.5"
+                                aria-hidden
+                              />
                             </button>
                           }
                         />
@@ -132,42 +175,50 @@ export default function Page() {
                       {view.render()}
                     </div>
                     <HoverCardContent>
-                      <p className="font-mono text-xs text-foreground">{view.title} view</p>
-                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{view.description}</p>
+                      <p className="text-foreground font-mono text-xs">
+                        {view.title} view
+                      </p>
+                      <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
+                        {view.description}
+                      </p>
                     </HoverCardContent>
                   </HoverCard>
                 ))}
 
-                <div className="grid gap-3 rounded-md border border-border/70 p-3 sm:col-span-2 lg:col-span-3">
-                  <div className="flex items-start justify-between gap-3">
+                <div className="border-border/70 grid gap-3 rounded-md border p-3 sm:col-span-2 lg:col-span-3">
+                  <div className="flex flex-col items-start justify-between gap-3">
                     <div className="grid gap-1">
                       <h3 className="font-mono text-sm">Tabs</h3>
-                      <p className="text-xs leading-relaxed text-muted-foreground">
-                        Spectrum, shades, and raw values stay separated until needed.
+                      <p className="text-muted-foreground text-xs leading-relaxed">
+                        Spectrum, shades, and raw values stay separated until
+                        needed.
                       </p>
                     </div>
-                    <span className="rounded-full border border-border/70 px-2 py-1 font-mono text-[10px] text-muted-foreground">
+                    <span className="border-border/70 text-muted-foreground rounded-full border px-2 py-1 font-mono text-[10px]">
                       limited space
                     </span>
                   </div>
-                  <TabsColorPicker defaultColor={{ l: 0.55, c: 0.19, h: 300 }} />
+                  <TabsColorPicker
+                    defaultColor={{ l: 0.55, c: 0.19, h: 300 }}
+                  />
                 </div>
 
-                <div className="grid gap-3 sm:col-span-2 lg:col-span-3">
+                <div className="grid flex-1 gap-3 sm:col-span-2 lg:col-span-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="grid gap-1">
                       <h3 className="font-mono text-sm">Card</h3>
-                      <p className="text-xs leading-relaxed text-muted-foreground">
-                        A permanent, self-contained editor for settings and dashboards.
+                      <p className="text-muted-foreground text-xs leading-relaxed">
+                        A permanent, self-contained editor for settings and
+                        dashboards.
                       </p>
                     </div>
-                    <span className="rounded-full border border-border/70 px-2 py-1 font-mono text-[10px] text-muted-foreground">
+                    <span className="border-border/70 text-muted-foreground rounded-full border px-2 py-1 font-mono text-[10px]">
                       embedded
                     </span>
                   </div>
                   <CardColorPicker defaultColor={{ l: 0.6, c: 0.15, h: 60 }} />
                 </div>
-              </div> */}
+              </div>
             </CollapsibleContent>
           </Collapsible>
         </section>

@@ -1,10 +1,7 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  transpilePackages: [
-    "@workspace/ui",
-    "@repo/ui-design-system"
-  ],
+  transpilePackages: ["@workspace/ui", "@repo/ui-design-system"],
   serverExternalPackages: [
     "@repo/service-cookies",
     "@repo/foundation-typescript-config",

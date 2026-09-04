@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { maxChromaInGamut } from "@repo/domain-theme/color"
 
 import { getColorHarmonies } from "./get-color-harmonies"
 
@@ -18,13 +19,20 @@ describe("getColorHarmonies", () => {
     expect(analogous?.colors[1]?.h).toBe(340)
   })
 
-  it("preserves lightness and chroma across every generated color", () => {
+  it("preserves lightness exactly and chroma up to what the gamut allows (regression: finding #13)", () => {
+    // Chroma is no longer copied unconditionally — a rotated hue can need
+    // less chroma to stay in sRGB gamut at the same lightness, and this
+    // base (l=0.42, c=0.18) hits that at some rotated hues. Every color
+    // must still be a real, gamut-safe color: c <= min(base.c, gamut max).
     const base = { l: 0.42, c: 0.18, h: 90 }
     const harmonies = getColorHarmonies(base)
     for (const harmony of harmonies) {
       for (const color of harmony.colors) {
         expect(color.l).toBe(base.l)
-        expect(color.c).toBe(base.c)
+        expect(color.c).toBeLessThanOrEqual(base.c + 1e-9)
+        expect(color.c).toBeLessThanOrEqual(
+          maxChromaInGamut(color.l, color.h) + 1e-9
+        )
       }
     }
   })

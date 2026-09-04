@@ -38,8 +38,9 @@
     "./theme": "./src/theme/index.ts",
     "./compiler": "./src/compiler/index.ts",
     "./colors": "./src/color/index.ts",
-    "./model": "./src/index.ts",
+    "./model": "./src/color/model.ts",
     "./resolution": "./src/appearance/index.ts",
-    "./core/resolution": "./src/appearance/index.ts"
+    "./core/resolution": "./src/appearance/index.ts",
+    "./constants": "./src/constants.ts"
   }
 }

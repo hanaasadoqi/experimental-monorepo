@@ -1,214 +1,173 @@
-import { converter } from "culori"
+/**
+ * PARSE LAYER
+ *
+ * All parsing functions:
+ * 1. Take strings or mixed input
+ * 2. Validate using Zod schemas
+ * 3. Return OBJECT forms only (never strings)
+ * 4. Return null on parse failure
+ *
+ * RULE: Always normalize/clamp output before returning.
+ */
 
-import { MAX_CHROMA, OKLCH_REGEX, MAX_HUE, MAX_LIGHTNESS, MIN_CHROMA, MIN_HUE, MIN_LIGHTNESS } from "./constants"
-import { clampC, clampH, clampL } from "./gamut"
-import { normalizeHex, normalizeRgbBytes } from "./normalize"
 import {
-  oklchColorSchema,
-  oklchComponentsSchema,
-  oklchStrSchema,
-  type Oklch,
-  type OklchColor,
-  type OklchComponents,
-  type OklchInput,
-  type OklchString,
-} from "./model"
+  MAX_CHROMA,
+  MAX_LIGHTNESS,
+  MIN_CHROMA,
+  MIN_LIGHTNESS,
+  NUMERIC_TOKEN_REGEX,
+  OKLCH_REGEX,
+} from "./constants"
 import { toOklch } from "./convert"
-
-const culoriToOklch = converter("oklch")
-
-const PERCENTAGE_INDEX = 2
-
-/* -------------------------------------------------------------------------- */
-/* Validation: Hex                                                           */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Validate that a hex string is in valid format (3, 6, or 8 hex characters).
- */
-export function isValidHex(hexString: string): boolean {
-  const cleaned = hexString.replace(/^#/, "")
-  return /^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/.test(cleaned)
-}
+import { clampC, clampH, clampL } from "./gamut"
+import { OklchColor, OklchComponents } from "./model"
+import { normalizeRgbBytes } from "./normalize"
+import { isValidHex } from "./validate"
 
 /* -------------------------------------------------------------------------- */
-/* Validation: OKLCH mediator                                                 */
-/* -------------------------------------------------------------------------- */
-
-export interface OklchValidationResult {
-  success: boolean
-  data?: OklchString | OklchColor | OklchComponents | null
-  /** The shape that matched, for callers that need to branch on it. */
-  kind?: "string" | "color" | "components"
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error?: any
-}
-
-/**
- * Validate any OKLCH input the package can produce, and report which shape it
- * was. This is the single entry point for validation — callers should not pick
- * a schema by hand, because the three shapes are easy to confuse:
- *
- *   - `"oklch(50% 0.2 120)"`            -> `kind: "string"`
- *   - `{ l, c, h }`      (degrees)      -> `kind: "color"`
- *   - `{ lightness, chroma, hue }` (rad)-> `kind: "components"`
- *
- * The object shapes are unambiguous — neither has the other's required keys —
- * so no ordering heuristic is needed.
- */
-export function validateOklch(
-  value: OklchInput | unknown
-): OklchValidationResult {
-  if (typeof value === "string") {
-    const parsed = oklchStrSchema.safeParse(value)
-    return parsed.success
-      ? { success: true, data: parsed.data, kind: "string" }
-      : { success: false, error: parsed.error }
-  }
-
-  if (value !== null && typeof value === "object") {
-    const asColor = oklchColorSchema.safeParse(value)
-    if (asColor.success) {
-      return { success: true, data: asColor.data, kind: "color" }
-    }
-
-    const asComponents = oklchComponentsSchema.safeParse(value)
-    if (asComponents.success) {
-      return { success: true, data: asComponents.data, kind: "components" }
-    }
-
-    return { success: false, error: asColor.error }
-  }
-
-  return {
-    success: false,
-    error: new TypeError(
-      "Expected an oklch() string, an OklchColor, or OklchComponents"
-    ),
-  }
-}
-
-
-/* -------------------------------------------------------------------------- */
-/* Parsing: Strict CSS oklch() string                                        */
+/* OKLCH: string → OklchColor (degrees, safe to index)                         */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Parse a CSS `oklch()` string into the computation form.
+ * Parse CSS oklch() string to OKLCH color object (degrees form).
  *
- * Hue is converted from degrees to **radians**, because the downstream
- * `transformOklchToLMS` feeds it directly into `Math.cos` / `Math.sin`.
- * For the persisted `{ l, c, h }` form, use `parseColorInput` instead.
+ * Input: "oklch(50% 0.15 120)"
+ * Output: { l: 0.5, c: 0.15, h: 120 }
  *
- * @example
- *   parseOklch("oklch(50% 0.2 120)") // => { lightness: 0.5, chroma: 0.2, hue: 2.094 }
- *   parseOklch("invalid")            // => null
+ * @param value - CSS oklch() string
+ * @returns OklchColor if valid, null otherwise
  */
-export function parseOklch(value: string): OklchComponents | null {
+export function parseOklchString(value: string): OklchColor | null {
   const match = value.match(OKLCH_REGEX)
   if (!match) return null
 
-  return {
-    lightness: Number(match[1]) / (match[PERCENTAGE_INDEX] ? 100 : 1),
-    chroma: Number(match[3]),
-    hue: (Number(match[4]) * Math.PI) / 180,
-  }
-}
-
-/**
- * Strictly parse a CSS `oklch()` string, throwing on invalid input.
- * Use when parsing must succeed or be treated as an error.
- */
-export function assertOklch(value: string): OklchComponents {
-  const color = parseOklch(value)
-  if (!color) {
-    throw new Error(
-      `Invalid OKLch color: "${value}". Expected format: oklch(L C H) or oklch(L% C H)`
-    )
-  }
-  return color
-}
-
-/* -------------------------------------------------------------------------- */
-/* Parsing: Lenient input → Oklch color form (degrees, not radians)          */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Parse hex string (#abc or #abcdef) to OKLch.
- * Returns null if invalid.
- */
-export function parseHexToOklch(hexString: string): Oklch | null {
-  if (!isValidHex(hexString)) return null
   try {
-    const normalized = normalizeHex(hexString)
-    // Parse hex manually: #rrggbb
-    const hex = normalized.replace("#", "")
-    const r = parseInt(hex.slice(0, 2), 16)
-    const g = parseInt(hex.slice(2, 4), 16)
-    const b = parseInt(hex.slice(4, 6), 16)
+    const l = Number(match[1]) / (match[2] ? 100 : 1)
+    const c = Number(match[3])
+    const h = Number(match[4])
 
-    // Normalize to 0-1 range and convert to OKLch
-    const rgb = normalizeRgbBytes({ r, g, b })
-    return toOklch(rgb)
-  } catch {
-    return null
-  }
-}
+    // OKLCH_REGEX's [\d.]+ groups accept malformed multi-dot text like
+    // "1.2.3" (Number() on that is NaN); reject non-finite values explicitly
+    // rather than let them pass the range check below (NaN fails every
+    // comparison, so `l < MIN_LIGHTNESS` etc. would silently be false).
+    if (![l, c, h].every(Number.isFinite)) return null
 
-/**
- * Parse CSS oklch() string to OKLch object (degrees form).
- * Handles: oklch(0.5 0.1 45) or oklch(50% 0.1 45deg)
- * Returns null if invalid.
- */
-export function parseOklchString(oklchString: string): Oklch | null {
-  const match = oklchString.match(
-    /oklch\s*\(\s*([\d.]+)%?\s+([\d.]+)\s+([\d.]+)deg?\s*\)/i
-  )
-  if (!match) return null
-
-  try {
-    let l = parseFloat(match[1] ?? "0")
-    const c = parseFloat(match[2] ?? "0")
-    const h = parseFloat(match[3] ?? "0")
-
-    // Handle percentage lightness (e.g., 50% → 0.5)
-    if (match[1]?.includes("%")) {
-      l = l / 100
-    }
-
-    // Validate ranges inline
+    // Validate ranges (hue is allowed to be outside 0-360 before wrapping)
     if (
       l < MIN_LIGHTNESS ||
       l > MAX_LIGHTNESS ||
       c < MIN_CHROMA ||
-      c > MAX_CHROMA ||
-      h < MIN_HUE ||
-      h > MAX_HUE
+      c > MAX_CHROMA
     ) {
       return null
     }
 
-    return { l, c, h }
+    return { l: clampL(l), c: clampC(c), h: clampH(h) }
   } catch {
     return null
   }
 }
 
 /**
- * Parse CSS rgb() or rgba(255, 128, 0) string to OKLch.
- * Returns null if invalid.
+ * Strictly parse oklch() string, throwing on invalid.
+ * Use this when parse failure should be an error.
  */
-export function parseRgbStringToOklch(rgbString: string): Oklch | null {
-  const match = rgbString.match(
-    /rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/i
-  )
+export function assertOklchString(value: string): OklchColor {
+  const parsed = parseOklchString(value)
+  if (!parsed) {
+    throw new Error(
+      `Invalid OKLch string: "${value}". Expected: oklch(L% C H) or oklch(L C H)`
+    )
+  }
+  return parsed
+}
+
+/**
+ * Parse CSS oklch() string to computation form (radians for hue).
+ * Used internally for transformations.
+ *
+ * Output: { lightness: 0.5, chroma: 0.15, hue: 2.094 (radians) }
+ *
+ * Note: preserves original hue degrees (including 360) before converting to radians,
+ * so 360 degrees becomes 2π radians, not 0.
+ */
+export function parseOklchStringToComponents(
+  value: string
+): OklchComponents | null {
+  const match = value.match(OKLCH_REGEX)
+  if (!match) return null
+
+  try {
+    const l = Number(match[1]) / (match[2] ? 100 : 1)
+    const c = Number(match[3])
+    const h = Number(match[4])
+
+    if (![l, c, h].every(Number.isFinite)) return null
+
+    // Validate ranges (skip MIN/MAX_HUE check to allow 360 degrees)
+    if (
+      l < MIN_LIGHTNESS ||
+      l > MAX_LIGHTNESS ||
+      c < MIN_CHROMA ||
+      c > MAX_CHROMA
+    ) {
+      return null
+    }
+
+    return {
+      lightness: clampL(l),
+      chroma: clampC(c),
+      hue: (h * Math.PI) / 180, // Convert degrees to radians directly, preserving original value
+    }
+  } catch {
+    return null
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* HEX: string → OklchColor (via RGB conversion)                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Parse hex (#rgb or #rrggbb) to OKLCH.
+ */
+export function parseHexToOklch(hex: string): OklchColor | null {
+  if (!isValidHex(hex)) return null
+
+  try {
+    // Delegate to the ./convert adapter, which culori parses hex strings
+    // through natively (no object mode-tagging needed for string input).
+    return toOklch(hex.trim().toLowerCase())
+  } catch {
+    return null
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* RGB: CSS string → OklchColor (via conversion)                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Parse CSS rgb(r, g, b) or rgba(r, g, b, a) to OKLCH.
+ * Input is expected in 0-255 range (CSS standard).
+ */
+export function parseRgbStringToOklch(rgbString: string): OklchColor | null {
+  // Anchored to the full string (unlike a bare .match of this pattern) so
+  // trailing/leading garbage around an otherwise-valid rgb()/rgba() call is
+  // rejected instead of silently ignored. Matches the grammar `rgbStrSchema`
+  // in model.ts already enforces.
+  const match = rgbString
+    .trim()
+    .match(
+      /^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)$/i
+    )
   if (!match) return null
 
   try {
     const r = parseInt(match[1] ?? "0", 10)
     const g = parseInt(match[2] ?? "0", 10)
     const b = parseInt(match[3] ?? "0", 10)
-    const alpha = match[4] ? parseFloat(match[4]) : undefined
+    const a = match[4] ? parseFloat(match[4]) : undefined
 
     if (
       r < 0 ||
@@ -217,85 +176,138 @@ export function parseRgbStringToOklch(rgbString: string): Oklch | null {
       g > 255 ||
       b < 0 ||
       b > 255 ||
-      (alpha !== undefined && (alpha < 0 || alpha > 1))
+      (a !== undefined && (a < 0 || a > 1))
     ) {
       return null
     }
 
-    const rgb = normalizeRgbBytes({ r, g, b, alpha })
-    return toOklch(rgb)
+    // Delegate to the adapter in ./convert, which already handles culori's
+    // mode discriminator and alpha (`alpha` vs this package's `a`) mapping.
+    const normalized = normalizeRgbBytes({ r, g, b, a })
+    return toOklch({
+      r: normalized.r,
+      g: normalized.g,
+      b: normalized.b,
+      ...(normalized.alpha !== undefined && { a: normalized.alpha }),
+    })
   } catch {
     return null
   }
 }
 
-/**
- * Parse a hex string (#rgb, #rrggbb) into OKLCH (degrees form).
- * Returns null if invalid.
- */
-export function hexToOklch(hex: string): Oklch | null {
-  const trimmed = hex.trim()
-  if (!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(trimmed)) return null
-  const parsed = culoriToOklch(trimmed)
-  if (!parsed) return null
-  return {
-    l: parsed.l ?? 0,
-    c: parsed.c ?? 0,
-    h: parsed.h ?? 0,
-  }
-}
+/* -------------------------------------------------------------------------- */
+/* UNIFIED: lenient color input → OklchColor (degrees)                         */
+/* -------------------------------------------------------------------------- */
 
 /**
- * Parse user-typed color input into the persisted `{ l, c, h }` form, hue in
- * degrees. Deliberately lenient, unlike `parseOklch`, and accepts:
- *   - a CSS function:  "oklch(0.7 0.15 250)" or "oklch(70% 0.15 250)"
- *   - a bare triplet:  "0.7 0.15 250"
- *   - a hex color:     "#3366ff"
+ * Parse any color format (hex, oklch(), rgb(), or bare triplet) to OklchColor.
+ * Deliberately lenient and clamps out-of-range values.
  *
- * Out-of-range channels are clamped rather than rejected.
+ * Accepts:
+ *   - "#3366ff" (hex)
+ *   - "oklch(50% 0.15 120)" (CSS oklch)
+ *   - "rgb(100, 150, 200)" (CSS rgb)
+ *   - "0.5 0.15 120" (bare triplet)
  */
-export function parseColorInput(input: string): Oklch | null {
+export function parseColorInput(input: string): OklchColor | null {
   const raw = input.trim()
   if (!raw) return null
 
+  // Try hex
   if (raw.startsWith("#")) {
-    return hexToOklch(raw)
+    const hex = parseHexToOklch(raw)
+    if (hex) return hex
   }
 
-  const fnMatch = raw.match(/^oklch\(([^)]+)\)$/i)
-  const body = fnMatch ? fnMatch[1] : raw
-  const parts = body
-    ?.replace(/\//g, " ")
-    .split(/[\s,]+/)
-    .filter(Boolean)
-
-  if (!parts || parts.length < 3) return null
-
-  const lRaw = parts[0]
-  const cRaw = parts[1]
-  const hRaw = parts[2]
-
-  const l = lRaw?.endsWith("%")
-    ? Number.parseFloat(lRaw) / 100
-    : Number.parseFloat(String(lRaw))
-  const c = cRaw?.endsWith("%")
-    ? (Number.parseFloat(cRaw) / 100) * MAX_CHROMA
-    : Number.parseFloat(String(cRaw))
-  const h = Number.parseFloat(String(hRaw))
-
-  if ([l, c, h].some((n) => Number.isNaN(n))) return null
-
-  return {
-    l: clampL(l),
-    c: clampC(c),
-    h: clampH(h),
+  // Try oklch()
+  if (raw.startsWith("oklch")) {
+    const oklch = parseOklchString(raw)
+    if (oklch) return oklch
   }
+
+  // Try rgb()
+  if (raw.startsWith("rgb")) {
+    const rgb = parseRgbStringToOklch(raw)
+    if (rgb) return rgb
+  }
+
+  // Try bare triplet: "0.5 0.15 120"
+  const parts = raw.replace(/[,/]/g, " ").split(/\s+/).filter(Boolean)
+
+  // Exactly 3 tokens — a trailing/leading extra token used to be silently
+  // ignored by `>= 3`. Each token must be a clean number (optionally with a
+  // trailing `%`); `NUMERIC_TOKEN_REGEX` rejects malformed multi-dot text
+  // like "30.2.3" that `Number.parseFloat` would otherwise prefix-parse to
+  // `30.2` instead of rejecting outright.
+  if (parts.length === 3 && parts.every((p) => NUMERIC_TOKEN_REGEX.test(p))) {
+    try {
+      const lRaw = parts[0]
+      const cRaw = parts[1]
+      const hRaw = parts[2]
+
+      const l = lRaw?.endsWith("%")
+        ? Number.parseFloat(lRaw) / 100
+        : Number.parseFloat(String(lRaw))
+      const c = cRaw?.endsWith("%")
+        ? (Number.parseFloat(cRaw) / 100) * MAX_CHROMA
+        : Number.parseFloat(String(cRaw))
+      const h = Number.parseFloat(String(hRaw))
+
+      if (![l, c, h].every(Number.isFinite)) return null
+
+      return {
+        l: clampL(l),
+        c: clampC(c),
+        h: clampH(h),
+      }
+    } catch {
+      return null
+    }
+  }
+
+  return null
 }
 
 /**
- * Boolean validator wrapper around validateOklch.
- * Returns true if the value is valid in any OKLCH input format.
+ * Strictly parse any color input, throwing on failure.
  */
-export function isValidOklch(value: OklchInput | unknown): boolean {
-  return validateOklch(value).success
+export function assertColorInput(input: string): OklchColor {
+  const parsed = parseColorInput(input)
+  if (!parsed) {
+    throw new Error(
+      `Invalid color input: "${input}". Expected: hex, oklch(), rgb(), or triplet`
+    )
+  }
+  return parsed
+}
+
+/* -------------------------------------------------------------------------- */
+/* EXPORTS: Re-export validators for convenience                               */
+/* -------------------------------------------------------------------------- */
+
+export { isValidOklch, isValidHex, validateOklch } from "./validate"
+
+/* -------------------------------------------------------------------------- */
+/* BACKWARD COMPATIBILITY: Aliases for old function names                      */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * @deprecated Use parseOklchStringToComponents() instead.
+ * This is maintained for backward compatibility with tests.
+ * Converts CSS oklch() string to components with radians for hue.
+ */
+export const parseOklch = parseOklchStringToComponents
+
+/**
+ * @deprecated Use assertOklchString() instead.
+ * This is maintained for backward compatibility with tests.
+ */
+export function assertOklch(value: string): OklchComponents {
+  const parsed = parseOklchStringToComponents(value)
+  if (!parsed) {
+    throw new Error(
+      `Invalid OKLch color. Expected format: oklch(L C H) or oklch(L% C H)`
+    )
+  }
+  return parsed
 }

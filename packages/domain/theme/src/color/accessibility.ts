@@ -1,5 +1,8 @@
 import { CONTRAST_THRESHOLDS, OKLCH_REGEX } from "./constants"
+import { oklchToCss } from "./convert"
+import { maxChromaInGamut } from "./gamut"
 import { luminance, tryLuminance } from "./luminance"
+import { parseOklchString } from "./parse"
 
 /**
  * Calculates WCAG 2.0 contrast ratio between two colors.
@@ -43,16 +46,40 @@ export function meetsContrastRequirement(
   return calculateContrastRatio(fgLuminance, bgLuminance) >= minRatio
 }
 
+const NEAR_BLACK = "oklch(5% 0 0)"
+const NEAR_WHITE = "oklch(95% 0 0)"
+
 /**
  * Suggests an accessible text color (light or dark) for a given background.
- * @returns "oklch(5% 0 0)" for light backgrounds, "oklch(95% 0 0)" for dark
+ *
+ * Picks whichever of near-black/near-white actually has the higher contrast
+ * against `background`, computed directly — not inferred from a
+ * `luminance > 0.5` threshold. That threshold is not where the two options'
+ * contrast is actually equal (the real crossover is near relative luminance
+ * 0.179, not 0.5), so for backgrounds in that gap it picked the option with
+ * *lower* contrast (see the regression test using `oklch(58% 0 0)`, where
+ * black text wins despite luminance being below 0.5).
+ *
+ * @returns "oklch(5% 0 0)" or "oklch(95% 0 0)", whichever wins
  */
 export function suggestTextColorForBackground(background: string): string {
-  // `tryLuminance` returns null rather than throwing, so no catch is needed.
   const bgLuminance = tryLuminance(background)
-  return bgLuminance !== null && bgLuminance > 0.5
-    ? "oklch(5% 0 0)"
-    : "oklch(95% 0 0)"
+  if (bgLuminance === null) return NEAR_BLACK
+
+  const blackRatio = calculateContrastRatio(
+    luminanceOf(NEAR_BLACK),
+    bgLuminance
+  )
+  const whiteRatio = calculateContrastRatio(
+    luminanceOf(NEAR_WHITE),
+    bgLuminance
+  )
+  return blackRatio >= whiteRatio ? NEAR_BLACK : NEAR_WHITE
+}
+
+function luminanceOf(color: string): number {
+  // NEAR_BLACK/NEAR_WHITE are fixed, always-valid literals — non-null here.
+  return tryLuminance(color) as number
 }
 
 /**
@@ -117,6 +144,96 @@ export function adjustContrastByLightness(
   }
 
   return best
+}
+
+export interface GetAccessibleForegroundOptions {
+  /** Minimum contrast ratio the returned color must meet. Defaults to the
+   * declared AA-normal target. */
+  minContrast?: number
+}
+
+/**
+ * Generate a foreground color for `background` that is both perceptually
+ * related to it (same hue, chroma reduced for legibility — not a flat
+ * black/white swap) and independently verified to meet `minContrast`
+ * (default: `CONTRAST_THRESHOLDS.AA_NORMAL`, 4.5:1).
+ *
+ * Unlike `suggestTextColorForBackground`/`adjustContrastByLightness`, this
+ * evaluates BOTH the lighter and darker directions and picks the smaller
+ * adjustment, rather than committing to one via a `luminance > 0.5`
+ * threshold. That threshold is not where black-vs-white contrast is
+ * actually equal (the real crossover is near relative luminance 0.179, not
+ * 0.5) — for backgrounds in that gap, the threshold-based approach can
+ * search only the direction that provably cannot reach the target while the
+ * other direction can.
+ *
+ * Falls back to `suggestTextColorForBackground` (plain black/white) only
+ * when NEITHER direction can reach `minContrast` at any lightness — an
+ * explicit, documented fallback policy, not the primary algorithm.
+ */
+export function getAccessibleForeground(
+  background: string,
+  options: GetAccessibleForegroundOptions = {}
+): string {
+  const minContrast = options.minContrast ?? CONTRAST_THRESHOLDS.AA_NORMAL
+  const bg = parseOklchString(background)
+  if (!bg) return suggestTextColorForBackground(background)
+
+  // Related candidate: same hue as the background (the "related" character
+  // the contract calls for), chroma reduced rather than matched 1:1 — text
+  // is legible at lower saturation than the surfaces/backgrounds it sits on.
+  const relatedChroma = Math.min(bg.c * 0.5, 0.08)
+
+  const searchDirection = (
+    direction: "darken" | "lighten"
+  ): { l: number; c: number } | null => {
+    let lo = direction === "darken" ? 0 : bg.l
+    let hi = direction === "darken" ? bg.l : 1
+    let best: { l: number; c: number } | null = null
+
+    for (let i = 0; i < 30; i++) {
+      const mid = (lo + hi) / 2
+      const c = Math.min(relatedChroma, maxChromaInGamut(mid, bg.h))
+      const candidate = oklchToCss({ l: mid, c, h: bg.h })
+
+      if (meetsContrastRequirement(candidate, background, minContrast)) {
+        best = { l: mid, c }
+        // Smallest adjustment = the boundary closest to bg.l that still
+        // passes, approached from the passing side.
+        if (direction === "darken") lo = mid
+        else hi = mid
+      } else if (direction === "darken") {
+        hi = mid
+      } else {
+        lo = mid
+      }
+    }
+    return best
+  }
+
+  const darker = searchDirection("darken")
+  const lighter = searchDirection("lighten")
+
+  const picked = (() => {
+    if (darker && lighter) {
+      const darkerDelta = bg.l - darker.l
+      const lighterDelta = lighter.l - bg.l
+      return darkerDelta <= lighterDelta ? darker : lighter
+    }
+    return darker ?? lighter
+  })()
+
+  if (!picked) {
+    // Neither direction reaches minContrast at any lightness for this
+    // background (e.g. an unreachably high target) — documented fallback.
+    return suggestTextColorForBackground(background)
+  }
+
+  const finalCss = oklchToCss({ l: picked.l, c: picked.c, h: bg.h })
+  // Verify the EXACT returned color, not an intermediate candidate.
+  return meetsContrastRequirement(finalCss, background, minContrast)
+    ? finalCss
+    : suggestTextColorForBackground(background)
 }
 
 /** The minimum ratio for a given WCAG level and text size. */

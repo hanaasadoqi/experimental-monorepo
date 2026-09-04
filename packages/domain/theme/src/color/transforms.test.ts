@@ -89,14 +89,19 @@ describe("transformLMStoRgb", () => {
     expect(result[2]).toBeCloseTo(0, 1)
   })
 
-  it("clamps values to 0-1 range", () => {
+  it("does not clamp out-of-gamut values (regression: luminance must match culori)", () => {
+    // Previously clamped each channel to [0,1] before the caller ever
+    // computes luminance from it. Culori's own `luminance()` (src/wcag.js)
+    // converts to lrgb and weights the RAW values with no clamping anywhere
+    // in its oklab->lrgb path (src/oklab/convertOklabToLrgb.js) — clamping
+    // here made this package's luminance diverge from that reference for
+    // any out-of-gamut color (e.g. oklch(50% 0.35 180), whose real lrgb.r is
+    // -0.285). Un-clamped values can legitimately be negative or exceed 1;
+    // that's fine — nothing downstream requires bounded RGB, only a WCAG
+    // relative-luminance number for contrast-ratio comparisons.
     const result = transformLMStoRgb({ l: 1.5, m: -0.5, s: 0.5 })
-    expect(result[0]).toBeGreaterThanOrEqual(0)
-    expect(result[0]).toBeLessThanOrEqual(1)
-    expect(result[1]).toBeGreaterThanOrEqual(0)
-    expect(result[1]).toBeLessThanOrEqual(1)
-    expect(result[2]).toBeGreaterThanOrEqual(0)
-    expect(result[2]).toBeLessThanOrEqual(1)
+    expect(result[0]).toBeGreaterThan(1)
+    expect(result[1]).toBeLessThan(0)
   })
 
   it("converts red-biased LMS", () => {

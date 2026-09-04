@@ -1,7 +1,7 @@
 "use client"
 
-import type { OklchColor } from "@repo/domain-theme";
-import { getHarmonies, type ColorHarmony } from "../../utils/shade-generation";
+import { oklchToCss, type OklchColor } from "@repo/domain-theme"
+import { getHarmonies, type ColorHarmony } from "../../utils/shade-generation"
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface HarmonyPickerProps {
@@ -73,7 +73,7 @@ export function HarmonyPicker({
                     key={`${harmony.type}-${i}`}
                     className="w-5 h-5 rounded-full border border-white/20 shadow-sm hover:scale-110 transition-transform"
                     style={{
-                      backgroundColor: `oklch(${color.l.toFixed(2)}% ${color.c.toFixed(4)} ${color.h.toFixed(1)})`,
+                      backgroundColor: oklchToCss(color),
                     }}
                     onClick={(e) => {
                       e.stopPropagation()

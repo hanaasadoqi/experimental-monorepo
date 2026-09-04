@@ -1,5 +1,5 @@
-import type { DensityMode } from "@repo/domain-theme/model"
-import { DEFAULT_DENSITY, DENSITY_MODES } from "@repo/domain-theme/model"
+import type { DensityMode } from "@repo/domain-theme/density"
+import { DEFAULT_DENSITY, DENSITY_MODES } from "@repo/domain-theme/density"
 
 export function applyDensityToDocument(mode: DensityMode): void {
   if (typeof document === "undefined") return

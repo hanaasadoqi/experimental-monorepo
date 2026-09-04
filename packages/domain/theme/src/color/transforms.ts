@@ -57,9 +57,19 @@ export function transformOklchToLMS(oklch: OklchComponents): LmsColor {
 }
 
 /**
- * Converts LMS to linear RGB with clamping to valid range [0, 1].
+ * Converts LMS to linear RGB.
+ *
+ * Deliberately NOT clamped to [0, 1]: this feeds `calculateLuminanceFromRgb`
+ * for WCAG relative-luminance/contrast math, not display. Culori's own
+ * `luminance()` (src/wcag.js) converts to lrgb and weights the raw values
+ * with no clamping anywhere in its oklab->lrgb path — clamping here made
+ * this package's luminance diverge from that reference for any out-of-gamut
+ * color (confirmed: oklch(50% 0.35 180) — see the regression tests in
+ * transforms.test.ts and luminance.test.ts). A negative or >1 channel here
+ * is a legitimate intermediate value, not a bug; gamut fitting for actual
+ * *display* colors happens separately, in `./gamut`.
  * @param lms - LMS cone response components
- * @returns Linear RGB as readonly tuple, clamped to [0, 1]
+ * @returns Linear RGB as a readonly tuple, unclamped
  */
 export function transformLMStoRgb(
   lms: LmsColor
@@ -67,33 +77,15 @@ export function transformLMStoRgb(
   const { l, m, s } = lms
 
   return [
-    Math.max(
-      0,
-      Math.min(
-        1,
-        LMS_TO_RGB_MATRIX[0][0] * l +
-          LMS_TO_RGB_MATRIX[0][1] * m +
-          LMS_TO_RGB_MATRIX[0][2] * s
-      )
-    ),
-    Math.max(
-      0,
-      Math.min(
-        1,
-        LMS_TO_RGB_MATRIX[1][0] * l +
-          LMS_TO_RGB_MATRIX[1][1] * m +
-          LMS_TO_RGB_MATRIX[1][2] * s
-      )
-    ),
-    Math.max(
-      0,
-      Math.min(
-        1,
-        LMS_TO_RGB_MATRIX[2][0] * l +
-          LMS_TO_RGB_MATRIX[2][1] * m +
-          LMS_TO_RGB_MATRIX[2][2] * s
-      )
-    ),
+    LMS_TO_RGB_MATRIX[0][0] * l +
+      LMS_TO_RGB_MATRIX[0][1] * m +
+      LMS_TO_RGB_MATRIX[0][2] * s,
+    LMS_TO_RGB_MATRIX[1][0] * l +
+      LMS_TO_RGB_MATRIX[1][1] * m +
+      LMS_TO_RGB_MATRIX[1][2] * s,
+    LMS_TO_RGB_MATRIX[2][0] * l +
+      LMS_TO_RGB_MATRIX[2][1] * m +
+      LMS_TO_RGB_MATRIX[2][2] * s,
   ] as const
 }
 

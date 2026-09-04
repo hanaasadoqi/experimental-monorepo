@@ -3,7 +3,7 @@
 import { HuePresetGrid } from "./hue-preset-grid"
 import { ContrastIndicator } from "./contrast-indicator"
 import { OklchSliders } from "./oklch-sliders"
-import { OklchColor } from "@repo/domain-theme/colors";
+import { OklchColor, oklchToCss } from "@repo/domain-theme/colors"
 
 export interface ColorObject {
   key: string
@@ -27,7 +27,7 @@ function ColorSwatch({ color }: { color: OklchColor | undefined }) {
     <div
       className="w-4 h-4 rounded-full border border-border shadow-sm"
       style={{
-        backgroundColor: `oklch(${color.l.toFixed(2)}% ${color.c.toFixed(4)} ${color.h.toFixed(1)})`,
+        backgroundColor: oklchToCss(color),
       }}
     />
   )

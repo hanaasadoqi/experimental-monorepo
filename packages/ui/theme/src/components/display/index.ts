@@ -8,7 +8,10 @@ export { ContrastIndicator } from "./contrast-indicator"
 export type { ContrastIndicatorProps } from "./contrast-indicator"
 
 export { ColorScalePreview, ColorScaleViewer } from "./color-scale-preview"
-export type { ColorScalePreviewProps, ColorScaleViewerProps } from "./color-scale-preview"
+export type {
+  ColorScalePreviewProps,
+  ColorScaleViewerProps,
+} from "./color-scale-preview"
 
 export { ColorEditor } from "./color-editor"
 export type { ColorEditorProps, ColorObject } from "./color-editor"

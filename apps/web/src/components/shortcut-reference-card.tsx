@@ -9,7 +9,7 @@ const shortcuts = [
   { label: "Redo", keys: ["⌘", "⇧", "Z"] },
 ]
 
-export function Pattern() {
+export function ShortcutReferenceCard() {
   return (
     <div className="mx-auto flex w-full max-w-xs flex-col">
       <p className="mb-3 text-sm font-medium">Keyboard Shortcuts</p>

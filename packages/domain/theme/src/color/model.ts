@@ -11,28 +11,33 @@ import {
 } from "./constants"
 
 /**
- * Color types and schemas.
+ * ARCHITECTURE: Three distinct color representations
  *
- * TWO OKLCH REPRESENTATIONS LIVE HERE, DELIBERATELY. They are kept in one file
- * so the difference is impossible to miss and nobody adds a third:
+ * |                  | Serialized        | Normalized        | Components          |
+ * |------------------|-------------------|-------------------|---------------------|
+ * | Oklch            | OklchString       | OklchColor        | OklchComponents     |
+ * | Hex              | HexString         | (same)            | —                   |
+ * | RGB              | RgbString         | RgbColor          | —                   |
+ * | Hue unit         | degrees/template  | degrees (0..360)  | radians (math)      |
+ * | Use case         | CSS/I/O           | persisted/display | transformations     |
+ * | Safe to index    | NO - strings      | YES - objects     | YES - objects       |
  *
- * |          | `OklchColor`        | `OklchComponents`            |
- * |----------|---------------------|------------------------------|
- * | fields   | `l`, `c`, `h`       | `lightness`, `chroma`, `hue` |
- * | hue unit | degrees (0..360)    | **radians**                  |
- * | role     | persisted / CSS     | computation                  |
- *
- * `OklchComponents` needs radians because `transformOklchToLMS` feeds the hue
- * straight into `Math.cos` / `Math.sin`. `parseOklch` is the boundary that
- * converts a CSS string into that form, degrees -> radians.
- *
- * Use `OklchColor` for anything stored, serialized, or rendered.
+ * RULE: Never put string types in unions with data types. Parse first, then operate.
  */
 
 /* -------------------------------------------------------------------------- */
-/* OKLCH — persisted / CSS-facing                                             */
+/* OKLCH: Three representations                                               */
 /* -------------------------------------------------------------------------- */
 
+/** CSS oklch() function string. Compile-time shape only — validate at runtime. */
+export const oklchStrSchema = z
+  .string()
+  .regex(OKLCH_REGEX)
+  .transform((value) => value as OklchString)
+
+export type OklchString = `oklch(${string})`
+
+/** Persisted / displayed OKLCH: hue in degrees (0-360). */
 export const oklchColorSchema = z.object({
   l: z
     .number()
@@ -41,41 +46,113 @@ export const oklchColorSchema = z.object({
     .describe("Lightness 0..1"),
   c: z.number().min(MIN_CHROMA).max(MAX_CHROMA).describe("Chroma 0..0.4"),
   h: z.number().min(MIN_HUE).max(MAX_HUE).describe("Hue in degrees, 0..360"),
-  alpha: z.number().min(0).max(1).optional().describe("Alpha 0..1"),
+  a: z.number().min(0).max(1).optional().describe("Alpha 0..1"),
 })
 
 export type OklchColor = z.infer<typeof oklchColorSchema>
 
-/** `OklchColor` without alpha — the triple the geometry helpers operate on. */
-export type Oklch = Pick<OklchColor, "l" | "c" | "h">
-
-/**
- * Compile-time shape for a CSS `oklch()` string.
- * Does NOT prove the contents are valid — parse at runtime before trusting it.
- */
-export const oklchStrSchema = z
-  .string()
-  .regex(OKLCH_REGEX)
-  .transform((value) => value as OklchString)
-
-export type OklchString = `oklch(${string})`
-
-export type HexColor = `#${string}`
-
-/* -------------------------------------------------------------------------- */
-/* OKLCH — computation form                                                   */
-/* -------------------------------------------------------------------------- */
-
+/** Computation form: hue in RADIANS for Math.cos/sin. Field names: lightness, chroma, hue (for clarity). */
 export const oklchComponentsSchema = z.object({
   lightness: z.number().describe("Lightness 0..1"),
   chroma: z.number().describe("Chroma >= 0"),
-  hue: z.number().describe("Hue in RADIANS"),
-  alpha: z.number().min(0).max(1).optional().describe("Alpha 0..1"),
+  hue: z.number().describe("Hue in RADIANS for Math.cos/sin"),
+  a: z.number().min(0).max(1).optional().describe("Alpha 0..1"),
 })
 
 export type OklchComponents = z.infer<typeof oklchComponentsSchema>
 
-/** Cone response space (long / medium / short), the step between OKLCH and RGB. */
+/**
+ * Unified type for any indexable OKLCH (never string).
+ * Use this when you need `.l`, `.c`, `.h` safely.
+ */
+export type OklchObject = OklchColor | OklchComponents
+
+/** Accept any form at boundaries, but parse to OklchObject before operating. */
+export type OklchInput = OklchString | OklchColor | OklchComponents
+
+export const DEFAULT_OKLCH: OklchColor = { l: 0.5, c: 0.1, h: 200 }
+
+/** Backward-compat alias: OklchColor only (persisted form with l, c, h). */
+export type Oklch = OklchColor
+
+/* -------------------------------------------------------------------------- */
+/* HEX: Two representations                                                    */
+/* -------------------------------------------------------------------------- */
+
+/** CSS hex string (#rrggbb or #rgb). */
+export const hexStrSchema = z
+  .string()
+  .regex(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i)
+  .transform((value) => value as HexString)
+
+export type HexString = `#${string}`
+
+/** Normalized hex object (not used, but included for symmetry with RGB/Oklch). */
+export const hexColorSchema = z.string().regex(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i)
+
+export type HexColor = z.infer<typeof hexColorSchema>
+
+/** Unified type for hex. */
+export type HexObject = HexColor | HexString
+
+export type HexInput = HexString | HexColor
+
+export const DEFAULT_HEX: HexString = "#000000"
+
+/* -------------------------------------------------------------------------- */
+/* RGB: Two representations                                                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * CSS rgb()/rgba() function string. The two function names are not
+ * interchangeable here: `rgb()` never carries alpha and `rgba()` always
+ * does, matching what `rgbToCss` (convert.ts) actually emits — a single
+ * regex with an optional alpha group would accept `rgb(...)` with alpha and
+ * `rgba(...)` without it, which the serializer never produces.
+ */
+export const rgbStrSchema = z
+  .string()
+  .regex(
+    /^(?:rgb\s*\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|rgba\s*\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\))$/i
+  )
+  .transform((value) => value as RgbString)
+
+export type RgbString = `rgb(${string})` | `rgba(${string})`
+
+/** Normalized RGB: 0-1 range. */
+export const rgbColorSchema = z.object({
+  r: z.number().min(0).max(1),
+  g: z.number().min(0).max(1),
+  b: z.number().min(0).max(1),
+  a: z.number().min(0).max(1).optional(),
+})
+
+export type RgbColor = z.infer<typeof rgbColorSchema>
+
+/** Unified type for any indexable RGB (never string). */
+export type RgbObject = RgbColor
+
+export type RgbInput = RgbString | RgbColor
+
+export const DEFAULT_RGB: RgbColor = { r: 0, g: 0, b: 0 }
+
+/* -------------------------------------------------------------------------- */
+/* Unified input/output types for converters                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Any color that can be DISPLAYED or SERIALIZED (includes strings).
+ * Use at I/O boundaries (React props, CSS output).
+ */
+export type AnyColorInput = OklchInput | HexInput | RgbInput
+
+/**
+ * Any color that can be OPERATED ON (never strings).
+ * Use after parsing, before accessing `.l`, `.r`, etc.
+ */
+export type AnyColorObject = OklchObject | RgbObject
+
+/** LMS: intermediate color space for OKLCH transforms. */
 export const lmsColorSchema = z.object({
   l: z.number(),
   m: z.number(),
@@ -84,11 +161,8 @@ export const lmsColorSchema = z.object({
 
 export type LmsColor = z.infer<typeof lmsColorSchema>
 
-/** Anything `validateOklch` knows how to check. */
-export type OklchInput = string | OklchColor | OklchComponents
-
 /* -------------------------------------------------------------------------- */
-/* Color scale                                                                */
+/* Color scale (discrete palette)                                              */
 /* -------------------------------------------------------------------------- */
 
 export const colorScaleStepSchema = z.enum([
@@ -146,8 +220,14 @@ export const colorHarmonySchema = z.enum([
   "complementary",
   "split-complementary",
   "triadic",
+  // "tetradic" is ambiguous (per the color-system repair contract) — kept
+  // for backward compatibility as an alias of "square" (identical 90°
+  // geometry, see harmony.ts), not removed per the no-deletion policy.
   "tetradic",
+  "square",
   "rectangle",
+  "double-split-complementary",
+  "monochromatic",
 ])
 
 export type ColorHarmony = z.infer<typeof colorHarmonySchema>
@@ -177,3 +257,6 @@ export const semanticColorOverridesSchema = z
 export type SemanticColorOverrides = z.infer<
   typeof semanticColorOverridesSchema
 >
+
+export const colorModeSchema = z.enum(["oklch", "rgb", "hex"])
+export type CssColorMode = z.infer<typeof colorModeSchema>

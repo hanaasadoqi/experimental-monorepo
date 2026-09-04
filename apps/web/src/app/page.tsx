@@ -18,6 +18,7 @@ import {
   CardDescription,
   CardAction,
 } from "@repo/ui-components/base/card"
+import { UiComponentShowcase } from "@repo/ui-theme";
 
 export default function Page() {
   const preference = useAppearancePreference()
@@ -63,6 +64,7 @@ export default function Page() {
             </CardAction>
           </CardFooter>
         </Card>
+        <UiComponentShowcase />
       </section>
 
       {/* <ThemeScopeProvider scopeId="preview"> */}

@@ -1,12 +1,13 @@
 "use client"
 
-
 import { cn } from "@repo/ui-components/lib/utils"
 import { useState, useMemo } from "react"
-import { HuePresetGrid } from "./hue-preset-grid";
-import { OklchSliders } from "./oklch-sliders";
-import type { OklchColor } from "@repo/domain-theme";
-import { type ColorScale, SCALE_STEPS, deriveScale, toCss } from "../shade-generation";
+import { HuePresetGrid } from "./hue-preset-grid"
+import { OklchSliders } from "./oklch-sliders"
+import type { OklchColor } from "@repo/domain-theme"
+import { type ColorScale } from "@repo/domain-theme"
+import { deriveScale, toCss } from "../../utils/shade-generation"
+import { SCALE_STEPS } from "../../utils/shade-generation"
 
 export interface SwatchProps {
   step: number
@@ -91,13 +92,8 @@ interface SemanticRowProps {
   mode: "light" | "dark"
 }
 
-function SemanticRow({
-  label,
-  hue,
-  chroma,
-  mode,
-}: SemanticRowProps) {
-  const scale = deriveScale({ h: hue, c: chroma, l: 55 }, mode)
+function SemanticRow({ label, hue, chroma, mode }: SemanticRowProps) {
+  const scale = deriveScale({ h: hue, c: chroma, l: 0.55 }, mode)
   return (
     <div className="flex items-center gap-3">
       <span className="text-xs text-muted-foreground w-20 shrink-0">
@@ -141,12 +137,13 @@ export function ColorScalePreview({
 
   const generateCss = () => {
     const lines: string[] = [":root {"]
-    SCALE_STEPS.forEach((step) => {
-      lines.push(`  --color-primary-${step}: ${toCss(primaryScale[step])};`)
+    SCALE_STEPS.forEach((step: keyof ColorScale) => {
+      lines.push(`  --color-primary-${step!}: ${toCss(primaryScale![step])};`)
     })
     if (accentScale) {
-      SCALE_STEPS.forEach((step) => {
-        lines.push(`  --color-accent-${step}: ${toCss(accentScale[step])};`)
+      const scale = accentScale
+      SCALE_STEPS.forEach((step: keyof ColorScale) => {
+        lines.push(`  --color-accent-${String(step)}: ${toCss(scale[step]!)};`)
       })
     }
     lines.push("}")
@@ -233,12 +230,21 @@ export function ColorScaleViewer({
       {/* Color controls - visible on all tabs */}
       <div className="space-y-4 lg:col-span-1">
         <div>
-          <h4 className="text-xs font-semibold text-foreground mb-3">Primary</h4>
+          <h4 className="text-xs font-semibold text-foreground mb-3">
+            Primary
+          </h4>
           {onPrimaryColorChange && (
             <>
-              <HuePresetGrid color={primaryColor} onColorSelect={onPrimaryColorChange} />
+              <HuePresetGrid
+                color={primaryColor}
+                onColorSelect={onPrimaryColorChange}
+              />
               <div className="mt-4">
-                <OklchSliders color={primaryColor} onChange={onPrimaryColorChange} mode={mode} />
+                <OklchSliders
+                  color={primaryColor}
+                  onChange={onPrimaryColorChange}
+                  mode={mode}
+                />
               </div>
             </>
           )}
@@ -246,12 +252,21 @@ export function ColorScaleViewer({
 
         {accentColor && (
           <div className="pt-4 border-t border-border">
-            <h4 className="text-xs font-semibold text-foreground mb-3">Accent</h4>
+            <h4 className="text-xs font-semibold text-foreground mb-3">
+              Accent
+            </h4>
             {onAccentColorChange && (
               <>
-                <HuePresetGrid color={accentColor} onColorSelect={onAccentColorChange} />
+                <HuePresetGrid
+                  color={accentColor}
+                  onColorSelect={onAccentColorChange}
+                />
                 <div className="mt-4">
-                  <OklchSliders color={accentColor} onChange={onAccentColorChange} mode={mode} />
+                  <OklchSliders
+                    color={accentColor}
+                    onChange={onAccentColorChange}
+                    mode={mode}
+                  />
                 </div>
               </>
             )}
@@ -318,7 +333,12 @@ export function ColorScaleViewer({
                 chroma={primaryColor.c}
                 mode={mode}
               />
-              <SemanticRow label="Neutral" hue={240} chroma={0.03} mode={mode} />
+              <SemanticRow
+                label="Neutral"
+                hue={240}
+                chroma={0.03}
+                mode={mode}
+              />
             </div>
             <div className="text-[10px] text-muted-foreground p-2 rounded bg-muted/40 border border-border">
               Semantic colors inherit chroma from your primary for consistent

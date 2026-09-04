@@ -18,6 +18,21 @@ describe("luminance", () => {
     expect(result).toBeLessThan(1)
   })
 
+  it("matches culori's own luminance() for an out-of-gamut color (regression)", () => {
+    // Reference value obtained directly from culori's converter("lrgb")
+    // fed through its own wcag.js luminance formula — independent of this
+    // package's implementation. oklch(50% 0.35 180) is out of sRGB gamut
+    // (real lrgb.r ≈ -0.285); this only matches once transformLMStoRgb
+    // stops clamping each channel to [0,1] before weighting.
+    const result = luminance("oklch(50% 0.35 180)")
+    expect(result).toBeCloseTo(0.15954270099781656, 4)
+  })
+
+  it("still matches culori for an in-gamut color", () => {
+    const result = luminance("oklch(60% 0.05 180)")
+    expect(result).toBeCloseTo(0.22289252216787467, 4)
+  })
+
   it("throws error for invalid oklch format", () => {
     expect(() => luminance("rgb(255, 0, 0)")).toThrow("Invalid OKLch color")
   })

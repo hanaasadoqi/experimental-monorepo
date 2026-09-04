@@ -12,6 +12,7 @@ import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/features-preferences"
 
 import "./globals.css"
 import { Viewport } from "next"
+import AppShell from "./app-shell"
 
 export interface RootLayoutProps {
   children: ReactNode
@@ -73,12 +74,15 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       suppressHydrationWarning
     >
       <body>
-        <Script id="appearance-bootstrap" strategy="beforeInteractive">
-          {generateBootstrapCode(initialAppearance)}
-        </Script>
-
+        <Script
+          id="appearance-bootstrap"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: generateBootstrapCode(initialAppearance),
+          }}
+        />
         <ApplicationProviders initialAppearance={initialAppearance}>
-          {children}
+          <AppShell>{children}</AppShell>
         </ApplicationProviders>
       </body>
     </html>

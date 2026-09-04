@@ -16,14 +16,21 @@
 import {
   type ColorScale,
   calculateContrastRatio,
+  generateHarmony,
+  generateShadeScale,
+  getAccessibleForeground,
   getWCAGLevel,
+  HARMONY_HUE_OFFSETS,
   luminanceFromOklch,
+  maxChromaInGamut,
   type Oklch,
   type OklchComponents,
   oklchToCss,
-} from "@repo/domain-theme";
+  parseOklchString,
+} from "@repo/domain-theme"
 
-export type ScaleStep = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950
+export type ScaleStep =
+  50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950
 
 export const SCALE_STEPS: ScaleStep[] = [
   50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
@@ -120,25 +127,38 @@ export function calibrateLightness(rawL: number, hue: number): number {
 /**
  * Main scale derivation function.
  * Produces a full 11-step OkLCH color scale from a base color.
+ *
+ * Lightness is delegated to the domain's `generateShadeScale`, anchored at
+ * step 500 so `base.l` is actually reflected in the output (this module
+ * previously anchored every scale at a fixed 0.52/0.58 regardless of the
+ * seed's own lightness — see the finding #3 regression tests). In "dark"
+ * mode the resulting 11 values are reversed across the step labels, which
+ * preserves this function's existing "step 50 darkest / 950 lightest in
+ * dark mode" convention (an explicit prior product choice, not something
+ * this fix changes) on top of the corrected, seed-relative math.
+ *
+ * Chroma keeps this module's own hue-aware tapering (`getHueChromaFactor` /
+ * `CHROMA_MULTIPLIERS`), gamut-clipped at each step's now-correct lightness
+ * so it never exceeds the domain schema's declared chroma ceiling.
  */
 export function deriveScale(
   base: Oklch,
   mode: "light" | "dark" = "light"
 ): ColorScale {
-  const anchorL = mode === "light" ? 0.52 : 0.58
+  const anchored = generateShadeScale({ color: base, anchorShade: 500 })
+  const ordered = mode === "dark" ? [...anchored].reverse() : anchored
   const hueFactor = getHueChromaFactor(base.h)
-  // In dark mode, FLIP the scale so step 50 is darkest and step 950 is lightest
-  const deltaSign = mode === "dark" ? -1 : 1
 
-  const entries = SCALE_STEPS.map((step: ScaleStep): [ScaleStep, Oklch] => {
-    const rawL = anchorL + (LIGHTNESS_STEPS[step] ?? 0) * deltaSign
-    const l = calibrateLightness(rawL, base.h)
+  const entries = SCALE_STEPS.map(
+    (step: ScaleStep, i: number): [ScaleStep, Oklch] => {
+      const l = ordered[i]?.l ?? base.l
+      const stepMultiplier = CHROMA_MULTIPLIERS[step]
+      const rawC = base.c * hueFactor * (stepMultiplier ?? 1)
+      const c = Math.max(0, Math.min(maxChromaInGamut(l, base.h), rawC))
 
-    const stepMultiplier = CHROMA_MULTIPLIERS[step]
-    const c = Math.max(0, Math.min(0.5, base.c * hueFactor * (stepMultiplier ?? 1)))
-
-    return [step, { l, c, h: base.h }] as [ScaleStep, Oklch]
-  })
+      return [step, { l, c, h: base.h }] as [ScaleStep, Oklch]
+    }
+  )
 
   return Object.fromEntries(entries) as ColorScale
 }
@@ -177,14 +197,15 @@ export function getWcagLevel(ratio: number): "AAA" | "AA" | "Fail" {
 }
 
 /**
- * Returns white or black, whichever has better contrast against the given background
+ * Generates an accessible, background-related foreground color (delegates
+ * to the domain's `getAccessibleForeground` — see finding #2). Previously
+ * limited to two fixed achromatic constants, which for some backgrounds
+ * (e.g. `{l:0.55,c:0.12,h:120}`) produced a ratio as low as ~4.37, below the
+ * 4.5 target — see the regression test.
  */
 export function autoForeground(bg: Oklch): Oklch {
-  const white: Oklch = { l: 0.97, c: 0, h: 0 }
-  const black: Oklch = { l: 0.1, c: 0, h: 0 }
-  const whiteContrast = getContrastRatio(white, bg)
-  const blackContrast = getContrastRatio(black, bg)
-  return whiteContrast >= blackContrast ? white : black
+  const resultCss = getAccessibleForeground(oklchToCss(bg))
+  return parseOklchString(resultCss) ?? { l: 0.1, c: 0, h: 0 }
 }
 
 /**
@@ -204,10 +225,22 @@ export function deriveScaleCss(
 }
 
 /**
- * Color harmony generators
+ * Color harmony generators.
+ *
+ * Delegates to the domain's single `generateHarmony` rather than rotating
+ * hues independently — this function and `get-color-harmonies.ts` used to
+ * implement divergent, non-gamut-fit geometry (finding #5/#12): this one
+ * never generated "rectangle" while the other did, and neither gamut-fit
+ * the rotated colors. Both now share one source; "rectangle" is included
+ * here so the two no longer disagree on which types they support.
  */
 export type HarmonyType =
-  "complementary" | "analogous" | "triadic" | "split-complementary" | "tetradic"
+  | "complementary"
+  | "analogous"
+  | "triadic"
+  | "split-complementary"
+  | "tetradic"
+  | "rectangle"
 
 export type ColorHarmony = {
   type: HarmonyType
@@ -216,53 +249,62 @@ export type ColorHarmony = {
   colors: Oklch[]
 }
 
+const HARMONY_DESCRIPTORS: Record<
+  HarmonyType,
+  { name: string; description: string }
+> = {
+  complementary: {
+    name: "Complementary",
+    description: "Opposite on the wheel — high contrast pair",
+  },
+  analogous: {
+    name: "Analogous",
+    description: "Adjacent hues — harmonious and cohesive",
+  },
+  triadic: {
+    name: "Triadic",
+    description: "Three hues evenly spaced — vibrant and balanced",
+  },
+  "split-complementary": {
+    name: "Split Complement",
+    description: "Complement split — less tension, more variety",
+  },
+  tetradic: {
+    name: "Tetradic",
+    description: "Four hues at 90° intervals — rich palette",
+  },
+  rectangle: {
+    name: "Rectangle",
+    description: "Two complementary pairs — complex but balanced",
+  },
+}
+
+function harmonyColorsExcludingSeed(base: Oklch, type: HarmonyType): Oklch[] {
+  const offsets = HARMONY_HUE_OFFSETS[type]
+  const colors = generateHarmony(base, type)
+  return offsets
+    .map((offset, i) => ({ offset, color: colors[i]! }))
+    .filter((entry) => entry.offset !== 0)
+    .map((entry) => entry.color)
+}
+
 export function getHarmonies(base: Oklch): ColorHarmony[] {
-  const hue = (deg: number) => (((base.h + deg) % 360) + 360) % 360
-  return [
-    {
-      type: "complementary",
-      name: "Complementary",
-      description: "Opposite on the wheel — high contrast pair",
-      colors: [{ ...base, h: hue(180) }],
-    },
-    {
-      type: "analogous",
-      name: "Analogous",
-      description: "Adjacent hues — harmonious and cohesive",
-      colors: [
-        { ...base, h: hue(30) },
-        { ...base, h: hue(-30) },
-      ],
-    },
-    {
-      type: "triadic",
-      name: "Triadic",
-      description: "Three hues evenly spaced — vibrant and balanced",
-      colors: [
-        { ...base, h: hue(120) },
-        { ...base, h: hue(240) },
-      ],
-    },
-    {
-      type: "split-complementary",
-      name: "Split Complement",
-      description: "Complement split — less tension, more variety",
-      colors: [
-        { ...base, h: hue(150) },
-        { ...base, h: hue(210) },
-      ],
-    },
-    {
-      type: "tetradic",
-      name: "Tetradic",
-      description: "Four hues at 90° intervals — rich palette",
-      colors: [
-        { ...base, h: hue(90) },
-        { ...base, h: hue(180) },
-        { ...base, h: hue(270) },
-      ],
-    },
+  const types: HarmonyType[] = [
+    "complementary",
+    "analogous",
+    "triadic",
+    "split-complementary",
+    "tetradic",
+    "rectangle",
   ]
+  return types.map((type) => {
+    const colors =
+      type === "analogous"
+        ? // Existing shipped contract: [+30, -30] order (positive offset first).
+          [...harmonyColorsExcludingSeed(base, type)].reverse()
+        : harmonyColorsExcludingSeed(base, type)
+    return { type, ...HARMONY_DESCRIPTORS[type], colors }
+  })
 }
 
 /**

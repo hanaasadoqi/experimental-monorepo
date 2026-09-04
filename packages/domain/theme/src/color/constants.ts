@@ -5,6 +5,12 @@
 
 export const OKLCH_REGEX = /^oklch\(([\d.]+)(%?)?\s+([\d.]+)\s+([\d.]+)\)$/
 
+/** A single clean numeric token: optional sign, digits, at most one decimal
+ * point, optional trailing `%`. Used to validate bare-triplet color input
+ * tokens before `Number.parseFloat`, which would otherwise silently accept
+ * the numeric prefix of malformed text like `"30.2.3"`. */
+export const NUMERIC_TOKEN_REGEX = /^-?\d+(\.\d+)?%?$/
+
 /** WCAG 2.0 contrast ratio thresholds. */
 export const CONTRAST_THRESHOLDS = {
   AA_NORMAL: 4.5, // Normal text, AA level

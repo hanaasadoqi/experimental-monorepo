@@ -1,7 +1,7 @@
 "use client"
 
-import type { OklchColor } from "@repo/domain-theme";
-import { toCss, deriveScale, SCALE_STEPS } from "../../utils/shade-generation";
+import type { OklchColor } from "@repo/domain-theme"
+import { toCss, deriveScale, SCALE_STEPS } from "../../utils/shade-generation"
 
 export interface OklchSlidersProps {
   color: OklchColor
@@ -9,7 +9,11 @@ export interface OklchSlidersProps {
   mode?: "light" | "dark"
 }
 
-export function OklchSliders({ color, onChange, mode = "light" }: OklchSlidersProps) {
+export function OklchSliders({
+  color,
+  onChange,
+  mode = "light",
+}: OklchSlidersProps) {
   const { h, c, l } = color
   const scale = deriveScale(color, mode)
 

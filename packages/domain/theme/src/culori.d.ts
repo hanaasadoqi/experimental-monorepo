@@ -1,25 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-declare module "culori" {
-  export interface Oklch {
-    mode?: string
-    l: number
-    c: number
-    h: number
-    alpha?: number
-  }
-
-  export interface Rgb {
-    mode: "rgb"
-    r: number
-    g: number
-    b: number
-  }
-
-  export interface Rgba extends Omit<Rgb, "mode"> { a?: number, mode?: "rgb" };
-  export function converter(target: "oklch" | "rgb"): (color: any) => any;
-  export function clampChroma(color: any, mode?: string): any
-  export function displayable(color: any): boolean
-  export function formatHex(color: any): string | null
-  export function parseOklch(str: string): Oklch | null
-
-}
+// Intentionally empty. `@types/culori` (a real devDependency) provides
+// accurate, strict types for this package. A prior permissive ambient
+// override here shadowed those real types within this package's own
+// TypeScript program, letting conversion-call type errors pass
+// package-locally while downstream consumers (which don't include this
+// file) correctly caught them — see
+// .archives/domain-theme/2026-09-04-culori-ambient-override/ARCHIVE.md.
+export {}

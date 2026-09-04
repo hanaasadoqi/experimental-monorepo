@@ -1,11 +1,15 @@
 import { type RGBColor as Rgb } from "react-color"
-import type { } from "react-color"
+import type {} from "react-color"
 import { converter, parseColorInput } from "@repo/domain-theme/colors"
 import type { CuloriOklch, CuloriRgb } from "@repo/domain-theme/colors"
 
-const oklch = converter("oklch") as (color: Parameters<ReturnType<typeof converter>>[0]) => CuloriOklch | undefined
-const rgb = converter("rgb") as (color: Parameters<ReturnType<typeof converter>>[0]) => CuloriRgb | undefined
-type Rgba = Omit<Rgb, "mode"> & { alpha?: number }
+const oklch = converter("oklch") as (
+  color: Parameters<ReturnType<typeof converter>>[0]
+) => CuloriOklch | undefined
+const rgb = converter("rgb") as (
+  color: Parameters<ReturnType<typeof converter>>[0]
+) => CuloriRgb | undefined
+type Rgba = Omit<Rgb, "mode"> & { a?: number }
 const clamp255 = (value: number) => {
   return Math.min(255, Math.max(0, Math.round(value)))
 }

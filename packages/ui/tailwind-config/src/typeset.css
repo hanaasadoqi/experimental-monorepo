@@ -185,13 +185,13 @@
       list-style-type: square;
     }
     &:where(ol[type="a" i]) {
-      list-style-type: lower-alpha;
+      list-style-type: lower-a;
     }
     &:where(ol[type="i" i]) {
       list-style-type: lower-roman;
     }
     &:where(ol[type="A" s]) {
-      list-style-type: upper-alpha;
+      list-style-type: upper-a;
     }
     &:where(ol[type="I" s]) {
       list-style-type: upper-roman;

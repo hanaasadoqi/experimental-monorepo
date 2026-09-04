@@ -10,6 +10,7 @@ import {
 import { AppearanceBridge } from "./appearance-bridge"
 
 import { PreferencesPersistence } from "./preferences-persistence"
+import { ClientApplicationProvider } from "./client-application-providers"
 
 export interface ApplicationProvidersProps {
   children: ReactNode
@@ -21,10 +22,11 @@ export function ApplicationProviders({
   initialAppearance,
 }: ApplicationProvidersProps) {
   return (
-    <PreferencesProvider initialAppearance={initialAppearance}>
-      <PreferencesPersistence />
-
-      <AppearanceBridge>{children}</AppearanceBridge>
-    </PreferencesProvider>
+    <ClientApplicationProvider>
+      <PreferencesProvider initialAppearance={initialAppearance}>
+        <PreferencesPersistence />
+        <AppearanceBridge>{children}</AppearanceBridge>
+      </PreferencesProvider>
+    </ClientApplicationProvider>
   )
 }

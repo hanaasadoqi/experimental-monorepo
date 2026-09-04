@@ -1,7 +1,7 @@
 "use client"
 
-import type { OklchColor } from "@repo/domain-theme";
-import { HUE_PRESETS, toCss } from "../../utils/shade-generation";
+import type { OklchColor } from "@repo/domain-theme"
+import { HUE_PRESETS, toCss } from "../../utils/shade-generation"
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface HuePresetGridProps {
@@ -27,7 +27,9 @@ export function HuePresetGrid({ color, onColorSelect }: HuePresetGridProps) {
         Quick Presets
       </span>
       {categories.map((category: string) => {
-        const presets = HUE_PRESETS.filter((p: (typeof HUE_PRESETS)[0]) => p.category === category)
+        const presets = HUE_PRESETS.filter(
+          (p: (typeof HUE_PRESETS)[0]) => p.category === category
+        )
         if (!presets.length) return null
 
         return (

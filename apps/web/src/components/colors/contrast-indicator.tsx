@@ -19,19 +19,24 @@ export function ContrastIndicator({ color }: { color: Oklch }) {
   }
 
   return (
-    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-border">
-      {/* Swatch */}
+    <div className="bg-muted/50 border-border flex items-center gap-3 rounded-lg border p-3">
       <div
-        className="w-10 h-10 rounded-lg border border-border shadow-sm flex items-center justify-center text-xs font-bold shrink-0"
+        className="border-border flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border text-xs font-bold shadow-sm"
         style={{ backgroundColor: toCss(color), color: toCss(bestFg) }}
       >
         Aa
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-xs font-mono text-muted-foreground truncate">{toCss(color)}</p>
-        <div className="flex items-center gap-2 mt-0.5">
-          <span className={cn("text-xs font-semibold", levelColors[level])}>{level}</span>
-          <span className="text-xs text-muted-foreground font-mono">{bestRatio.toFixed(2)}:1</span>
+      <div className="min-w-0 flex-1">
+        <p className="text-muted-foreground truncate font-mono text-xs">
+          {toCss(color)}
+        </p>
+        <div className="mt-0.5 flex items-center gap-2">
+          <span className={cn("text-xs font-semibold", levelColors[level])}>
+            {level}
+          </span>
+          <span className="text-muted-foreground font-mono text-xs">
+            {bestRatio.toFixed(2)}:1
+          </span>
         </div>
       </div>
     </div>

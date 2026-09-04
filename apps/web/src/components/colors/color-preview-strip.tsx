@@ -13,11 +13,18 @@ type ColorPreviewStripProps = {
  * strings and re-parsed them, which round-tripped every color through a
  * serializer and a parser for no gain.
  */
-export default function ColorPreviewStrip({ colors, mode }: ColorPreviewStripProps) {
+export default function ColorPreviewStrip({
+  colors,
+  mode,
+}: ColorPreviewStripProps) {
   const [base] = colors
 
   if (!base) {
-    return <div className="text-sm text-muted-foreground">No valid colors provided.</div>
+    return (
+      <div className="text-muted-foreground text-sm">
+        No valid colors provided.
+      </div>
+    )
   }
 
   // `deriveScaleCss` returns CSS strings; `deriveScale` returns Oklch objects
@@ -25,7 +32,7 @@ export default function ColorPreviewStrip({ colors, mode }: ColorPreviewStripPro
   const scale = deriveScaleCss(base, mode)
 
   return (
-    <div className="flex gap-0.5 rounded-lg overflow-hidden h-6">
+    <div className="flex h-6 gap-0.5 overflow-hidden rounded-lg">
       {SCALE_STEPS.map((step) => {
         const shade = scale[String(step)]
         return (

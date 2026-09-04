@@ -1,13 +1,24 @@
 "use client"
 
 import * as React from "react"
+import dynamic from "next/dynamic"
 
-import { CirclePicker, AlphaPicker, BlockPicker, HuePicker, SwatchesPicker, ColorResult, ChromePicker, CompactPicker, GithubPicker, SketchPicker } from "react-color"
+import { ColorResult } from "react-color"
 import { useClickOutside } from "@/hooks/use-click-outside"
-import { isValidOklch } from "@repo/domain-theme";
-import { oklchToRgbaObj, rgbaObjToOklchStr, type Rgba } from "../lib/rgba-oklch";
+import { toRgb, isValidOklch, converter } from "@repo/domain-theme"
+import {
+  oklchToRgbaObj,
+  rgbaObjToOklchStr,
+  type Rgba,
+} from "../../../lib/rgba-oklch"
 // import { HarmonyPicker } from "@repo/ui-theme";
 
+const SketchPicker = dynamic(
+  () => import("react-color").then((mod) => ({ default: mod.SketchPicker })),
+  {
+    ssr: false,
+  }
+)
 
 type ColorPickerProps = {
   color: string
@@ -19,17 +30,16 @@ export function ColorPicker({ color, onChange, label }: ColorPickerProps) {
   const popoverRef = React.useRef<HTMLElement | null>(null)
   const [isOpen, setIsOpen] = React.useState(false)
   const [textInput, setTextInput] = React.useState(color)
-
-  const onPickerChange = (color: ColorResult) => onDynamicPickerChange({
-    r: color.rgb.r,
-    g: color.rgb.g,
-    b: color.rgb.b,
-    alpha: color.rgb.a ?? 1,
-  })
-
+  const onPickerChange = (color: ColorResult) =>
+    onDynamicPickerChange({
+      r: color.rgb.r,
+      g: color.rgb.g,
+      b: color.rgb.b,
+      a: color.rgb.a ?? 1,
+    })
 
   React.useEffect(() => {
-    if (!isValidOklch(color)) return;
+    if (!isValidOklch(color)) return
   }, [color])
 
   const close = React.useCallback(() => {
@@ -37,11 +47,13 @@ export function ColorPicker({ color, onChange, label }: ColorPickerProps) {
   }, [])
 
   const rgbaColor = React.useMemo(() => {
-    return oklchToRgbaObj(color)
+    const okColor = isValidOklch(color) ? color : "oklch(0.64 0.14 250)"
+    const oklchColor = converter("oklch")(okColor)
+    return oklchColor ? toRgb(oklchColor) : { r: 1, g: 1, b: 1, a: 1 }
   }, [color])
 
   const commitTextInput = React.useCallback(() => {
-    if (isValidOklch(textInput)) {
+    if (textInput) {
       onChange(rgbaObjToOklchStr(oklchToRgbaObj(textInput)))
       return
     }
@@ -53,7 +65,7 @@ export function ColorPicker({ color, onChange, label }: ColorPickerProps) {
     (nextRgba: Rgba) => {
       onChange(rgbaObjToOklchStr(nextRgba))
     },
-    [onChange],
+    [onChange]
   )
 
   useClickOutside(popoverRef, close, {
@@ -64,29 +76,28 @@ export function ColorPicker({ color, onChange, label }: ColorPickerProps) {
 
   return (
     <div className="relative">
-      {/* <button
+      <button
         type="button"
         aria-label="Open color picker"
-        className="h-8 w-8 cursor-pointer rounded border border-border hover:shadow-sm"
+        className="border-border h-8 w-8 cursor-pointer rounded border hover:shadow-sm"
         style={{ backgroundColor: color }}
         onClick={() => setIsOpen(true)}
-      /> */}
+      />
       <div className="flex gap-4">
-
         {/* <ColorPicker color={rgbaColor} onChange={onPickerChange} /> */}
         <SketchPicker color={rgbaColor} onChange={onPickerChange} />
       </div>
       {isOpen && (
         <div
           ref={popoverRef as React.RefObject<HTMLDivElement>}
-          className="absolute top-full left-0 z-50 mt-2 rounded-sm border border-border bg-popover p-3 shadow-sm"
+          className="border-border bg-popover absolute top-full left-0 z-50 mt-2 rounded-sm border p-3 shadow-sm"
         >
           <label className="mt-3 block space-y-1.5">
-            <span className="text-xs font-medium text-muted-foreground">
+            <span className="text-muted-foreground text-xs font-medium">
               {label ?? "Primary Color (OKLCH)"}
             </span>
             <input
-              className="h-10 w-full rounded-md border bg-background px-3 font-mono text-sm"
+              className="bg-background h-10 w-full rounded-md border px-3 font-mono text-sm"
               value={textInput}
               onChange={(event) => setTextInput(event.target.value)}
               onBlur={commitTextInput}
@@ -103,7 +114,7 @@ export function ColorPicker({ color, onChange, label }: ColorPickerProps) {
               }}
             />
             {!textInputIsValid ? (
-              <p className="text-xs text-destructive">Use valid OKLCH.</p>
+              <p className="text-destructive text-xs">Use valid OKLCH.</p>
             ) : null}
           </label>
         </div>

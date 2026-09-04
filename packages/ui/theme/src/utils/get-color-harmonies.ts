@@ -1,8 +1,21 @@
-import { clampH, type Oklch, type ColorHarmony } from "@repo/domain-theme/color"
+import {
+  generateHarmony,
+  HARMONY_HUE_OFFSETS,
+  type Oklch,
+  type ColorHarmony,
+} from "@repo/domain-theme/color"
 
 /**
  * Named hue-rotation sets for color harmony generation.
  * Used for color picker preview and harmony visualization.
+ *
+ * Delegates to the domain's single `generateHarmony` (see
+ * packages/domain/theme/src/color/harmony.ts) rather than rotating hues
+ * independently — this module and `shade-generation.tsx::getHarmonies` used
+ * to implement divergent, non-gamut-fit geometry (finding #5/#12 in the
+ * color-system repair). The seed's own hue (offset 0) is left out of
+ * `colors`, matching this function's existing shipped contract — callers
+ * already render the seed itself separately.
  */
 export interface ColorHarmonyResult {
   type: ColorHarmony
@@ -11,64 +24,58 @@ export interface ColorHarmonyResult {
   colors: Oklch[]
 }
 
-export function getColorHarmonies(base: Oklch): ColorHarmonyResult[] {
-  const hue = (deg: number) => clampH(base.h + deg)
+function colorsExcludingSeed(
+  base: Oklch,
+  type: Exclude<ColorHarmony, "monochromatic">
+): Oklch[] {
+  const offsets = HARMONY_HUE_OFFSETS[type]
+  const colors = generateHarmony(base, type)
+  return offsets
+    .map((offset, i) => ({ offset, color: colors[i]! }))
+    .filter((entry) => entry.offset !== 0)
+    .map((entry) => entry.color)
+}
 
+export function getColorHarmonies(base: Oklch): ColorHarmonyResult[] {
   return [
     {
       type: "complementary",
       name: "Complementary",
       description: "Opposite on the wheel — high contrast pair",
-      colors: [{ ...base, h: hue(180) }],
+      colors: colorsExcludingSeed(base, "complementary"),
     },
     {
       type: "analogous",
       name: "Analogous",
       description: "Adjacent hues — harmonious and cohesive",
-      colors: [
-        { ...base, h: hue(30) },
-        { ...base, h: hue(-30) },
-      ],
+      // Existing shipped contract: [+30, -30] order (positive offset first).
+      colors: [...colorsExcludingSeed(base, "analogous")].reverse(),
     },
     {
       type: "triadic",
       name: "Triadic",
       description: "Three hues evenly spaced — vibrant and balanced",
-      colors: [
-        { ...base, h: hue(120) },
-        { ...base, h: hue(240) },
-      ],
+      colors: colorsExcludingSeed(base, "triadic"),
     },
     {
       type: "split-complementary",
       name: "Split Complement",
       description: "Complement split — less tension, more variety",
-      colors: [
-        { ...base, h: hue(150) },
-        { ...base, h: hue(210) },
-      ],
+      colors: colorsExcludingSeed(base, "split-complementary"),
     },
     {
       // Square: four hues at even 90° intervals.
       type: "tetradic",
       name: "Tetradic",
       description: "Four hues at 90° intervals — rich and evenly spaced",
-      colors: [
-        { ...base, h: hue(90) },
-        { ...base, h: hue(180) },
-        { ...base, h: hue(270) },
-      ],
+      colors: colorsExcludingSeed(base, "tetradic"),
     },
     {
       // Rectangle: two complementary pairs, offset so one axis stays dominant.
       type: "rectangle",
       name: "Rectangle",
       description: "Two complementary pairs — complex but balanced",
-      colors: [
-        { ...base, h: hue(60) },
-        { ...base, h: hue(180) },
-        { ...base, h: hue(240) },
-      ],
+      colors: colorsExcludingSeed(base, "rectangle"),
     },
   ]
 }

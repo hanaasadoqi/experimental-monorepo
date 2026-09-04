@@ -13,7 +13,8 @@ import {
   oklchToCss,
   oklchToHex,
   oklchToRgb,
-  parseColorInput,
+  parseHexToOklch,
+  parseOklchString,
   parseRgbStringToOklch,
   rgbColorSchema,
   type RgbObject,
@@ -116,6 +117,14 @@ function normalizeOptions(
  *
  * Every derived value (`hex`, `css`, `rgb`, `rgbCss`, `shades`) is always
  * defined, whether or not a color was ever set.
+ *
+ * Picker components that support an optional external `colorState` prop
+ * (`TabsOklchPicker`, `OklchPicker`, `CompactOklchPicker`) still call this
+ * hook unconditionally and pick `colorState ?? ownState` — React's rules of
+ * hooks mean it can't be called conditionally, so `ownState` runs its full
+ * memos/effects/text-field state every render even when discarded in favor
+ * of an externally-provided instance. That's an inherent cost of this
+ * controlled/uncontrolled hybrid pattern, not a bug to fix.
  */
 export function useOklchColor(
   initialOrOptions?: Oklch | UseOklchColorOptions
@@ -134,6 +143,13 @@ export function useOklchColor(
     () => (inGamut ? color : fitToGamut(color)),
     [color, inGamut]
   )
+  // hex/rgb are gamut-bound formats — they can't represent an out-of-gamut
+  // color at all, so they always derive from the fitted `displayColor`.
+  // `css` deliberately derives from the raw `color` instead: oklch() has no
+  // such restriction, browsers gamut-map it themselves at paint time, and
+  // it's the one field where a user should see exactly what they entered
+  // (including something out of sRGB) rather than a silently-adjusted
+  // value. This is an intentional asymmetry, not an oversight.
   const hex = useMemo(() => oklchToHex(displayColor), [displayColor])
   const rgb = useMemo(() => oklchToRgb(displayColor), [displayColor])
   const rgbCss = useMemo(() => rgbToCss(rgb), [rgb])
@@ -180,7 +196,11 @@ export function useOklchColor(
   if (!rgbFocused.current && rgbText !== rgbCss) setRgbText(rgbCss)
 
   function commitHex() {
-    const parsed = parseColorInput(hexText)
+    // Format-scoped: the hex field commits only real hex input, matching
+    // `commitRgb`'s pattern (previously used the generic `parseColorInput`,
+    // which also accepts oklch()/rgb()/bare-triplet input — so typing e.g.
+    // "rgb(255,0,0)" into the hex field silently succeeded).
+    const parsed = parseHexToOklch(hexText)
     if (parsed) {
       setColor(parsed)
       return
@@ -190,7 +210,8 @@ export function useOklchColor(
   }
 
   function commitCss() {
-    const parsed = parseColorInput(cssText)
+    // Format-scoped: only real oklch() CSS syntax (see commitHex).
+    const parsed = parseOklchString(cssText)
     if (parsed) {
       setColor(parsed)
       return

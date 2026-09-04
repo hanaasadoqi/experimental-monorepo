@@ -12,7 +12,7 @@ export const ThumbIndicator = ({ position, color }: ThumbIndicatorProps) => {
 
   return (
     <div
-      className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-white shadow-md pointer-events-none"
+      className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-white shadow-md"
       style={{
         left: `calc(${clamped * 100}% - 8px)`,
         backgroundColor: color,

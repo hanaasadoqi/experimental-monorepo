@@ -1,26 +1,26 @@
-"use client";
+"use client"
 
-import React from "react";
+import React from "react"
 
 export const useClickOutside = (
   ref: React.RefObject<HTMLElement | null>,
   onClickOutside: () => void,
   options?: { enabled?: boolean }
 ) => {
-  const { enabled = true } = options || {};
+  const { enabled = true } = options || {}
 
   React.useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) return
 
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
-        onClickOutside();
+        onClickOutside()
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [ref, onClickOutside, enabled]);
-};
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [ref, onClickOutside, enabled])
+}

@@ -115,7 +115,7 @@ describe("createThemeScopeStore", () => {
     const storage = new MemoryStorage()
     const store = createThemeScopeStore({
       scopeId: "inherit-mode",
-      initialDarkMode: undefined,
+      darkModeEnabled: undefined,
       storage,
     })
 

@@ -13,13 +13,13 @@ import type { OklchColor } from "@repo/domain-theme/colors"
 
 export default function ComponentsTestPage() {
   const [primaryColor, _setPrimaryColor] = useState<OklchColor>({
-    l: 55,
+    l: 0.55,
     c: 0.15,
     h: 250,
   })
 
   const [accentColor, _setAccentColor] = useState<OklchColor | undefined>({
-    l: 55,
+    l: 0.55,
     c: 0.15,
     h: 30,
   })

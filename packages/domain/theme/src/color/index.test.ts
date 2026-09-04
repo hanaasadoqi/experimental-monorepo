@@ -1,13 +1,13 @@
-import { parseOklch } from "culori"
 import { describe, expect, it } from "vitest"
 import {
   calculateContrastRatio,
   contrastRatio,
   meetsContrastRequirement,
 } from "./accessibility"
+import { parseOklch } from "./parse"
 import { luminance, luminanceFromOklch, tryLuminance } from "./luminance"
 import { CONTRAST_THRESHOLDS } from "./constants"
-import { assertOklch, validateOklch } from "./parse"
+import { assertOklch } from "./parse"
 import {
   LMS_TO_RGB_MATRIX,
   OKLCH_TO_LMS_COEFFICIENTS,
@@ -18,19 +18,25 @@ import {
 } from "./transforms"
 
 describe("colors barrel export", () => {
-  it("exports parseOklch", () => {
+  it("exports this package's own parseOklch (regression: finding #8)", () => {
+    // Was previously imported from "culori" directly, so this only ever
+    // verified culori's own export existed. This package's `parseOklch` is
+    // an alias for `parseOklchStringToComponents` — its distinguishing
+    // feature is returning {lightness,chroma,hue} with hue in RADIANS, a
+    // shape culori's own (degrees, {mode,l,c,h}) parseOklch does not produce.
     expect(parseOklch).toBeDefined()
     expect(typeof parseOklch).toBe("function")
+    const result = parseOklch("oklch(50% 0.2 180)")
+    expect(result).toEqual({
+      lightness: 0.5,
+      chroma: 0.2,
+      hue: expect.closeTo(Math.PI, 5),
+    })
   })
 
   it("exports assertOklch", () => {
     expect(assertOklch).toBeDefined()
     expect(typeof assertOklch).toBe("function")
-  })
-
-  it("exports validateOklch", () => {
-    expect(validateOklch).toBeDefined()
-    expect(typeof validateOklch).toBe("function")
   })
 
   it("exports transformOklchToLMS", () => {

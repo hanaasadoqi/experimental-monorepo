@@ -1,7 +1,12 @@
 "use client"
 
-import type { OklchColor } from "@repo/domain-theme";
-import { getContrastRatio, getWcagLevel } from "../../utils/shade-generation";
+import type { OklchColor } from "@repo/domain-theme"
+import {
+  autoForeground,
+  getContrastRatio,
+  getWcagLevel,
+  toCss,
+} from "../../utils/shade-generation"
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface ContrastIndicatorProps {
@@ -9,13 +14,8 @@ export interface ContrastIndicatorProps {
 }
 
 export function ContrastIndicator({ color }: ContrastIndicatorProps) {
-  const white: OklchColor = { l: 0.97, c: 0, h: 0 }
-  const black: OklchColor = { l: 0.1, c: 0, h: 0 }
-
-  const whiteContrast = getContrastRatio(white, color)
-  const blackContrast = getContrastRatio(black, color)
-  const bestFg = whiteContrast >= blackContrast ? white : black
-  const bestRatio = Math.max(whiteContrast, blackContrast)
+  const bestFg = autoForeground(color)
+  const bestRatio = getContrastRatio(bestFg, color)
   const level = getWcagLevel(bestRatio)
 
   const levelColors: Record<string, string> = {
@@ -24,8 +24,8 @@ export function ContrastIndicator({ color }: ContrastIndicatorProps) {
     Fail: "text-red-500",
   }
 
-  const colorCss = `oklch(${color.l.toFixed(2)}% ${color.c.toFixed(4)} ${color.h.toFixed(1)})`
-  const fgCss = `oklch(${bestFg.l.toFixed(2)}% ${bestFg.c.toFixed(4)} ${bestFg.h.toFixed(1)})`
+  const colorCss = toCss(color)
+  const fgCss = toCss(bestFg)
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-border">

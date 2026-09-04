@@ -5,6 +5,11 @@ declare module "culori" {
     l: number
     c: number
     h: number
+    // culori's real alpha channel is named `alpha`, not `a` — this was `a?`
+    // and disagreed with @repo/domain-theme/color's convert.ts (which
+    // correctly targets culori's real shape), producing
+    // "Property 'alpha' does not exist" once that fix landed. See
+    // .archives/apps-web/2026-09-04-culori-ambient-override/ARCHIVE.md.
     alpha?: number
   }
 

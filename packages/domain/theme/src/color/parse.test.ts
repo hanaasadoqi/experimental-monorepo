@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest"
-import { parseOklch, assertOklch, validateOklch } from "./parse"
+import {
+  parseOklch,
+  assertOklch,
+  validateOklch,
+  parseOklchString,
+  parseRgbStringToOklch,
+  parseColorInput,
+} from "./parse"
 
 describe("parseOklch", () => {
   describe("valid formats", () => {
@@ -95,6 +102,72 @@ describe("parseOklch", () => {
     it("returns null for text without oklch prefix", () => {
       expect(parseOklch("50% 0.2 120")).toBeNull()
     })
+
+    it("returns null for malformed decimal with multiple dots (regression: finding #4a)", () => {
+      // "1.2.3" matches the permissive [\d.]+ char class but Number("1.2.3")
+      // is NaN — must be rejected explicitly, not passed through as NaN.
+      expect(parseOklch("oklch(1.2.3 0.1 120)")).toBeNull()
+    })
+  })
+})
+
+describe("parseOklchString (regression: finding #4a)", () => {
+  it("rejects malformed multi-dot numeric lightness instead of returning NaN", () => {
+    expect(parseOklchString("oklch(1.2.3 0.1 120)")).toBeNull()
+  })
+
+  it("rejects malformed multi-dot chroma", () => {
+    expect(parseOklchString("oklch(50% 0.1.2 120)")).toBeNull()
+  })
+
+  it("still parses valid decimals", () => {
+    expect(parseOklchString("oklch(50% 0.15 120)")).toEqual({
+      l: 0.5,
+      c: 0.15,
+      h: 120,
+    })
+  })
+})
+
+describe("parseRgbStringToOklch (regression: finding #4b)", () => {
+  it("rejects trailing garbage after a valid rgb() call", () => {
+    expect(parseRgbStringToOklch("rgb(255, 0, 0) garbage")).toBeNull()
+  })
+
+  it("rejects leading garbage before a valid rgb() call", () => {
+    expect(parseRgbStringToOklch("garbage rgb(255, 0, 0)")).toBeNull()
+  })
+
+  it("still parses a valid rgb() string", () => {
+    const result = parseRgbStringToOklch("rgb(255, 0, 0)")
+    expect(result).not.toBeNull()
+    expect(result?.h).toBeCloseTo(29.23, 1)
+  })
+})
+
+describe("parseColorInput bare triplet (regression: run-2 finding #3)", () => {
+  it("rejects a trailing extra token instead of ignoring it", () => {
+    expect(parseColorInput("0.5 0.1 30 trailing")).toBeNull()
+  })
+
+  it("rejects a malformed multi-dot hue instead of parsing its numeric prefix", () => {
+    // Number.parseFloat("30.2.3") === 30.2 — a naive parseFloat call
+    // silently accepts the prefix instead of rejecting the whole token.
+    expect(parseColorInput("0.5 0.1 30.2.3")).toBeNull()
+  })
+
+  it("rejects Infinity", () => {
+    expect(parseColorInput("Infinity 0.1 30")).toBeNull()
+  })
+
+  it("still parses a valid bare triplet", () => {
+    const result = parseColorInput("0.5 0.15 120")
+    expect(result).toEqual({ l: 0.5, c: 0.15, h: 120 })
+  })
+
+  it("still parses a valid bare triplet with a percentage lightness", () => {
+    const result = parseColorInput("50% 0.15 120")
+    expect(result).toEqual({ l: 0.5, c: 0.15, h: 120 })
   })
 })
 
