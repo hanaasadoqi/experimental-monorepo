@@ -9,11 +9,90 @@ import {
   toCss,
   useOklchColor,
 } from "@repo/ui-theme"
-import { useState } from "react"
+import { memo, useCallback, useState } from "react"
 import { HuePresetGrid } from "./hue-preset-grid"
 
 import { ContrastIndicator } from "../colors/contrast-indicator"
 import { useResolvedAppearance } from "@/hooks"
+
+// ─── Color Dot (memoized) ────────────────────────────────────────────────────
+
+type ColorDotProps = {
+  color: Oklch
+  onSelect: (e: React.MouseEvent) => void
+  harmonyName: string
+  index: number
+}
+
+const ColorDot = memo(function ColorDot({
+  color,
+  onSelect,
+  harmonyName,
+  index,
+}: ColorDotProps) {
+  return (
+    <button
+      type="button"
+      className="h-5 w-5 rounded-full border border-white/20 shadow-sm transition-transform hover:scale-110"
+      style={{ backgroundColor: toCss(color) }}
+      onClick={onSelect}
+      title={`Use ${harmonyName} color ${index + 1}`}
+    />
+  )
+})
+
+// ─── Harmony Option (memoized) ────────────────────────────────────────────────
+
+type HarmonyOptionProps = {
+  harmony: ColorHarmonyResult
+  isSelected: boolean
+  onToggle: (harmony: ColorHarmonyResult) => void
+  onColorSelect: (harmony: ColorHarmonyResult, index: number) => (e: React.MouseEvent) => void
+}
+
+const HarmonyOption = memo(function HarmonyOption({
+  harmony,
+  isSelected,
+  onToggle,
+  onColorSelect,
+}: HarmonyOptionProps) {
+  return (
+    <div
+      className={cn(
+        "flex cursor-pointer items-center gap-3 rounded-lg border p-2.5 transition-all",
+        isSelected
+          ? "border-primary/60 bg-primary/5"
+          : "border-border hover:border-border/80 hover:bg-muted/40"
+      )}
+      onClick={() => onToggle(harmony)}
+    >
+      {/* Color dots */}
+      <div className="flex shrink-0 gap-1">
+        {harmony.colors.map((c, i) => (
+          <ColorDot
+            key={i}
+            color={c}
+            onSelect={onColorSelect(harmony, i)}
+            harmonyName={harmony.name}
+            index={i}
+          />
+        ))}
+      </div>
+      {/* Label */}
+      <div className="min-w-0 flex-1">
+        <p className="text-foreground text-xs font-medium">
+          {harmony.name}
+        </p>
+        <p className="text-muted-foreground truncate text-[10px]">
+          {harmony.description}
+        </p>
+      </div>
+      {isSelected && (
+        <div className="bg-primary h-2 w-2 shrink-0 rounded-full" />
+      )}
+    </div>
+  )
+})
 
 // ─── Harmony Picker ──────────────────────────────────────────────────────────
 
@@ -34,6 +113,32 @@ function HarmonyPicker({
   clearAccent,
   setHarmonyType,
 }: HarmonyPickerProps) {
+  const handleClear = useCallback(() => {
+    clearAccent()
+  }, [clearAccent])
+
+  const handleHarmonyToggle = useCallback(
+    (harmony: ColorHarmonyResult) => {
+      if (harmonyType === harmony.type) {
+        clearAccent()
+        setHarmonyType(null)
+      } else {
+        setAccentFromHarmony(harmony, 0)
+        setHarmonyType(harmony.type)
+      }
+    },
+    [harmonyType, clearAccent, setHarmonyType, setAccentFromHarmony]
+  )
+
+  const handleColorSelect = useCallback(
+    (harmony: ColorHarmonyResult, index: number) => (e: React.MouseEvent) => {
+      e.stopPropagation()
+      setAccentFromHarmony(harmony, index)
+      setHarmonyType(harmony.type)
+    },
+    [setAccentFromHarmony, setHarmonyType]
+  )
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -43,7 +148,7 @@ function HarmonyPicker({
         {accent && (
           <button
             type="button"
-            onClick={() => clearAccent()}
+            onClick={handleClear}
             className="text-muted-foreground hover:text-foreground text-[10px] transition-colors"
           >
             Clear
@@ -51,55 +156,15 @@ function HarmonyPicker({
         )}
       </div>
       <div className="space-y-1.5">
-        {harmonies.map((harmony) => {
-          const isSelected = harmonyType === harmony.type
-          return (
-            <div
-              key={harmony.type}
-              className={cn(
-                "flex cursor-pointer items-center gap-3 rounded-lg border p-2.5 transition-all",
-                isSelected
-                  ? "border-primary/60 bg-primary/5"
-                  : "border-border hover:border-border/80 hover:bg-muted/40"
-              )}
-              onClick={() =>
-                isSelected
-                  ? (clearAccent(), setHarmonyType(null))
-                  : (setAccentFromHarmony(harmony, 0),
-                    setHarmonyType(harmony.type))
-              }
-            >
-              {/* Color dots */}
-              <div className="flex shrink-0 gap-1">
-                {harmony.colors.map((c, i) => (
-                  <button
-                    type="button"
-                    key={i}
-                    className="h-5 w-5 rounded-full border border-white/20 shadow-sm transition-transform hover:scale-110"
-                    style={{ backgroundColor: toCss(c) }}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setAccentFromHarmony(harmony, i)
-                    }}
-                    title={`Use ${harmony.name} color ${i + 1}`}
-                  />
-                ))}
-              </div>
-              {/* Label */}
-              <div className="min-w-0 flex-1">
-                <p className="text-foreground text-xs font-medium">
-                  {harmony.name}
-                </p>
-                <p className="text-muted-foreground truncate text-[10px]">
-                  {harmony.description}
-                </p>
-              </div>
-              {isSelected && (
-                <div className="bg-primary h-2 w-2 shrink-0 rounded-full" />
-              )}
-            </div>
-          )
-        })}
+        {harmonies.map((harmony) => (
+          <HarmonyOption
+            key={harmony.type}
+            harmony={harmony}
+            isSelected={harmonyType === harmony.type}
+            onToggle={handleHarmonyToggle}
+            onColorSelect={handleColorSelect}
+          />
+        ))}
       </div>
     </div>
   )

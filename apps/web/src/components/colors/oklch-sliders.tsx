@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import { toCss } from "@repo/ui-theme"
 import type { Oklch } from "@repo/domain-theme"
 import { ThumbIndicator } from "../thumb-indicator"
@@ -23,18 +24,19 @@ export function OklchSliders({
   const { h, c, l } = color
   const clampedL = Math.min(lightnessMax, Math.max(lightnessMin, l))
 
-  // Build hue gradient background from the current chroma/lightness
-  const hueGradientStops = [
-    0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360,
-  ]
-    .map((deg) => toCss({ l, c: Math.max(c, 0.12), h: deg }))
-    .join(", ")
+  const hueGradientStops = useMemo(() => {
+    return [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
+      .map((deg) => toCss({ l, c: Math.max(c, 0.12), h: deg }))
+      .join(", ")
+  }, [l, c])
 
-  // Build chroma gradient (gray → saturated at current hue/lightness)
-  const chromaGradient = `${toCss({ l, c: 0, h })}, ${toCss({ l, c: 0.4, h })}`
+  const chromaGradient = useMemo(() => {
+    return `${toCss({ l, c: 0, h })}, ${toCss({ l, c: 0.4, h })}`
+  }, [l, h])
 
-  // Build lightness gradient (clamped range at current hue/chroma)
-  const lightnessGradient = `${toCss({ l: lightnessMin, c: Math.min(c, 0.08), h })}, ${toCss({ l: (lightnessMin + lightnessMax) / 2, c, h })}, ${toCss({ l: lightnessMax, c: Math.min(c, 0.06), h })}`
+  const lightnessGradient = useMemo(() => {
+    return `${toCss({ l: lightnessMin, c: Math.min(c, 0.08), h })}, ${toCss({ l: (lightnessMin + lightnessMax) / 2, c, h })}, ${toCss({ l: lightnessMax, c: Math.min(c, 0.06), h })}`
+  }, [lightnessMin, lightnessMax, c, h])
 
   return (
     <div className="space-y-5">
