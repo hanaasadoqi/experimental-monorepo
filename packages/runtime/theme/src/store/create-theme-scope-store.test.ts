@@ -27,7 +27,7 @@ describe("createThemeScopeStore", () => {
       JSON.parse(storage.getItem(getThemeScopeStorageKey("preview"))!)
     ).toEqual({
       state: { overrides: { primaryColor: "#445566" } },
-      version: 1,
+      version: 2,
     })
   })
 
@@ -63,5 +63,65 @@ describe("createThemeScopeStore", () => {
 
     expect(store.getState().overrides).toEqual({ primaryColor: "#abcdef" })
     expect(store.getState()).not.toHaveProperty("resolvedAppearance")
+  })
+
+  it("supports scoped dark mode overrides", () => {
+    const store = createThemeScopeStore({ scopeId: "dark-override" })
+
+    expect(store.getState().isDarkModeEnabled).toBeUndefined()
+
+    store.getState().setDarkMode(true)
+    expect(store.getState().isDarkModeEnabled).toBe(true)
+
+    store.getState().setDarkMode(false)
+    expect(store.getState().isDarkModeEnabled).toBe(false)
+
+    store.getState().setDarkMode(undefined)
+    expect(store.getState().isDarkModeEnabled).toBeUndefined()
+  })
+
+  it("persists dark mode state separately from overrides", async () => {
+    const storage = new MemoryStorage()
+    const store = createThemeScopeStore({
+      scopeId: "dark-override",
+      storage,
+    })
+
+    store.getState().setPrimaryColor("#112233")
+    store.getState().setDarkMode(true)
+
+    expect(
+      JSON.parse(storage.getItem(getThemeScopeStorageKey("dark-override"))!)
+    ).toEqual({
+      state: { overrides: { primaryColor: "#112233" }, isDarkModeEnabled: true },
+      version: 2,
+    })
+  })
+
+  it("restores both overrides and dark mode after rehydration", async () => {
+    const storage = new MemoryStorage()
+    const first = createThemeScopeStore({ scopeId: "dark-override", storage })
+    first.getState().setPrimaryColor("#445566")
+    first.getState().setDarkMode(true)
+
+    const restored = createThemeScopeStore({ scopeId: "dark-override", storage })
+    await restored.persist.rehydrate()
+
+    expect(restored.getState().overrides).toEqual({ primaryColor: "#445566" })
+    expect(restored.getState().isDarkModeEnabled).toBe(true)
+  })
+
+  it("handles undefined dark mode (inherits from root) on restore", async () => {
+    const storage = new MemoryStorage()
+    const store = createThemeScopeStore({
+      scopeId: "inherit-mode",
+      initialDarkMode: undefined,
+      storage,
+    })
+
+    store.getState().setDarkMode(undefined)
+    await store.persist.rehydrate()
+
+    expect(store.getState().isDarkModeEnabled).toBeUndefined()
   })
 })

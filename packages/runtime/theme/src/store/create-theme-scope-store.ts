@@ -31,12 +31,23 @@ function readPersistedOverrides(value: unknown): ThemeOverrides | undefined {
     : undefined
 }
 
+function readPersistedDarkMode(value: unknown): boolean | undefined {
+  if (typeof value !== "object" || value === null || !("isDarkModeEnabled" in value)) {
+    return undefined
+  }
+
+  const isDarkModeEnabled = value.isDarkModeEnabled
+  return typeof isDarkModeEnabled === "boolean" ? isDarkModeEnabled : undefined
+}
+
 export interface ThemeScopeState {
   overrides: ThemeOverrides
+  isDarkModeEnabled?: boolean
 }
 
 export interface ThemeScopeActions {
   setPrimaryColor: (primaryColor: string) => void
+  setDarkMode: (isDarkMode: boolean | undefined) => void
 }
 
 export type ThemeScopeStore = ThemeScopeState & ThemeScopeActions
@@ -49,31 +60,41 @@ export type ThemeScopeStoreApi = Mutate<
 export interface CreateThemeScopeStoreOptions {
   scopeId: string
   initialOverrides?: ThemeOverrides
+  initialDarkMode?: boolean
   storage?: StateStorage
 }
 
 export function createThemeScopeStore({
   scopeId,
   initialOverrides = {},
+  initialDarkMode,
   storage,
 }: CreateThemeScopeStoreOptions): ThemeScopeStoreApi {
   return createStore<ThemeScopeStore>()(
     persist<ThemeScopeStore, [], [], ThemeScopeState>(
       (set) => ({
         overrides: initialOverrides,
+        isDarkModeEnabled: initialDarkMode,
         setPrimaryColor: (primaryColor) => {
           set((state) => ({
             overrides: { ...state.overrides, primaryColor },
           }))
         },
+        setDarkMode: (isDarkMode) => {
+          set({ isDarkModeEnabled: isDarkMode })
+        },
       }),
       {
         name: getThemeScopeStorageKey(scopeId),
-        version: 1,
+        version: 2,
         storage: createJSONStorage(() => storage ?? localStorage),
-        partialize: ({ overrides }) => ({ overrides }),
+        partialize: ({ overrides, isDarkModeEnabled }) => ({
+          overrides,
+          ...(isDarkModeEnabled !== undefined && { isDarkModeEnabled }),
+        }),
         merge: (persistedState, currentState) => {
           const persistedOverrides = readPersistedOverrides(persistedState)
+          const persistedDarkMode = readPersistedDarkMode(persistedState)
 
           return {
             ...currentState,
@@ -81,6 +102,10 @@ export function createThemeScopeStore({
               persistedOverrides === undefined
                 ? currentState.overrides
                 : { ...currentState.overrides, ...persistedOverrides },
+            isDarkModeEnabled:
+              persistedDarkMode === undefined
+                ? currentState.isDarkModeEnabled
+                : persistedDarkMode,
           }
         },
         skipHydration: true,

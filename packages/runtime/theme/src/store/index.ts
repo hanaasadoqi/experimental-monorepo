@@ -10,3 +10,9 @@ export type {
   ThemeScopeStore,
   ThemeScopeStoreApi,
 } from "./create-theme-scope-store"
+export {
+  useThemeStore,
+  type ThemeState,
+  type ThemeActions,
+  type ThemeStore,
+} from "./create-theme-store"
