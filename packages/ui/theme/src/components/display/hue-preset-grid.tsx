@@ -1,7 +1,7 @@
 "use client"
 
 import type { OklchColor } from "@repo/domain-theme";
-import { HUE_PRESETS } from "../shade-generation";
+import { HUE_PRESETS, toCss } from "../../utils/shade-generation";
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface HuePresetGridProps {
@@ -18,9 +18,8 @@ export function HuePresetGrid({ color, onColorSelect }: HuePresetGridProps) {
     )
   }
 
-  const getPresetCss = (preset: (typeof HUE_PRESETS)[0]) => {
-    return `oklch(${preset.l.toFixed(2)}% ${preset.c.toFixed(4)} ${preset.h.toFixed(1)})`
-  }
+  const getPresetCss = (preset: (typeof HUE_PRESETS)[0]) =>
+    toCss({ l: preset.l, c: preset.c, h: preset.h })
 
   return (
     <div className="space-y-3">

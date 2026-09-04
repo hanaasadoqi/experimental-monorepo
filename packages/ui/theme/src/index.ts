@@ -1,3 +1,8 @@
 export * from "./components"
 export * from "./hooks"
 export * from "./preview"
+export * from "./utils/build-channel-gradient"
+export * from "./utils/get-color-harmonies"
+export * from "./utils/shade-generation"
+export * from "./hooks/use-oklch-color"
+

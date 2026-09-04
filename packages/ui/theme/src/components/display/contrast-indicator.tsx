@@ -1,7 +1,7 @@
 "use client"
 
 import type { OklchColor } from "@repo/domain-theme";
-import { getContrastRatio, getWcagLevel } from "../shade-generation";
+import { getContrastRatio, getWcagLevel } from "../../utils/shade-generation";
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface ContrastIndicatorProps {
@@ -9,8 +9,8 @@ export interface ContrastIndicatorProps {
 }
 
 export function ContrastIndicator({ color }: ContrastIndicatorProps) {
-  const white: OklchColor = { l: 97, c: 0, h: 0 }
-  const black: OklchColor = { l: 10, c: 0, h: 0 }
+  const white: OklchColor = { l: 0.97, c: 0, h: 0 }
+  const black: OklchColor = { l: 0.1, c: 0, h: 0 }
 
   const whiteContrast = getContrastRatio(white, color)
   const blackContrast = getContrastRatio(black, color)

@@ -1,7 +1,7 @@
 "use client"
 
 import type { OklchColor } from "@repo/domain-theme";
-import { getHarmonies, type ColorHarmony } from "../shade-generation";
+import { getHarmonies, type ColorHarmony } from "../../utils/shade-generation";
 import { cn } from "@repo/ui-components/lib/utils"
 
 export interface HarmonyPickerProps {
@@ -15,7 +15,7 @@ export function HarmonyPicker({
   accentColor,
   onAccentColorChange,
   onAccentClear,
-  primaryColor = { h: 0, c: 0.2, l: 55 },
+  primaryColor = { h: 0, c: 0.2, l: 0.55 },
 }: HarmonyPickerProps) {
   const harmonies = getHarmonies(primaryColor)
 
