@@ -35,6 +35,11 @@ export function ApplicationProviders({
 
   return (
     <ClientApplicationProvider>
+      {/*
+        Root scope doesn't specify getStorage because preference is the source of truth.
+        The cookie persists the preference; scope state is derived from it via RootScopeSync.
+        On reload: cookie → PreferencesProvider → RootScopeSync → ThemeScopeProvider.
+      */}
       <ThemeScopeProvider scopeId="root" {...scopeState}>
         <PreferencesProvider initialAppearance={initialAppearance}>
           <RootScopeSync />
