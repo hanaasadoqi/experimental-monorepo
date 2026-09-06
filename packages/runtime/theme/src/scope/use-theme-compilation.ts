@@ -5,6 +5,7 @@ import { compile } from "@repo/domain-theme/compiler"
 import type { ThemeCompilationInput } from "@repo/domain-theme/compiler"
 import { useThemeScope } from "./use-theme-scope"
 import { useThemeRegistry } from "../registry/theme-registry-context"
+import { ThemeDefinition } from "@repo/domain-theme";
 
 /**
  * Merge source theme with scope overrides to get the full theme for compilation.
@@ -12,7 +13,7 @@ import { useThemeRegistry } from "../registry/theme-registry-context"
  * Priority: overrides take precedence over source theme properties.
  * Returns the merged theme object ready for compile().
  */
-function mergeThemeWithOverrides(sourceTheme: any, overrides: any) {
+function mergeThemeWithOverrides(sourceTheme: ThemeDefinition, overrides: Partial<ThemeDefinition>): ThemeDefinition {
   return {
     ...sourceTheme,
     ...overrides,
@@ -40,17 +41,16 @@ export function useThemeCompilation() {
 
   // Merge source theme with scope overrides
   const mergedTheme = useMemo(() => {
-    return mergeThemeWithOverrides(sourceTheme || {}, overrides)
+    return mergeThemeWithOverrides(sourceTheme ?? {} as ThemeDefinition, overrides as Partial<ThemeDefinition>)
   }, [sourceTheme, overrides])
 
-  // Compile merged theme to CSS variables
   const compilationResult = useMemo(() => {
-    if (!mergedTheme.primary) {
+    if (!mergedTheme.colors.primary) {
       return null
     }
 
     const input: ThemeCompilationInput = {
-      primary: mergedTheme.primary,
+      primary: mergedTheme.colors.primary,
       isDarkMode: isDarkMode ?? false,
     }
 
@@ -68,7 +68,7 @@ export function useThemeCompilation() {
       console.warn(`[ThemeCompilation] Compilation error:`, error)
       return null
     }
-  }, [mergedTheme.primary, isDarkMode])
+  }, [mergedTheme.colors.primary, isDarkMode])
 
   return {
     cssVariables: compilationResult?.cssVariables,

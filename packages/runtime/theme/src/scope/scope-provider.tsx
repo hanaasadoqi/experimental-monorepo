@@ -4,69 +4,29 @@ import { createScopeStore, type CreateScopeStoreOptions } from "./scope-store"
 import { ScopeContext } from "./scope-context"
 import type { ResolvedAppearancePreference } from "@repo/domain-preferences"
 import type { Theme } from "@repo/shared-contracts"
-import {
-  useEffect,
-  useState,
-  useSyncExternalStore,
-  type ReactNode,
-} from "react"
-import { useThemeCompilation } from "..";
+import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react"
+import { useThemeCompilation } from ".."
 
 export interface ThemeScopeProviderProps {
-  /** Unique identifier for this scope */
   scopeId: string
-  /** Initial color overrides */
   initialOverrides?: CreateScopeStoreOptions["initialOverrides"]
-  /** Selected theme; its capability controls appearance-driven dark mode. */
   theme?: Pick<Theme, "enableDarkMode">
-  /** Concrete appearance used to initialize an enabled scope's mode. */
   resolvedAppearance?: ResolvedAppearancePreference
-  /** Keep this scope synchronized when resolved appearance changes. Root only. */
   followResolvedAppearance?: boolean
-  /** Injected environment adapter for applying the concrete appearance. */
   applyResolvedAppearance?: (appearance: ResolvedAppearancePreference) => void
-  /** Initial rendered state for a scope without a resolved appearance. */
   initialIsDarkMode?: CreateScopeStoreOptions["initialIsDarkMode"]
-  /** Adapter: how to persist overrides. Default: localStorage */
   onOverridesChange?: CreateScopeStoreOptions["persistOverrides"]
-  /** Adapter: how to persist dark mode. Default: localStorage */
   onDarkModeChange?: CreateScopeStoreOptions["persistDarkMode"]
-  /** Lazily injected environment storage. Omit for an in-memory scope. */
   getStorage?: CreateScopeStoreOptions["getStorage"]
   children: ReactNode
 }
 
 /**
- * Provider for scoped theme state and side effects.
+ * Scoped theme provider: manages theme state, compiles CSS variables, and applies to DOM.
  *
- * Handles:
- * - Creating isolated Zustand store per scopeId
- * - Rehydrating injected persisted state after hydration
- * - Coordinating with adapters for persistence
- * - Providing store to child components via context
- *
- * Usage:
- * ```tsx
- * <ThemeScopeProvider
- *   scopeId="preview"
- *   onOverridesChange={(o) => console.log("overrides changed", o)}
- *   onDarkModeChange={(d) => console.log("dark mode changed", d)}
- * >
- *   <ScopedThemeToggle />
- *   <PreviewContent />
- * </ThemeScopeProvider>
- * ```
- *
- * Pattern (from beste-ui):
- * 1. Store factory is called once at mount, creating a stable store instance
- * 2. Adapters (persistence, DOM sync) are passed as dependencies
- * 3. useEffect rehydrates persisted state explicitly (skipHydration: true)
- * 4. Store is provided via context (no direct .getState() in components)
- * 5. Components use useThemeScope hook (not context directly)
- *
- * This provider does not promise pre-paint local-storage restoration. A future
- * environment adapter may supply that behavior without duplicating runtime
- * state rules.
+ * Creates an isolated store per scope, rehydrates persisted state, compiles theme
+ * with overrides to CSS, and applies variables to the scope's DOM element.
+ * Syncs dark mode with system appearance preference if enabled.
  */
 export function ThemeScopeProvider({
   scopeId,
@@ -81,170 +41,107 @@ export function ThemeScopeProvider({
   getStorage,
   children,
 }: ThemeScopeProviderProps) {
-  const initializedIsDarkMode =
-    initialIsDarkMode ??
-    (theme?.enableDarkMode ? resolvedAppearance === "dark" : undefined)
-
-  // Create store once on mount, stable across re-renders
+  // Create store once on mount
   const [store] = useState(() =>
     createScopeStore({
       scopeId,
       initialOverrides,
       initialEnableDarkMode: theme?.enableDarkMode ?? false,
-      initialIsDarkMode: initializedIsDarkMode,
+      initialIsDarkMode:
+        initialIsDarkMode ??
+        (theme?.enableDarkMode ? resolvedAppearance === "dark" : undefined),
       persistOverrides: onOverridesChange,
       persistDarkMode: onDarkModeChange,
       getStorage,
     })
   )
+
   const { enableDarkMode, isDarkMode } = useSyncExternalStore(
     store.subscribe,
     store.getState,
     store.getInitialState
   )
 
-  // Rehydrate persisted state from storage + bootstrap data
-  // Bootstrap script (if present) already applied scope to DOM before React loaded
-  // This effect syncs React store with what bootstrap did
-  // Theme definition (overrides) is persisted and restored by Zustand's persist middleware
-  // CSS variables are recompiled on render from the restored theme definition
+  // Rehydrate persisted state
   useEffect(() => {
     void store.persist.rehydrate()
+  }, [store])
 
-    // Persist initial theme overrides to localStorage
-    // (so they're available on next page load even if never changed)
-    const state = store.getState()
-    if (state.overrides && Object.keys(state.overrides).length > 0) {
-      try {
-        const storageKey = `synapcity:themes:${scopeId}`
-        localStorage.setItem(
-          storageKey,
-          JSON.stringify({
-            state: {
-              overrides: state.overrides,
-              enableDarkMode: state.enableDarkMode,
-              isDarkMode: state.isDarkMode,
-              scopeId
-            },
-            version: 0,
-          })
-        )
-      } catch (e) {
-        // localStorage might not be available
-        console.warn("Failed to persist initial theme overrides:", e)
-      }
-    }
-  }, [store, scopeId])
-
-  // Call the compilation hook at top level to get CSS variables and merged theme
-  // This computes the merged theme (source + overrides) and compiles to CSS
+  // Compile and apply CSS variables to DOM
   const { cssVariables } = useThemeCompilation()
 
-  // Apply compiled CSS variables to DOM and handle element detection/retry
   useEffect(() => {
+    if (!cssVariables) return
+
     let observer: MutationObserver | undefined
     let retryTimeout: ReturnType<typeof setTimeout> | undefined
 
-    const findTargetElement = (): HTMLElement | null => {
-      if (scopeId === "root") {
-        return document.documentElement
-      }
-      return document.querySelector<HTMLElement>(`[data-scope-id="${scopeId}"]`)
-    }
+    const findElement = (): HTMLElement | null =>
+      scopeId === "root"
+        ? document.documentElement
+        : document.querySelector<HTMLElement>(`[data-scope-id="${scopeId}"]`)
 
     const applyCSS = (): boolean => {
-      if (!cssVariables) return false
+      const el = findElement()
+      if (!el) return false
 
-      const targetElement = findTargetElement()
-      if (!targetElement) {
-        return false
-      }
-
-      // Apply CSS variables to target element
-      for (const [key, value] of Object.entries(cssVariables)) {
-        targetElement.style.setProperty(key, value as string)
-      }
-
+      Object.entries(cssVariables).forEach(([key, value]) => {
+        el.style.setProperty(key, value as string)
+      })
       return true
     }
 
-    const setupRetry = () => {
-      // For root scope, element always exists - no retry needed
-      if (scopeId === "root") return
+    // Try immediately
+    if (applyCSS()) return
 
-      // Set up MutationObserver to detect when scope element is added to DOM
-      observer = new MutationObserver(() => {
-        if (applyCSS()) {
-          observer?.disconnect()
-          observer = undefined
-        }
-      })
+    // Retry for scoped elements not yet in DOM
+    if (scopeId === "root") return
 
-      observer.observe(document.documentElement, {
-        childList: true,
-        subtree: true,
-      })
+    observer = new MutationObserver(() => {
+      if (applyCSS()) {
+        observer?.disconnect()
+      }
+    })
+    observer.observe(document.documentElement, { childList: true, subtree: true })
 
-      // Fallback: retry via interval in case observer misses the mutation
-      retryTimeout = setTimeout(() => {
-        if (applyCSS()) {
-          observer?.disconnect()
-          observer = undefined
-        }
-      }, 1000)
-    }
-
-    // Try to apply CSS immediately
-    const applied = applyCSS()
-    if (!applied && scopeId !== "root") {
-      // Element not found, set up retry for scoped themes
-      setupRetry()
-    }
+    retryTimeout = setTimeout(() => {
+      applyCSS()
+      observer?.disconnect()
+    }, 1000)
 
     return () => {
       observer?.disconnect()
-      if (retryTimeout) clearTimeout(retryTimeout)
+      clearTimeout(retryTimeout)
     }
   }, [scopeId, cssVariables])
 
+  // Sync dark mode with resolved appearance
   useEffect(() => {
-    if (
-      !enableDarkMode ||
-      (!followResolvedAppearance && isDarkMode !== undefined)
-    ) {
-      return
-    }
+    if (!enableDarkMode || !followResolvedAppearance) return
 
     const nextIsDarkMode = resolvedAppearance === "dark"
     if (isDarkMode !== nextIsDarkMode) {
       store.getState().setDarkMode(nextIsDarkMode)
     }
-  }, [
-    followResolvedAppearance,
-    isDarkMode,
-    resolvedAppearance,
-    store,
-    enableDarkMode,
-  ])
+  }, [enableDarkMode, followResolvedAppearance, isDarkMode, resolvedAppearance, store])
 
+  // Notify appearance changed
   useEffect(() => {
     if (!enableDarkMode || isDarkMode === undefined) return
-
     applyResolvedAppearance?.(isDarkMode ? "dark" : "light")
-  }, [applyResolvedAppearance, enableDarkMode, isDarkMode])
+  }, [enableDarkMode, isDarkMode, applyResolvedAppearance])
 
   return (
     <ScopeContext.Provider value={store}>
       <div
         data-scope-id={scopeId}
-        data-theme-id={store.getState().getThemeId()}
-        {...(!enableDarkMode ? undefined : { "data-theme": isDarkMode ? "dark" : "light" })}
-        className="theme-scope-provider"
         id={scopeId}
+        data-theme-id={store.getState().getThemeId()}
+        data-theme={enableDarkMode ? (isDarkMode ? "dark" : "light") : undefined}
+        className="theme-scope-provider"
       >
         {children}
       </div>
     </ScopeContext.Provider>
   )
-
 }
