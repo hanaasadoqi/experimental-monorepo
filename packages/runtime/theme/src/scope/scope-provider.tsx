@@ -125,6 +125,7 @@ export function ThemeScopeProvider({
               overrides: state.overrides,
               enableDarkMode: state.enableDarkMode,
               isDarkMode: state.isDarkMode,
+              scopeId
             },
             version: 0,
           })
@@ -213,11 +214,8 @@ export function ThemeScopeProvider({
     const initialState = store.getState()
     if (initialState.overrides.primary) {
       const applied = compileAndApply({
-        initialState: {
-          ...initialState,
-          scopeId
-        },
-
+        ...initialState,
+        scopeId
       })
       if (!applied && scopeId !== "root") {
         // Element not found, set up retry for scoped themes
