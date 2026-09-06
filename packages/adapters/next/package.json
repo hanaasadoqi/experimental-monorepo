@@ -1,0 +1,40 @@
+{
+  "name": "@repo/adapters-next",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "sideEffects": false,
+  "peerDependencies": {
+    "next": "^16.2.11"
+  },
+  "dependencies": {
+    "@repo/domain-preferences": "workspace:*",
+    "@repo/services-cookies": "workspace:*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mjs,js,json}\"",
+    "test": "vitest run",
+    "test:run": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@repo/foundation-eslint-config": "workspace:*",
+    "@repo/foundation-prettier-config": "workspace:*",
+    "@repo/foundation-typescript-config": "workspace:*",
+    "@repo/foundation-vitest-config": "workspace:*",
+    "@types/node": "^26.4.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "typescript": "^6.0.3",
+    "eslint": "^9.39.5",
+    "prettier": "^3.9.6",
+    "vitest": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.11"
+  },
+  "exports": {
+    "./server": "./src/server/index.ts",
+    "./server/cookies-store": "./src/server/cookies-store.ts"
+  }
+}

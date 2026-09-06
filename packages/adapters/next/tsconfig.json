@@ -1,0 +1,14 @@
+{
+  "extends": "@repo/foundation-typescript-config/react-library.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "coverage",
+    ".turbo",
+    "**.test.ts",
+    "**/*.test.tsx"
+  ]
+}
