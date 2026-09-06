@@ -107,26 +107,31 @@ export function ThemeScopeProvider({
   // Rehydrate persisted state from storage + bootstrap data
   // Bootstrap script (if present) already applied scope to DOM before React loaded
   // This effect syncs React store with what bootstrap did
+  // Theme definition (overrides) is persisted and restored by Zustand's persist middleware
+  // CSS variables are recompiled on render from the restored theme definition
   useEffect(() => {
     void store.persist.rehydrate()
 
-    // Restore root theme CSS variables from localStorage (if available)
-    // This prevents flashing unstyled content on page reload
-    if (scopeId === "root") {
+    // Persist initial theme overrides to localStorage
+    // (so they're available on next page load even if never changed)
+    const state = store.getState()
+    if (state.overrides && Object.keys(state.overrides).length > 0) {
       try {
-        const persisted = localStorage.getItem("theme-scope-root")
-        if (persisted) {
-          const parsed = JSON.parse(persisted) as {
-            cssVariables?: Record<string, string>
-          }
-          if (parsed.cssVariables && document.documentElement) {
-            for (const [key, value] of Object.entries(parsed.cssVariables)) {
-              document.documentElement.style.setProperty(key, value)
-            }
-          }
-        }
+        const storageKey = `synapcity:themes:${scopeId}`
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({
+            state: {
+              overrides: state.overrides,
+              enableDarkMode: state.enableDarkMode,
+              isDarkMode: state.isDarkMode,
+            },
+            version: 0,
+          })
+        )
       } catch (e) {
-        // Ignore parsing or localStorage errors
+        // localStorage might not be available
+        console.warn("Failed to persist initial theme overrides:", e)
       }
     }
   }, [store, scopeId])
@@ -172,24 +177,6 @@ export function ThemeScopeProvider({
       // Apply CSS variables
       for (const [key, value] of Object.entries(result.cssVariables)) {
         targetElement.style.setProperty(key, value)
-      }
-
-      // Persist compiled theme to localStorage for root scope
-      // (so CSS variables are available on next page load)
-      if (scopeId === "root") {
-        try {
-          localStorage.setItem(
-            "theme-scope-root",
-            JSON.stringify({
-              cssVariables: result.cssVariables,
-              isDarkMode: compilationState.isDarkMode,
-              timestamp: Date.now(),
-            })
-          )
-        } catch (e) {
-          // localStorage might not be available
-          console.warn("Failed to persist theme CSS variables:", e)
-        }
       }
 
       return true
