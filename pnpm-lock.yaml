@@ -458,9 +458,6 @@ importers:
       '@repo/foundation-prettier-config':
         specifier: workspace:*
         version: link:../../foundation/tooling/prettier-config
-      '@repo/foundation-test-mocks':
-        specifier: workspace:*
-        version: link:../../foundation/testing/test-mocks
       '@repo/foundation-typescript-config':
         specifier: workspace:*
         version: link:../../foundation/tooling/typescript-config
