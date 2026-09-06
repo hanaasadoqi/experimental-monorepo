@@ -1,5 +1,5 @@
 import { type StoreApi, createStore } from "zustand/vanilla"
-import { createPersistedStore } from "@repo/services-zustand"
+import { createPersistedStore } from "@repo/services-zustand/persist"
 
 import {
   DEFAULT_PREFERENCES,
@@ -40,8 +40,6 @@ export function createPreferencesStore({
     throw new Error("Invalid preferences structure. Using defaults instead.")
   }
 
-  // M6 FIX: Create store with or without persistence based on enablePersistence flag
-  // When multiple providers render with different initialState (e.g., tests), they should not share localStorage
   if (enablePersistence) {
     return createPersistedStore<PreferencesStore>(
       (set: (state: Partial<PreferencesStore>) => void) => ({
