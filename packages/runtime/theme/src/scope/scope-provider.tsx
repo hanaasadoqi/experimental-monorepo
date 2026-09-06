@@ -109,7 +109,27 @@ export function ThemeScopeProvider({
   // This effect syncs React store with what bootstrap did
   useEffect(() => {
     void store.persist.rehydrate()
-  }, [store])
+
+    // Restore root theme CSS variables from localStorage (if available)
+    // This prevents flashing unstyled content on page reload
+    if (scopeId === "root") {
+      try {
+        const persisted = localStorage.getItem("theme-scope-root")
+        if (persisted) {
+          const parsed = JSON.parse(persisted) as {
+            cssVariables?: Record<string, string>
+          }
+          if (parsed.cssVariables && document.documentElement) {
+            for (const [key, value] of Object.entries(parsed.cssVariables)) {
+              document.documentElement.style.setProperty(key, value)
+            }
+          }
+        }
+      } catch (e) {
+        // Ignore parsing or localStorage errors
+      }
+    }
+  }, [store, scopeId])
 
   // Compile theme and apply CSS variables to DOM
   // Watches scope state (primary color, isDarkMode) and regenerates CSS on changes
@@ -152,6 +172,24 @@ export function ThemeScopeProvider({
       // Apply CSS variables
       for (const [key, value] of Object.entries(result.cssVariables)) {
         targetElement.style.setProperty(key, value)
+      }
+
+      // Persist compiled theme to localStorage for root scope
+      // (so CSS variables are available on next page load)
+      if (scopeId === "root") {
+        try {
+          localStorage.setItem(
+            "theme-scope-root",
+            JSON.stringify({
+              cssVariables: result.cssVariables,
+              isDarkMode: compilationState.isDarkMode,
+              timestamp: Date.now(),
+            })
+          )
+        } catch (e) {
+          // localStorage might not be available
+          console.warn("Failed to persist theme CSS variables:", e)
+        }
       }
 
       return true
