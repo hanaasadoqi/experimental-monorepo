@@ -1,25 +1,38 @@
 "use client"
 
+import { useEffect, useRef } from "react"
+
+import {
+  applyScopeThemeToElement,
+  getBrowserThemeStorage,
+} from "@repo/adapters-theme-browser"
 import { ThemeScopeProvider, useThemeScope } from "@repo/runtime-theme"
 import { ScopedThemeToggle } from "@repo/ui-theme/components"
 
 function ScopeDemoContent() {
+  const scopeRef = useRef<HTMLDivElement>(null)
   const { isDarkModeEnabled, overrides, setDarkMode, setPrimaryColor } =
     useThemeScope()
 
+  useEffect(() => {
+    if (!scopeRef.current) return
+
+    applyScopeThemeToElement(scopeRef.current, {
+      isDarkMode: isDarkModeEnabled,
+      primaryColor: overrides.primaryColor,
+    })
+  }, [isDarkModeEnabled, overrides.primaryColor])
+
   return (
     <div
+      ref={scopeRef}
       data-scope-id="demo"
-      className="rounded-lg border-2 border-dashed border-gray-300 p-6 dark:border-gray-600"
-      style={
-        overrides?.primaryColor
-          ? ({ "--scope-primary-color": overrides.primaryColor } as React.CSSProperties)
-          : undefined
-      }
+      className="border-primary rounded-lg border-2 border-dashed p-6"
+      suppressHydrationWarning
     >
       <div className="space-y-4">
         <div>
-          <h3 className="font-semibold text-base">Scoped Theme Demo</h3>
+          <h3 className="text-base font-semibold">Scoped Theme Demo</h3>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Customize this section independently
           </p>
@@ -28,7 +41,7 @@ function ScopeDemoContent() {
         <div className="space-y-3">
           <button
             onClick={() => setDarkMode(!isDarkModeEnabled)}
-            className="rounded px-3 py-2 text-sm font-medium transition-colors bg-blue-600 hover:bg-blue-700 text-white"
+            className="rounded bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
           >
             {isDarkModeEnabled ? "Disable Dark Mode" : "Enable Dark Mode"}
           </button>
@@ -61,7 +74,7 @@ function ScopeDemoContent() {
 
 export function ScopeDemo() {
   return (
-    <ThemeScopeProvider scopeId="demo">
+    <ThemeScopeProvider scopeId="demo" getStorage={getBrowserThemeStorage}>
       <ScopeDemoContent />
     </ThemeScopeProvider>
   )

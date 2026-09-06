@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useEffect } from "react"
 import { rehydrateStore } from "../hydration/index"

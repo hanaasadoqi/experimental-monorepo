@@ -1,1 +1,5 @@
-export { isStoreHydrated, rehydrateStore, subscribeToHydration } from "./rehydrate-store"
+export {
+  isStoreHydrated,
+  rehydrateStore,
+  subscribeToHydration,
+} from "./rehydrate-store"

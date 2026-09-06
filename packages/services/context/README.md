@@ -12,10 +12,8 @@ It deliberately does not know about Zustand, features, repositories, or provider
 ## Required context
 
 ```tsx
-const {
-  Provider: ThemeStoreContextProvider,
-  useValue: useThemeStoreApi,
-} = createRequiredContext<ThemeStoreApi>("ThemeStoreContext")
+const { Provider: ThemeStoreContextProvider, useValue: useThemeStoreApi } =
+  createRequiredContext<ThemeStoreApi>("ThemeStoreContext")
 ```
 
 ## Optional context
@@ -23,10 +21,8 @@ const {
 Use when a missing parent is meaningful, such as resolving an optional parent scope.
 
 ```tsx
-const {
-  Provider: ThemeScopeContextProvider,
-  useValue: useParentThemeScope,
-} = createOptionalContext<ThemeScope>("ThemeScopeContext")
+const { Provider: ThemeScopeContextProvider, useValue: useParentThemeScope } =
+  createOptionalContext<ThemeScope>("ThemeScopeContext")
 ```
 
 ## Boundary

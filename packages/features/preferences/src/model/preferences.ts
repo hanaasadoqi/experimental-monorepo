@@ -1,18 +1,15 @@
-import { z } from "zod"
 import {
-  appearancePreferenceSchema,
-  DEFAULT_APPEARANCE_PREFERENCE,
+  DEFAULT_PREFERENCES,
+  preferencesSchema,
   type AppearancePreference,
-} from "./appearance"
+  type Preferences,
+} from "@repo/domain-preferences"
 
-export const preferencesSchema = z.object({
-  appearance: appearancePreferenceSchema,
-})
-
-export type Preferences = z.infer<typeof preferencesSchema>
-
-export const DEFAULT_PREFERENCES: Preferences = {
-  appearance: DEFAULT_APPEARANCE_PREFERENCE,
+export {
+  DEFAULT_PREFERENCES,
+  preferencesSchema,
+  type AppearancePreference,
+  type Preferences,
 }
 
 export interface PreferencesActions {

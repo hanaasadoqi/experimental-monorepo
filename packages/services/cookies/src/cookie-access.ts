@@ -1,8 +1,4 @@
-import type {
-  CookieDefinition,
-  CookieReader,
-  CookieWriter,
-} from "./types.js"
+import type { CookieDefinition, CookieReader, CookieWriter } from "./types.js"
 
 export interface ReadCookieResult<T> {
   value: T | null
@@ -11,7 +7,7 @@ export interface ReadCookieResult<T> {
 
 export function readCookie<T>(
   reader: CookieReader,
-  definition: CookieDefinition<T>,
+  definition: CookieDefinition<T>
 ): ReadCookieResult<T> {
   const raw = reader.get(definition.name)
 
@@ -35,18 +31,18 @@ export function readCookie<T>(
 export function setCookie<T>(
   writer: CookieWriter,
   definition: CookieDefinition<T>,
-  value: T,
+  value: T
 ): void {
   writer.set(
     definition.name,
     definition.codec.serialize(value),
-    definition.options,
+    definition.options
   )
 }
 
 export function deleteCookie<T>(
   writer: CookieWriter,
-  definition: CookieDefinition<T>,
+  definition: CookieDefinition<T>
 ): void {
   writer.delete(definition.name, {
     path: definition.options.path,

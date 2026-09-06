@@ -16,11 +16,3 @@ export { useThemeScope } from "./use-theme-scope"
 
 // Context (advanced use only; prefer useThemeScope hook)
 export { ScopeContext } from "./scope-context"
-
-// SSR/FOUC prevention (for app layout integration)
-export {
-  generateScopeBootstrapCode,
-  getInitialScopeState,
-  clearScopeBootstrapData,
-} from "../adapters/scope-bootstrap"
-export type { ScopeBootstrapState } from "../adapters/scope-bootstrap"

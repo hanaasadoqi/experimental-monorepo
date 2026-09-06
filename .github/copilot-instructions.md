@@ -4,8 +4,8 @@ Follow the canonical repository contract in `AGENTS.md`; avoid duplicating or co
 
 Before working on theme-related code, read:
 
-- `.docs/handoff/2026-09-02_handoff-theme-recovery/handoff.md`
-- `.docs/handoff/2026-09-02_handoff-theme-recovery/theme-architectrure.md`
+- `.docs/handoffs/2026-09-02_handoff-theme-recovery/handoff.md`
+- `.docs/handoffs/2026-09-02_handoff-theme-recovery/theme-architecture.md`
 
 Do not assume an exploratory question authorizes implementation.
 Proactively surface material tradeoffs, but respect the project owner’s final

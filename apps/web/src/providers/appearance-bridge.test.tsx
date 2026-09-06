@@ -6,6 +6,19 @@ const mockSetPreference = vi.fn()
 let mockPreference: "light" | "dark" | "system" = "system"
 let capturedOnAppearanceChange: ((next: "light" | "dark") => void) | undefined
 
+// Mock window.matchMedia for system appearance detection
+const mockMatchMedia = vi.fn(() => ({
+  matches: false,
+  media: "(prefers-color-scheme: dark)",
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  dispatchEvent: vi.fn(),
+}))
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: mockMatchMedia,
+})
+
 vi.mock("@repo/features-preferences", () => ({
   useAppearancePreference: () => mockPreference,
   useSetAppearancePreference: () => mockSetPreference,
@@ -33,6 +46,7 @@ vi.mock("@repo/ui-theme", () => ({
 
 describe("AppearanceBridge (app composition)", () => {
   beforeEach(() => {
+    document.documentElement.className = "font-variable antialiased"
     mockSetPreference.mockClear()
     mockPreference = "system"
     capturedOnAppearanceChange = undefined
@@ -62,5 +76,12 @@ describe("AppearanceBridge (app composition)", () => {
     expect(wrapper.dataset.theme).toBe("dark")
     expect(wrapper.className).toBe("dark")
     expect(wrapper.style.colorScheme).toBe("")
+    expect(document.documentElement.classList.contains("dark")).toBe(true)
+    expect(document.documentElement.classList.contains("font-variable")).toBe(
+      true
+    )
+    expect(document.documentElement.classList.contains("antialiased")).toBe(
+      true
+    )
   })
 })

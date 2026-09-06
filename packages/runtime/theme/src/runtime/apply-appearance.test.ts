@@ -9,27 +9,27 @@ describe("applyAppearance (real DOM)", () => {
   })
 
   it("adds the dark class on document.documentElement for 'dark'", () => {
-    applyAppearance("dark")
+    applyAppearance("dark", document.documentElement)
     expect(document.documentElement.classList.contains("dark")).toBe(true)
   })
 
   it("removes the dark class on document.documentElement for 'light'", () => {
     document.documentElement.classList.add("dark")
-    applyAppearance("light")
+    applyAppearance("light", document.documentElement)
     expect(document.documentElement.classList.contains("dark")).toBe(false)
   })
 
   it("sets dataset.theme to match the resolved appearance", () => {
-    applyAppearance("dark")
+    applyAppearance("dark", document.documentElement)
     expect(document.documentElement.dataset.theme).toBe("dark")
-    applyAppearance("light")
+    applyAppearance("light", document.documentElement)
     expect(document.documentElement.dataset.theme).toBe("light")
   })
 
   it("sets style.colorScheme to match the resolved appearance", () => {
-    applyAppearance("dark")
+    applyAppearance("dark", document.documentElement)
     expect(document.documentElement.style.colorScheme).toBe("dark")
-    applyAppearance("light")
+    applyAppearance("light", document.documentElement)
     expect(document.documentElement.style.colorScheme).toBe("light")
   })
 

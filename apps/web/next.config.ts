@@ -7,15 +7,7 @@ const nextConfig: NextConfig = {
     "@repo/ui-design-system",
     "@repo/domain-theme",
   ],
-  serverExternalPackages: [
-    "@repo/services-cookies",
-    "@repo/foundation-typescript-config",
-    "@repo/foundation-eslint-config",
-    "@repo/foundation-prettier-config",
-    "@repo/foundation-vitest-config",
-    "@repo/foundation-vitest-utils",
-    "@repo/foundation-test-mocks",
-  ],
+  serverExternalPackages: ["@repo/services-cookies"],
   experimental: {
     optimizePackageImports: ["@hugeicons/core-free-icons", "@hugeicons/react"],
   },

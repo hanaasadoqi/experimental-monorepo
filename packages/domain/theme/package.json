@@ -5,13 +5,14 @@
   "private": true,
   "sideEffects": false,
   "dependencies": {
-    "@repo/features-preferences": "workspace:*",
+    "@repo/domain-preferences": "workspace:*",
     "culori": "^4.0.1",
     "zod": "^4.5.4"
   },
   "scripts": {
     "lint": "eslint src --ext .ts,.tsx --max-warnings 0",
     "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
     "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "test:run": "vitest run --coverage",
     "test": "vitest run"

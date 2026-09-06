@@ -79,8 +79,20 @@ export interface CreateScopeStoreOptions {
    * Called when dark mode preference changes. Adapter receives the dark mode state.
    */
   persistDarkMode?: (isDarkMode: boolean | undefined) => void | Promise<void>
-  /** Browser storage implementation. Default: localStorage */
+  /** Explicit storage implementation, primarily for tests and non-lazy use. */
   storage?: StateStorage
+  /** Lazily resolve storage at hydration time without importing browser APIs. */
+  getStorage?: () => StateStorage | undefined
+}
+
+function createDeferredStorage(
+  getStorage: () => StateStorage | undefined
+): StateStorage {
+  return {
+    getItem: (name) => getStorage()?.getItem(name) ?? null,
+    setItem: (name, value) => getStorage()?.setItem(name, value),
+    removeItem: (name) => getStorage()?.removeItem(name),
+  }
 }
 
 /**
@@ -90,8 +102,7 @@ export interface CreateScopeStoreOptions {
  * ```ts
  * const store = createScopeStore({
  *   scopeId: "preview",
- *   persistOverrides: (o) => localStorage.setItem("overrides", JSON.stringify(o)),
- *   persistDarkMode: (d) => localStorage.setItem("darkMode", String(d))
+ *   getStorage: () => environmentStorage,
  * })
  * ```
  *
@@ -106,6 +117,7 @@ export function createScopeStore({
   persistOverrides,
   persistDarkMode,
   storage,
+  getStorage,
 }: CreateScopeStoreOptions): ScopeStoreApi {
   return createStore<ScopeStore>()(
     persist<ScopeStore, [], [], Omit<ScopeState, "scopeId">>(
@@ -130,7 +142,9 @@ export function createScopeStore({
       {
         name: getScopeStorageKey(scopeId),
         version: 1,
-        storage: createJSONStorage(() => storage ?? localStorage),
+        storage: createJSONStorage(
+          () => storage ?? createDeferredStorage(() => getStorage?.())
+        ),
         partialize: ({ overrides, isDarkModeEnabled }) => ({
           overrides,
           ...(isDarkModeEnabled !== undefined && { isDarkModeEnabled }),

@@ -87,8 +87,7 @@ export const toOklch = (color: AnyColorObject | string): OklchColor => {
     const parsed = converter("oklch")(toCulori(color)) as
       CuloriOklch | undefined
     return parsed ? normalizeOklch(mapCuloriOklchAlpha(parsed)) : DEFAULT_OKLCH
-  } catch (e: unknown) {
-    console.error("Error converting to OKLCH:", e, color)
+  } catch {
     return DEFAULT_OKLCH
   }
 }

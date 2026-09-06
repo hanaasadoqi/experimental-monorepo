@@ -4,13 +4,13 @@ import globals from "globals"
 import tseslint from "typescript-eslint"
 
 export const GLOBAL_IGNORES = [
-      "**/dist/**",
-      "**/.next/**",
-      "**/.turbo/**",
-      "**/coverage/**",
-      "**/node_modules/**",
-      "**/.archives/**"
-    ]
+  "**/dist/**",
+  "**/.next/**",
+  "**/.turbo/**",
+  "**/coverage/**",
+  "**/node_modules/**",
+  "**/.archives/**",
+]
 const sharedConfig = [
   js.configs.recommended,
   prettierConfig,
@@ -32,9 +32,7 @@ const sharedConfig = [
     },
   },
   {
-    ignores: [
-      ...GLOBAL_IGNORES,
-    ],
+    ignores: [...GLOBAL_IGNORES],
   },
 ]
 

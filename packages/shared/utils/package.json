@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "@repo/shared-contracts": "workspace:*"
   },
   "devDependencies": {
     "@repo/foundation-eslint-config": "workspace:*",
@@ -21,16 +22,19 @@
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
-    "@repo/shared-contracts": "workspace:*",
     "eslint": "^9.39.5",
     "prettier": "^3.9.6",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11",
-    "@vitest/coverage-v8": "^4.1.11",
-    "next": "^16.3.3"
+    "@vitest/coverage-v8": "^4.1.11"
   },
   "peerDependencies": {
     "next": "^16.3.3"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
   },
   "exports": {
     "./classnames": "./src/ui/classnames.ts",

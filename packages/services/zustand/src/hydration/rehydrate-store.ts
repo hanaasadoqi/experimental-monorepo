@@ -10,10 +10,12 @@ export async function rehydrateStore(store: PersistedStoreLike): Promise<void> {
 
 export function subscribeToHydration(
   store: PersistedStoreLike,
-  listener: (hydrated: boolean) => void,
+  listener: (hydrated: boolean) => void
 ): () => void {
   const unsubscribeStart = store.persist.onHydrate(() => listener(false))
-  const unsubscribeFinish = store.persist.onFinishHydration(() => listener(true))
+  const unsubscribeFinish = store.persist.onFinishHydration(() =>
+    listener(true)
+  )
 
   return () => {
     unsubscribeStart()

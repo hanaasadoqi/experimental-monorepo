@@ -13,7 +13,10 @@ export default mergeConfig(baseConfig, {
   },
   test: {
     environment: "jsdom",
-    globals: true,
+    globals: {
+      browser: true,
+      window: true,
+    },
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
     setupFiles: ["./vitest.setup.ts"],
   },

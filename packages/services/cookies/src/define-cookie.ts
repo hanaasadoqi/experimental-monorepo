@@ -1,8 +1,4 @@
-import type {
-  CookieCodec,
-  CookieDefinition,
-  CookieOptions,
-} from "./types.js"
+import type { CookieCodec, CookieDefinition, CookieOptions } from "./types.js"
 
 export interface CookieDefinitionOptions<T> {
   name: string

@@ -3,17 +3,24 @@
  * Applies theme to document via CSS variables and attributes.
  */
 
-export type ThemeMode = "light" | "dark"
+import type { ThemeMode } from "@repo/domain-theme/appearance"
+
+export interface ScopeThemeOverrides {
+  isDarkMode?: boolean
+  primaryColor?: string
+}
 
 /**
  * Apply appearance to document root.
- * Sets className and data-theme attribute.
+ * Toggles only the classes owned by appearance so application and font classes
+ * on the root element remain intact.
  */
 export function applyAppearanceToDocument(appearance: ThemeMode): void {
   if (typeof document === "undefined") return
 
   const root = document.documentElement
-  root.className = appearance
+  root.classList.toggle("dark", appearance === "dark")
+  root.classList.toggle("light", appearance === "light")
   root.setAttribute("data-theme", appearance)
   root.style.colorScheme = appearance
 }
@@ -50,19 +57,23 @@ export function clearThemeCSSVariables(keys: string[]): void {
  */
 export function applyScopeThemeToElement(
   element: HTMLElement,
-  overrides: {
-    isDarkMode?: boolean
-    primaryColor?: string
-  }
+  overrides: ScopeThemeOverrides
 ): void {
   if (overrides.isDarkMode !== undefined) {
+    element.classList.toggle("dark", overrides.isDarkMode)
+    element.classList.toggle("light", !overrides.isDarkMode)
     element.setAttribute(
       "data-scope-dark-mode",
       overrides.isDarkMode ? "true" : "false"
     )
+  } else {
+    element.classList.remove("dark", "light")
+    element.removeAttribute("data-scope-dark-mode")
   }
 
   if (overrides.primaryColor) {
-    element.style.setProperty("--scope-primary-color", overrides.primaryColor)
+    element.style.setProperty("--primary", overrides.primaryColor)
+  } else {
+    element.style.removeProperty("--primary")
   }
 }

@@ -127,34 +127,9 @@ export const GOOGLE_FONTS: GoogleFont[] = [
   { name: "Geist Mono", category: "Monospace" },
 ]
 
-/**
- * Loaded fonts cache to prevent duplicate <link> injections
- */
-const LOADED_FONTS = new Set<string>()
-
-/**
- * Dynamically loads a Google Font by injecting a <link> stylesheet tag.
- * Safe to call multiple times — no duplicate loads.
- */
-export function loadGoogleFont(fontName: string): void {
-  if (typeof document === "undefined") return
-  if (LOADED_FONTS.has(fontName)) return
-
+export function getGoogleFontStylesheetUrl(fontName: string): string {
   const normalized = fontName.replace(/ /g, "+")
-  const href = `https://fonts.googleapis.com/css2?family=${normalized}:wght@400;500;600;700&display=swap`
-
-  // Check if already in DOM
-  const existing = document.head.querySelector(`link[href="${href}"]`)
-  if (existing) {
-    LOADED_FONTS.add(fontName)
-    return
-  }
-
-  const link = document.createElement("link")
-  link.rel = "stylesheet"
-  link.href = href
-  document.head.appendChild(link)
-  LOADED_FONTS.add(fontName)
+  return `https://fonts.googleapis.com/css2?family=${normalized}:wght@400;500;600;700&display=swap`
 }
 
 /**

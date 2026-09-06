@@ -11,10 +11,7 @@ Cookie semantics differ from localStorage and database persistence. Cookies cros
 ## Define a feature-owned cookie
 
 ```ts
-import {
-  defineCookie,
-  enumCookieCodec,
-} from "@repo/services-cookies"
+import { defineCookie, enumCookieCodec } from "@repo/services-cookies"
 
 export const appearanceCookie = defineCookie({
   name: "synapcity-appearance",
@@ -44,7 +41,7 @@ const result = readCookie(
   {
     get: (name) => store.get(name)?.value,
   },
-  appearanceCookie,
+  appearanceCookie
 )
 ```
 

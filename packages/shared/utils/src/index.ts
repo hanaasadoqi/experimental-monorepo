@@ -1,3 +1,2 @@
-export { cn, type ClassValue } from "./server/ui/classnames"
+export { cn, type ClassValue } from "./ui/classnames"
 export { shallowEqual, type EqualityFn } from "./shallow-equal"
-export * from "./server"

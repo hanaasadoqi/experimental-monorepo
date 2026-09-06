@@ -17,15 +17,11 @@ export type ResolvedAppearance = ThemeMode
 /**
  * The user's stored *preference*, which may defer to the OS ("system").
  *
- * NOTE: this is re-exported from `@repo/features-preferences`, which is a
- * layering inversion — a domain package should not depend on a feature package.
- * The fix is to extract it into `@repo/domain-persistence` (see
- * `.docs/audits/2026-09-02-theme-layering-audit.md`, Step 2). That means a new
- * package, so it is deliberately out of scope here. Re-exporting keeps exactly
- * one definition in the repo in the meantime.
+ * The canonical definition lives in the pure preferences domain. Re-exporting
+ * it here keeps the existing theme-domain appearance API compatible.
  */
 export {
   appearancePreferenceSchema,
   DEFAULT_APPEARANCE_PREFERENCE,
   type AppearancePreference,
-} from "@repo/features-preferences/model"
+} from "@repo/domain-preferences/appearance"

@@ -5,14 +5,8 @@
   "private": true,
   "sideEffects": false,
   "peerDependencies": {
-    "next": "^16.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
-  },
-  "peerDependenciesMeta": {
-    "next": {
-      "optional": true
-    }
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -31,6 +25,7 @@
   "scripts": {
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
     "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "test:run": "vitest run --coverage",
     "test": "vitest run"

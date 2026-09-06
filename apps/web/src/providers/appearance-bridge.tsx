@@ -9,45 +9,29 @@ import {
 
 import { ThemeToggleHotkey } from "@repo/ui-theme"
 import { resolveAppearance } from "@repo/runtime-theme"
+import {
+  detectSystemAppearance,
+  subscribeToSystemAppearanceChanges,
+  applyAppearanceToDocument,
+} from "@repo/adapters-theme-browser"
 import type { ThemeMode } from "@repo/domain-theme/appearance"
 
-/**
- * Hook to detect system dark mode preference.
- * Returns 'dark' | 'light' based on matchMedia.
- */
 function useSystemAppearance(): ThemeMode {
-  const [systemAppearance, setSystemAppearance] = useState<ThemeMode>(() => {
-    if (typeof window === "undefined") return "light"
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light"
-  })
+  const [systemAppearance, setSystemAppearance] = useState<ThemeMode>(() =>
+    detectSystemAppearance()
+  )
 
   useEffect(() => {
-    if (typeof window === "undefined") return
-
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-    const handler = (e: MediaQueryListEvent) => {
-      setSystemAppearance(e.matches ? "dark" : "light")
-    }
-
-    mediaQuery.addEventListener("change", handler)
-    return () => mediaQuery.removeEventListener("change", handler)
+    const unsubscribe = subscribeToSystemAppearanceChanges(setSystemAppearance)
+    return unsubscribe
   }, [])
 
   return systemAppearance
 }
 
-/**
- * Component to sync appearance to DOM.
- * Applies appearance as className and data attribute.
- */
 function RootAppearanceSync({ appearance }: { appearance: ThemeMode }) {
   useEffect(() => {
-    if (typeof window === "undefined") return
-    const root = document.documentElement
-    root.className = appearance
-    root.setAttribute("data-theme", appearance)
+    applyAppearanceToDocument(appearance)
   }, [appearance])
 
   return null

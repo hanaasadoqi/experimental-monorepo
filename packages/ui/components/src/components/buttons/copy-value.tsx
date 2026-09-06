@@ -23,7 +23,7 @@ export function CopyButton({
   render,
 }: CopyButtonProps) {
   const [copied, setCopied] = React.useState(false)
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
 
   React.useEffect(() => {
     if (copied) {

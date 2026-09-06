@@ -44,10 +44,6 @@ export const reactConfig = [
     },
   },
   {
-    ignores: [
-      ...GLOBAL_IGNORES,
-      "**/.next/**",
-      "**/next"
-    ],
+    ignores: [...GLOBAL_IGNORES, "**/.next/**", "**/next"],
   },
 ]

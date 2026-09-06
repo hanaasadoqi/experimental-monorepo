@@ -16,7 +16,8 @@ function useSystemAppearance(): ThemeMode {
   useEffect(() => {
     if (typeof window === "undefined") return
     const mq = window.matchMedia("(prefers-color-scheme: dark)")
-    const handler = (e: MediaQueryListEvent) => setSystem(e.matches ? "dark" : "light")
+    const handler = (e: MediaQueryListEvent) =>
+      setSystem(e.matches ? "dark" : "light")
     mq.addEventListener("change", handler)
     return () => mq.removeEventListener("change", handler)
   }, [])

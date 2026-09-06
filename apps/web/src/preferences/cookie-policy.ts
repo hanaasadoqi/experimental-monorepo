@@ -1,13 +1,17 @@
 import { appearancePreferenceSchema } from "@repo/features-preferences"
 import { defineCookie } from "@repo/services-cookies"
+import {
+  APPEARANCE_COOKIE_MAX_AGE,
+  APPEARANCE_COOKIE_NAME,
+} from "@repo/adapters-theme-next/appearance-cookie"
 
-export const APPEARANCE_PREFERENCE_COOKIE = "appearance"
+export const APPEARANCE_PREFERENCE_COOKIE = APPEARANCE_COOKIE_NAME
 
 export const DEFAULT_COOKIE_OPTIONS = {
   path: "/",
   sameSite: "lax",
   secure: process.env.NODE_ENV === "production",
-  maxAge: 60 * 60 * 24 * 365, // 1 year
+  maxAge: APPEARANCE_COOKIE_MAX_AGE,
 } as const
 
 export const appearanceCookie = defineCookie({

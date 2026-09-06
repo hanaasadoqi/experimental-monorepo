@@ -10,7 +10,7 @@
     "format:check": "prettier . --check",
     "typecheck": "turbo run check-types",
     "check": "turbo run lint && turbo run check-types",
-    "check:boundaries": "turbo boundaries",
+    "check:boundaries": "node scripts/check-architecture-boundaries.mjs && turbo boundaries",
     "ui:add": "pnpm dlx shadcn@latest add -c apps/web",
     "deps:check": "ncu --workspaces --root --packageManager pnpm --enginesNode",
     "deps:update": "ncu --workspaces --root --packageManager pnpm --enginesNode -u",

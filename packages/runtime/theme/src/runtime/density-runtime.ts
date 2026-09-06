@@ -1,18 +1,21 @@
 import type { DensityMode } from "@repo/domain-theme/density"
 import { DEFAULT_DENSITY, DENSITY_MODES } from "@repo/domain-theme/density"
 
-export function applyDensityToDocument(mode: DensityMode): void {
-  if (typeof document === "undefined") return
+export interface DensityTarget {
+  getAttribute(name: string): string | null
+  setAttribute(name: string, value: string): void
+}
+
+export function applyDensity(mode: DensityMode, target: DensityTarget): void {
   if (mode === DEFAULT_DENSITY) {
-    document.body.setAttribute("data-density", "default")
+    target.setAttribute("data-density", "default")
   } else {
-    document.body.setAttribute("data-density", mode)
+    target.setAttribute("data-density", mode)
   }
 }
 
-export function getDensityFromDocument(): DensityMode {
-  if (typeof document === "undefined") return DEFAULT_DENSITY
-  const mode = document.body.getAttribute("data-density") as DensityMode | null
+export function getDensity(target: DensityTarget): DensityMode {
+  const mode = target.getAttribute("data-density") as DensityMode | null
   if (!mode || !DENSITY_MODES.includes(mode)) return DEFAULT_DENSITY
   return mode
 }

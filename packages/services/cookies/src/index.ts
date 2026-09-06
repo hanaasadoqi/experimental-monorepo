@@ -1,7 +1,4 @@
-export {
-  enumCookieCodec,
-  stringCookieCodec,
-} from "./codecs.js"
+export { enumCookieCodec, stringCookieCodec } from "./codecs.js"
 
 export {
   deleteCookie,
@@ -10,10 +7,7 @@ export {
   type ReadCookieResult,
 } from "./cookie-access"
 
-export {
-  defineCookie,
-  type CookieDefinitionOptions,
-} from "./define-cookie"
+export { defineCookie, type CookieDefinitionOptions } from "./define-cookie"
 
 export type {
   CookieCodec,
@@ -23,7 +17,4 @@ export type {
   CookieSameSite,
   CookieWriter,
 } from "./types"
-export {
-  serializeCookie,
-  formatSameSite
-} from "./serialize-cookie"
+export { serializeCookie, formatSameSite } from "./serialize-cookie"

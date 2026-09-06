@@ -1,7 +1,6 @@
 "use client"
 
 import { createContext, useContext } from "react"
-import { ThemeProvider } from "./theme-provider"
 import { TooltipProvider } from "@repo/ui-components/base/tooltip"
 import { SidebarProvider } from "@repo/ui-components/base/sidebar"
 
@@ -18,11 +17,9 @@ export const ClientApplicationProvider = ({
 }) => {
   return (
     <ClientApplicationContext.Provider value={{ status: "idle" }}>
-      <ThemeProvider>
-        <TooltipProvider>
-          <SidebarProvider>{children}</SidebarProvider>
-        </TooltipProvider>
-      </ThemeProvider>
+      <TooltipProvider>
+        <SidebarProvider>{children}</SidebarProvider>
+      </TooltipProvider>
     </ClientApplicationContext.Provider>
   )
 }

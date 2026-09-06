@@ -37,7 +37,7 @@ Run `pnpm check:boundaries` after changing package manifests.
 
 - Use strict TypeScript, semantic names, small focused modules, and composition.
 - Preserve accessible HTML semantics, keyboard behavior, focus states, and reduced-motion preferences.
-- Declare dependencies in the repo that imports them; use `repo:*` internally.
+- Declare dependencies in the repo that imports them; use `@repo/` packages when creating new packages.
 - Do not create speculative shared, services, or feature packages.
 - Never put secrets, dependency trees, caches, or generated build output in `.docs` or `.archives`.
 
@@ -83,6 +83,7 @@ Report exactly what ran and investigate failures rather than weakening tests or 
 See `.docs/architecture-boundaries.md` for the definitive rules on separating domain/runtime/ui/adapter layers.
 
 **One rule:** Domain packages are pure (no React, no Next.js, no browser APIs). Each layer above adds one capability:
+
 - Domain: Types & logic
 - Runtime: React state & hooks
 - UI: Components

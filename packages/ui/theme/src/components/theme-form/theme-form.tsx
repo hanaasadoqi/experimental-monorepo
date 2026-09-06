@@ -1,14 +1,24 @@
 "use client"
+
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import * as z from "zod"
-import { Field, FieldGroup, FieldError, FieldLabel } from "@repo/ui-components/base/field";
-import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupText, InputGroupTextarea } from "@repo/ui-components/base/input-group";
-import { Button } from "@repo/ui-components/base/button";
-
-
+import {
+  Field,
+  FieldGroup,
+  FieldError,
+  FieldLabel,
+} from "@repo/ui-components/base/field"
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupAddon,
+  InputGroupText,
+  InputGroupTextarea,
+} from "@repo/ui-components/base/input-group"
+import { Button } from "@repo/ui-components/base/button"
 
 export const themeFormSchema = z.object({
   title: z
@@ -55,9 +65,7 @@ export const ThemeForm = () => {
             control={themeForm.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="form-theme-title">
-                  Theme title
-                </FieldLabel>
+                <FieldLabel htmlFor="form-theme-title">Theme title</FieldLabel>
                 <InputGroupInput
                   {...field}
                   id="form-theme-title"
@@ -109,7 +117,11 @@ export const ThemeForm = () => {
         </FieldGroup>
       </form>
       <Field orientation="horizontal">
-        <Button type="button" variant="outline" onClick={() => themeForm.reset()}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => themeForm.reset()}
+        >
           Reset
         </Button>
         <Button type="submit" form="form-theme-form">
@@ -117,5 +129,5 @@ export const ThemeForm = () => {
         </Button>
       </Field>
     </div>
-  );
-};
+  )
+}

@@ -7,6 +7,7 @@
 
 import { getScopeStorageKey } from "../scope/scope-store"
 import type { ThemeOverrides } from "@repo/domain-theme"
+import type { StateStorage } from "zustand/middleware"
 
 /**
  * Persist scope color overrides to localStorage.
@@ -20,14 +21,15 @@ import type { ThemeOverrides } from "@repo/domain-theme"
  * ```
  */
 export function persistScopeOverridesToStorage(
-  overrides: ThemeOverrides
+  overrides: ThemeOverrides,
+  storage: StateStorage
 ): void {
-  if (typeof window === "undefined") return
   try {
     const key = getScopeStorageKey("preview") // Use the scope ID from context
-    const current = localStorage.getItem(key)
+    const current = storage.getItem(key)
+    if (current instanceof Promise) return
     const parsed = current ? JSON.parse(current) : {}
-    localStorage.setItem(
+    void storage.setItem(
       key,
       JSON.stringify({
         ...parsed,
@@ -51,14 +53,15 @@ export function persistScopeOverridesToStorage(
  * ```
  */
 export function persistScopeDarkModeToStorage(
-  isDarkMode: boolean | undefined
+  isDarkMode: boolean | undefined,
+  storage: StateStorage
 ): void {
-  if (typeof window === "undefined") return
   try {
     const key = getScopeStorageKey("preview") // Use the scope ID from context
-    const current = localStorage.getItem(key)
+    const current = storage.getItem(key)
+    if (current instanceof Promise) return
     const parsed = current ? JSON.parse(current) : {}
-    localStorage.setItem(
+    void storage.setItem(
       key,
       JSON.stringify({
         ...parsed,
@@ -88,15 +91,18 @@ export function persistScopeDarkModeToStorage(
  * })
  * ```
  */
-export function createScopeStorageAdapters(scopeId: string) {
+export function createScopeStorageAdapters(
+  scopeId: string,
+  storage: StateStorage
+) {
   return {
     persistOverrides: (overrides: ThemeOverrides) => {
-      if (typeof window === "undefined") return
       try {
         const key = getScopeStorageKey(scopeId)
-        const current = localStorage.getItem(key)
+        const current = storage.getItem(key)
+        if (current instanceof Promise) return
         const parsed = current ? JSON.parse(current) : {}
-        localStorage.setItem(
+        void storage.setItem(
           key,
           JSON.stringify({
             ...parsed,
@@ -108,12 +114,12 @@ export function createScopeStorageAdapters(scopeId: string) {
       }
     },
     persistDarkMode: (isDarkMode: boolean | undefined) => {
-      if (typeof window === "undefined") return
       try {
         const key = getScopeStorageKey(scopeId)
-        const current = localStorage.getItem(key)
+        const current = storage.getItem(key)
+        if (current instanceof Promise) return
         const parsed = current ? JSON.parse(current) : {}
-        localStorage.setItem(
+        void storage.setItem(
           key,
           JSON.stringify({
             ...parsed,

@@ -1,21 +1,24 @@
-import { cookies } from "next/headers"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { readAppearancePreferenceCookie } from "./read-appearance-preference-cookie"
+import * as cookieStore from "@repo/adapters-theme-next/server/cookies-store"
 
-vi.mock("next/headers", () => ({ cookies: vi.fn() }))
+vi.mock("@repo/adapters-theme-next/server/cookies-store")
 
 describe("readAppearancePreferenceCookie", () => {
+  const mockGetCookieStore = vi.mocked(cookieStore.getCookieStore)
+
   beforeEach(() => {
-    vi.mocked(cookies).mockReset()
+    mockGetCookieStore.mockReset()
   })
 
   it.each(["light", "dark", "system"] as const)(
     "returns the canonical %s cookie value",
     async (preference) => {
-      vi.mocked(cookies).mockResolvedValue({
-        get: () => ({ name: "appearance-preference", value: preference }),
-      } as Awaited<ReturnType<typeof cookies>>)
+      mockGetCookieStore.mockResolvedValue({
+        get: (name: string) =>
+          name === "appearance" ? { name, value: preference } : undefined,
+      } as unknown as Awaited<ReturnType<typeof cookieStore.getCookieStore>>)
 
       await expect(readAppearancePreferenceCookie()).resolves.toBe(preference)
     }
@@ -24,12 +27,12 @@ describe("readAppearancePreferenceCookie", () => {
   it.each(["automatic", undefined])(
     "returns undefined for %s",
     async (value) => {
-      vi.mocked(cookies).mockResolvedValue({
-        get: () =>
-          value === undefined
-            ? undefined
-            : { name: "appearance-preference", value },
-      } as Awaited<ReturnType<typeof cookies>>)
+      mockGetCookieStore.mockResolvedValue({
+        get: (name: string) =>
+          name === "appearance" && value !== undefined
+            ? { name, value }
+            : undefined,
+      } as unknown as Awaited<ReturnType<typeof cookieStore.getCookieStore>>)
 
       await expect(readAppearancePreferenceCookie()).resolves.toBeUndefined()
     }

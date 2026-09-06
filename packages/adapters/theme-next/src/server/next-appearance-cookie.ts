@@ -2,11 +2,15 @@
  * Next.js server adapter for appearance preference cookie.
  * Handles reading/writing appearance preference from Next.js cookies API.
  */
-
-type AppearancePreference = "light" | "dark" | "system"
-
-const APPEARANCE_COOKIE_NAME = "appearance-preference"
-const APPEARANCE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
+import { getCookieStore } from "./cookies-store"
+import {
+  appearancePreferenceSchema,
+  type AppearancePreference,
+} from "@repo/domain-preferences/appearance"
+import {
+  APPEARANCE_COOKIE_MAX_AGE,
+  APPEARANCE_COOKIE_NAME,
+} from "../appearance-cookie"
 
 /**
  * Read appearance preference from request cookies.
@@ -15,25 +19,10 @@ const APPEARANCE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
 export async function readAppearanceCookie(): Promise<
   AppearancePreference | undefined
 > {
-  try {
-    // This will only work in Server Components or API routes
-    // Client-side usage will throw
-    const { cookies } = await import("next/headers")
-    const cookieStore = await cookies()
-    const value = cookieStore.get(APPEARANCE_COOKIE_NAME)?.value
+  const cookieStore = await getCookieStore()
+  const value = cookieStore.get(APPEARANCE_COOKIE_NAME)?.value
 
-    if (!value) return undefined
-
-    // Validate the value is a known preference
-    if (value === "light" || value === "dark" || value === "system") {
-      return value as AppearancePreference
-    }
-
-    return undefined
-  } catch (error) {
-    // Not in a server context
-    return undefined
-  }
+  return appearancePreferenceSchema.safeParse(value).data
 }
 
 /**
@@ -52,32 +41,22 @@ export async function readAppearanceCookie(): Promise<
 export async function writeAppearanceCookie(
   preference: AppearancePreference
 ): Promise<void> {
-  try {
-    const { cookies } = await import("next/headers")
-    const cookieStore = await cookies()
+  const cookieStore = await getCookieStore()
+  const validatedPreference = appearancePreferenceSchema.parse(preference)
 
-    cookieStore.set(APPEARANCE_COOKIE_NAME, preference, {
-      maxAge: APPEARANCE_COOKIE_MAX_AGE,
-      path: "/",
-      httpOnly: false, // Allow client-side access for hydration
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    })
-  } catch (error) {
-    // Not in a server context
-    console.warn("Failed to write appearance cookie (not in server context):", error)
-  }
+  cookieStore.set(APPEARANCE_COOKIE_NAME, validatedPreference, {
+    maxAge: APPEARANCE_COOKIE_MAX_AGE,
+    path: "/",
+    httpOnly: false,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  })
 }
 
 /**
  * Clear appearance preference cookie.
  */
 export async function clearAppearanceCookie(): Promise<void> {
-  try {
-    const { cookies } = await import("next/headers")
-    const cookieStore = await cookies()
-    cookieStore.delete(APPEARANCE_COOKIE_NAME)
-  } catch (error) {
-    // Not in a server context
-  }
+  const cookieStore = await getCookieStore()
+  cookieStore.delete(APPEARANCE_COOKIE_NAME)
 }

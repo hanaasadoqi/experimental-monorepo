@@ -3,23 +3,26 @@
  * Client-side utilities for reading/syncing appearance preference.
  */
 
-type AppearancePreference = "light" | "dark" | "system"
+import {
+  appearancePreferenceSchema,
+  type AppearancePreference,
+} from "@repo/domain-preferences/appearance"
+import { APPEARANCE_COOKIE_NAME } from "../appearance-cookie"
 
 /**
  * Read appearance preference from cookie (client-side).
  * Falls back to localStorage if cookie is unavailable.
  */
-export function readAppearancePreferenceFromCookie(): AppearancePreference | undefined {
+export function readAppearancePreferenceFromCookie():
+  AppearancePreference | undefined {
   if (typeof document === "undefined") return undefined
 
   // Try to read from cookies string (document.cookie)
   const cookies = document.cookie.split("; ")
   for (const cookie of cookies) {
     const [name, value] = cookie.split("=")
-    if (name === "appearance-preference") {
-      if (value === "light" || value === "dark" || value === "system") {
-        return value as AppearancePreference
-      }
+    if (name === APPEARANCE_COOKIE_NAME) {
+      return appearancePreferenceSchema.safeParse(value).data
     }
   }
 
@@ -33,19 +36,18 @@ export function readAppearancePreferenceFromCookie(): AppearancePreference | und
 export async function syncAppearancePreferenceToServer(
   preference: AppearancePreference
 ): Promise<void> {
-  try {
-    // Call server action or API route to write cookie
-    const response = await fetch("/api/appearance-preference", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ preference }),
-    })
+  const validatedPreference = appearancePreferenceSchema.parse(preference)
+  const response = await fetch("/api/appearance-preference", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ preference: validatedPreference }),
+    credentials: "include",
+  })
 
-    if (!response.ok) {
-      console.warn("Failed to sync appearance preference to server")
-    }
-  } catch (error) {
-    console.warn("Error syncing appearance preference:", error)
+  if (!response.ok) {
+    throw new Error(
+      `Failed to persist appearance preference (${response.status})`
+    )
   }
 }
 

@@ -17,9 +17,7 @@ export function serializeCookie<T>(
   definition: CookieDefinition<T>,
   value: T
 ): string {
-  const parts = [
-    `${definition.name}=${definition.serialize(value)}`,
-  ]
+  const parts = [`${definition.name}=${definition.serialize(value)}`]
 
   const { options } = definition
 
@@ -32,9 +30,7 @@ export function serializeCookie<T>(
   }
 
   if (options.sameSite) {
-    parts.push(
-      `SameSite=${formatSameSite(options.sameSite)}`
-    )
+    parts.push(`SameSite=${formatSameSite(options.sameSite)}`)
   }
 
   if (options.secure) {

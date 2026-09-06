@@ -11,6 +11,18 @@
     "zustand": "^5.0.0",
     "zod": "^4.5.4"
   },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": false
+    },
+    "react-dom": {
+      "optional": false
+    }
+  },
   "scripts": {
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json,css,md}\"",
@@ -24,7 +36,6 @@
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
-    "@repo/foundation-test-mocks": "workspace:*",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^26.4.0",
     "@types/react": "^19.2.18",

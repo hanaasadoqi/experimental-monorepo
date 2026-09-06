@@ -1,11 +1,8 @@
 import type { AppearancePreference } from "@repo/features-preferences"
+import { syncAppearancePreferenceToServer } from "@repo/adapters-theme-next/client"
 
-import { serializeCookie } from "@repo/services-cookies"
-
-import { appearanceCookie } from "./cookie-policy"
-
-export function persistAppearancePreference(
+export async function persistAppearancePreference(
   preference: AppearancePreference
-): void {
-  document.cookie = serializeCookie(appearanceCookie, preference)
+): Promise<void> {
+  await syncAppearancePreferenceToServer(preference)
 }

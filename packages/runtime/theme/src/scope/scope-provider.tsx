@@ -2,7 +2,6 @@
 
 import { createScopeStore, type CreateScopeStoreOptions } from "./scope-store"
 import { ScopeContext } from "./scope-context"
-import { clearScopeBootstrapData } from "../adapters/scope-bootstrap"
 import { useEffect, useState, type ReactNode } from "react"
 
 export interface ThemeScopeProviderProps {
@@ -16,6 +15,8 @@ export interface ThemeScopeProviderProps {
   onOverridesChange?: CreateScopeStoreOptions["persistOverrides"]
   /** Adapter: how to persist dark mode. Default: localStorage */
   onDarkModeChange?: CreateScopeStoreOptions["persistDarkMode"]
+  /** Lazily injected environment storage. Omit for an in-memory scope. */
+  getStorage?: CreateScopeStoreOptions["getStorage"]
   children: ReactNode
 }
 
@@ -24,7 +25,7 @@ export interface ThemeScopeProviderProps {
  *
  * Handles:
  * - Creating isolated Zustand store per scopeId
- * - Rehydrating persisted state from storage (with skipHydration guard)
+ * - Rehydrating injected persisted state after hydration
  * - Coordinating with adapters for persistence
  * - Providing store to child components via context
  *
@@ -47,13 +48,9 @@ export interface ThemeScopeProviderProps {
  * 4. Store is provided via context (no direct .getState() in components)
  * 5. Components use useThemeScope hook (not context directly)
  *
- * SSR/Hydration (FOUC prevention):
- * - This is a client-only component ("use client")
- * - Bootstrap script runs BEFORE React, reads localStorage, applies scope to DOM
- * - Bootstrap script stores initial scope state in window.__INITIAL_SCOPES__
- * - Provider rehydrates from bootstrap state + persisted storage
- * - Reconciliation: bootstrap state (from localStorage) is canonical; storage is merged
- * - Result: scope is applied before React renders, no FOUC
+ * This provider does not promise pre-paint local-storage restoration. A future
+ * environment adapter may supply that behavior without duplicating runtime
+ * state rules.
  */
 export function ThemeScopeProvider({
   scopeId,
@@ -61,6 +58,7 @@ export function ThemeScopeProvider({
   darkModeEnabled,
   onOverridesChange,
   onDarkModeChange,
+  getStorage,
   children,
 }: ThemeScopeProviderProps) {
   // Create store once on mount, stable across re-renders
@@ -71,6 +69,7 @@ export function ThemeScopeProvider({
       darkModeEnabled,
       persistOverrides: onOverridesChange,
       persistDarkMode: onDarkModeChange,
+      getStorage,
     })
   )
 
@@ -79,10 +78,6 @@ export function ThemeScopeProvider({
   // This effect syncs React store with what bootstrap did
   useEffect(() => {
     void store.persist.rehydrate()
-
-    // Clear bootstrap data after hydration completes
-    // (prevents accidental re-use if provider remounts)
-    clearScopeBootstrapData()
   }, [store])
 
   return <ScopeContext.Provider value={store}>{children}</ScopeContext.Provider>

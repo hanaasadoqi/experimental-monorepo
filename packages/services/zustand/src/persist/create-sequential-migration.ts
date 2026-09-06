@@ -1,11 +1,16 @@
 import type { StoreMigrations } from "./types"
 
-export function createSequentialMigration<TState>(migrations: StoreMigrations<TState>) {
+export function createSequentialMigration<TState>(
+  migrations: StoreMigrations<TState>
+) {
   const versions = Object.keys(migrations)
     .map(Number)
     .sort((a, b) => a - b)
 
-  return async (persistedState: unknown, persistedVersion: number): Promise<TState> => {
+  return async (
+    persistedState: unknown,
+    persistedVersion: number
+  ): Promise<TState> => {
     let state: unknown = persistedState
 
     for (const version of versions) {

@@ -6,7 +6,7 @@ export const stringCookieCodec: CookieCodec<string> = {
 }
 
 export function enumCookieCodec<const TValues extends readonly string[]>(
-  values: TValues,
+  values: TValues
 ): CookieCodec<TValues[number]> {
   const allowed = new Set<string>(values)
 
@@ -21,12 +21,10 @@ export function enumCookieCodec<const TValues extends readonly string[]>(
 
     serialize(value) {
       if (!allowed.has(value)) {
-        throw new TypeError(
-          `Invalid cookie value: ${value}`,
-        )
+        throw new TypeError(`Invalid cookie value: ${value}`)
       }
 
       return value
-    }
+    },
   }
 }

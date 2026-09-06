@@ -1,6 +1,5 @@
-import { baseConfig } from "@repo/foundation-vitest-config/base";
-import { defineConfig } from "vitest/config";
-
+import { baseConfig } from "@repo/foundation-vitest-config/base"
+import { defineConfig } from "vitest/config"
 
 const config = defineConfig({
   ...baseConfig,
@@ -10,4 +9,4 @@ const config = defineConfig({
   },
 })
 
-export default config;
+export default config
