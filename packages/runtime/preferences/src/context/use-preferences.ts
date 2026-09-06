@@ -1,10 +1,8 @@
 "use client"
 
 import { createStoreHook } from "@repo/services-zustand/react"
-import { useEffect, useState } from "react"
 
 import type { PreferencesActions, PreferencesStore } from "../store"
-import { resolveModeFromAppearancePreference } from "../lib/resolve-appearance"
 
 import { usePreferencesStoreApi } from "./preferences-context"
 import type {
@@ -52,52 +50,4 @@ export function useSetTimeFormatPreference(): PreferencesActions["setTimeFormat"
 
 export function usePreferences(): PreferencesStore {
   return usePreferencesStore((state) => state)
-}
-
-/**
- * H5 FIX: Listen for OS appearance preference changes and return resolved mode.
- *
- * When user preference is set to "system", this hook observes OS theme changes
- * and triggers re-render when the system preference changes (light ↔ dark).
- *
- * Usage:
- * ```tsx
- * const mode = useSystemAwareAppearance() // "light" | "dark"
- * ```
- */
-export function useSystemAwareAppearance(): "light" | "dark" {
-  const appearance = useAppearancePreference()
-  const [systemMode, setSystemMode] = useState<"light" | "dark">("light")
-
-  useEffect(() => {
-    // Only setup listener if in browser and preference is "system"
-    if (typeof window === "undefined") {
-      setSystemMode("light")
-      return
-    }
-
-    try {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-
-      // Set initial value
-      setSystemMode(mediaQuery.matches ? "dark" : "light")
-
-      // Handler for preference changes
-      const handleChange = (e: MediaQueryListEvent) => {
-        setSystemMode(e.matches ? "dark" : "light")
-      }
-
-      // Listen for changes
-      mediaQuery.addEventListener("change", handleChange)
-
-      return () => {
-        mediaQuery.removeEventListener("change", handleChange)
-      }
-    } catch (error) {
-      console.error("Failed to setup system appearance listener:", error)
-      setSystemMode("light")
-    }
-  }, [])
-
-  return resolveModeFromAppearancePreference(appearance, systemMode)
 }

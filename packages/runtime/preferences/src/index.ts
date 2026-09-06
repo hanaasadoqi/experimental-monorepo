@@ -18,14 +18,9 @@
  *     - useLanguagePreference()      Query language preference
  *     - useSetLanguagePreference()   Update language preference
  *
- *   lib/
- *     - resolveAppearanceToDarkMode() Resolve preference to boolean dark mode
- *     - resolveModeFromAppearancePreference() Resolve to "light" | "dark"
- *
  * Import from: @repo/runtime-preferences only.
  *
  * Consumers: @repo/ui-preferences, @repo/features-preferences, app pages
  */
 export * from "./store"
 export * from "./context"
-export * from "./lib/resolve-appearance"
