@@ -29,7 +29,6 @@ function ScopeDemoContent() {
   return (
     <div
       ref={scopeRef}
-      data-scope-id="demo"
       className="border-primary rounded-lg border-2 border-dashed p-6"
       suppressHydrationWarning
     >

@@ -73,13 +73,17 @@ function readPersistedEnableDarkMode(value: unknown): boolean | undefined {
 }
 
 export interface ScopeState {
+  id: string
   scopeId: string
   overrides: ThemeOverrides
   enableDarkMode: boolean
   isDarkMode?: boolean
+  sourceId?: string
 }
 
 export interface ScopeActions {
+  getThemeId: () => string
+
   // primary accepts oklch color string (e.g., "oklch(55% 0.1 200)")
   setPrimaryColor: (primary: string) => void
   setDarkMode: (isDarkMode: boolean) => void
@@ -107,6 +111,7 @@ export interface CreateScopeStoreOptions {
   initialOverrides?: ThemeOverrides
   initialEnableDarkMode: boolean
   initialIsDarkMode?: boolean
+  sourceId?: string;
   /**
    * Called when overrides change. Adapter receives the overrides to persist.
    * Examples: localStorage write, cookie write, API call
@@ -214,6 +219,7 @@ function createMigratingScopeStorage(
  * @returns Zustand store API with persist middleware applied
  */
 export function createScopeStore({
+  sourceId,
   scopeId,
   initialOverrides = {},
   initialEnableDarkMode,
@@ -225,9 +231,13 @@ export function createScopeStore({
 }: CreateScopeStoreOptions): ScopeStoreApi {
   const scopeStorage = storage ?? createDeferredStorage(() => getStorage?.())
 
+
   return createStore<ScopeStore>()(
     persist<ScopeStore, [], [], Omit<ScopeState, "scopeId">>(
       (set, get) => ({
+        id: crypto.randomUUID(),
+        getThemeId: () => get().id,
+        sourceId: sourceId ?? undefined,
         scopeId,
         overrides: initialOverrides,
         enableDarkMode: initialEnableDarkMode,
@@ -279,7 +289,8 @@ export function createScopeStore({
         storage: createJSONStorage(() =>
           createMigratingScopeStorage(scopeStorage, scopeId)
         ),
-        partialize: ({ overrides, enableDarkMode, isDarkMode }) => ({
+        partialize: ({ id, overrides, enableDarkMode, isDarkMode }) => ({
+          id,
           overrides,
           enableDarkMode,
           ...(isDarkMode !== undefined && { isDarkMode }),

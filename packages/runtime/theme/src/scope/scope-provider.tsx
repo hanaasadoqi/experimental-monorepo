@@ -4,14 +4,13 @@ import { createScopeStore, type CreateScopeStoreOptions } from "./scope-store"
 import { ScopeContext } from "./scope-context"
 import type { ResolvedAppearancePreference } from "@repo/domain-preferences"
 import type { Theme } from "@repo/shared-contracts"
-import { compile } from "@repo/domain-theme/compiler"
-import type { ThemeCompilationInput } from "@repo/domain-theme/compiler"
 import {
   useEffect,
   useState,
   useSyncExternalStore,
   type ReactNode,
 } from "react"
+import { useThemeCompilation } from "..";
 
 export interface ThemeScopeProviderProps {
   /** Unique identifier for this scope */
@@ -19,9 +18,9 @@ export interface ThemeScopeProviderProps {
   /** Initial color overrides */
   initialOverrides?: CreateScopeStoreOptions["initialOverrides"]
   /** Selected theme; its capability controls appearance-driven dark mode. */
-  theme: Pick<Theme, "enableDarkMode">
+  theme?: Pick<Theme, "enableDarkMode">
   /** Concrete appearance used to initialize an enabled scope's mode. */
-  resolvedAppearance: ResolvedAppearancePreference
+  resolvedAppearance?: ResolvedAppearancePreference
   /** Keep this scope synchronized when resolved appearance changes. Root only. */
   followResolvedAppearance?: boolean
   /** Injected environment adapter for applying the concrete appearance. */
@@ -84,14 +83,14 @@ export function ThemeScopeProvider({
 }: ThemeScopeProviderProps) {
   const initializedIsDarkMode =
     initialIsDarkMode ??
-    (theme.enableDarkMode ? resolvedAppearance === "dark" : undefined)
+    (theme?.enableDarkMode ? resolvedAppearance === "dark" : undefined)
 
   // Create store once on mount, stable across re-renders
   const [store] = useState(() =>
     createScopeStore({
       scopeId,
       initialOverrides,
-      initialEnableDarkMode: theme.enableDarkMode,
+      initialEnableDarkMode: theme?.enableDarkMode ?? false,
       initialIsDarkMode: initializedIsDarkMode,
       persistOverrides: onOverridesChange,
       persistDarkMode: onDarkModeChange,
@@ -137,9 +136,11 @@ export function ThemeScopeProvider({
     }
   }, [store, scopeId])
 
-  // Compile theme and apply CSS variables to DOM
-  // Watches scope state (primary color, isDarkMode) and regenerates CSS on changes
-  // Retries finding scoped elements if not immediately available (e.g., async mount)
+  // Call the compilation hook at top level to get CSS variables and merged theme
+  // This computes the merged theme (source + overrides) and compiles to CSS
+  const { cssVariables } = useThemeCompilation()
+
+  // Apply compiled CSS variables to DOM and handle element detection/retry
   useEffect(() => {
     let observer: MutationObserver | undefined
     let retryTimeout: ReturnType<typeof setTimeout> | undefined
@@ -151,33 +152,17 @@ export function ThemeScopeProvider({
       return document.querySelector<HTMLElement>(`[data-scope-id="${scopeId}"]`)
     }
 
-    const compileAndApply = (compilationState: ReturnType<typeof store.getState>) => {
-      const primary = compilationState.overrides.primary
-      if (!primary) return false
-
-      const input: ThemeCompilationInput = {
-        primary,
-        isDarkMode: compilationState.isDarkMode,
-      }
-
-      const result = compile(input)
-
-      if (!result.report.success) {
-        console.warn(
-          `[ThemeCompilation] Failed to compile theme for scope "${scopeId}":`,
-          result.report.errors
-        )
-        return false
-      }
+    const applyCSS = (): boolean => {
+      if (!cssVariables) return false
 
       const targetElement = findTargetElement()
       if (!targetElement) {
-        return false // Element not found, will retry
+        return false
       }
 
-      // Apply CSS variables
-      for (const [key, value] of Object.entries(result.cssVariables)) {
-        targetElement.style.setProperty(key, value)
+      // Apply CSS variables to target element
+      for (const [key, value] of Object.entries(cssVariables)) {
+        targetElement.style.setProperty(key, value as string)
       }
 
       return true
@@ -189,8 +174,7 @@ export function ThemeScopeProvider({
 
       // Set up MutationObserver to detect when scope element is added to DOM
       observer = new MutationObserver(() => {
-        if (compileAndApply(store.getState())) {
-          // Success! Element found and CSS applied
+        if (applyCSS()) {
           observer?.disconnect()
           observer = undefined
         }
@@ -203,48 +187,25 @@ export function ThemeScopeProvider({
 
       // Fallback: retry via interval in case observer misses the mutation
       retryTimeout = setTimeout(() => {
-        if (compileAndApply(store.getState())) {
+        if (applyCSS()) {
           observer?.disconnect()
           observer = undefined
         }
       }, 1000)
     }
 
-    // Try immediately on mount
-    const initialState = store.getState()
-    if (initialState.overrides.primary) {
-      const applied = compileAndApply({
-        ...initialState,
-        scopeId
-      })
-      if (!applied && scopeId !== "root") {
-        // Element not found, set up retry for scoped themes
-        setupRetry()
-      }
+    // Try to apply CSS immediately
+    const applied = applyCSS()
+    if (!applied && scopeId !== "root") {
+      // Element not found, set up retry for scoped themes
+      setupRetry()
     }
 
-    // Subscribe to store changes and recompile
-    const unsubscribe = store.subscribe((state) => {
-      if (!state.overrides.primary) return
-
-      const applied = compileAndApply(state)
-      if (!applied && scopeId !== "root" && !observer) {
-        // Element disappeared or not found, retry
-        setupRetry()
-      } else if (applied && observer) {
-        // Success, cleanup observer
-        observer.disconnect()
-        observer = undefined
-        if (retryTimeout) clearTimeout(retryTimeout)
-      }
-    })
-
     return () => {
-      unsubscribe()
       observer?.disconnect()
       if (retryTimeout) clearTimeout(retryTimeout)
     }
-  }, [store, scopeId])
+  }, [scopeId, cssVariables])
 
   useEffect(() => {
     if (
@@ -272,5 +233,18 @@ export function ThemeScopeProvider({
     applyResolvedAppearance?.(isDarkMode ? "dark" : "light")
   }, [applyResolvedAppearance, enableDarkMode, isDarkMode])
 
-  return <ScopeContext.Provider value={store}>{children}</ScopeContext.Provider>
+  return (
+    <ScopeContext.Provider value={store}>
+      <div
+        data-scope-id={scopeId}
+        data-theme-id={store.getState().getThemeId()}
+        {...(!enableDarkMode ? undefined : { "data-theme": isDarkMode ? "dark" : "light" })}
+        className="theme-scope-provider"
+        id={scopeId}
+      >
+        {children}
+      </div>
+    </ScopeContext.Provider>
+  )
+
 }

@@ -1,82 +1,78 @@
 "use client"
 
-import { useEffect } from "react"
+import { useMemo } from "react"
 import { compile } from "@repo/domain-theme/compiler"
 import type { ThemeCompilationInput } from "@repo/domain-theme/compiler"
 import { useThemeScope } from "./use-theme-scope"
+import { useThemeRegistry } from "../registry/theme-registry-context"
 
 /**
- * Hook that compiles theme scope to CSS variables and applies them to DOM.
+ * Merge source theme with scope overrides to get the full theme for compilation.
  *
- * Monitors scope state (primary color, isDarkMode) and regenerates CSS
- * whenever they change. Applies variables to the scope's target element.
- *
- * Usage:
- * ```tsx
- * function ThemedContent() {
- *   const { scopeId } = useThemeScope()
- *   useThemeCompilation(scopeId)
- *   return <div className="themed-content">...</div>
- * }
- * ```
- *
- * Error handling: Logs warnings if compilation fails, does not throw.
- * This allows graceful degradation if primary color is invalid.
- *
- * TODO (Phase 3):
- * - Extract primary color from theme definition, not just overrides
- * - Add accent color support
- * - Consider memoizing compile() results with dependency tracking
+ * Priority: overrides take precedence over source theme properties.
+ * Returns the merged theme object ready for compile().
  */
-export function useThemeCompilation(scopeId: string): void {
-  const { overrides, isDarkMode } = useThemeScope()
+function mergeThemeWithOverrides(sourceTheme: any, overrides: any) {
+  return {
+    ...sourceTheme,
+    ...overrides,
+  }
+}
 
-  useEffect(() => {
-    if (!scopeId) return
+/**
+ * Compile theme with overrides and return CSS variables.
+ *
+ * Merges the source theme definition (colors, settings) with scope overrides
+ * (user's custom primary color, dark mode toggle, etc.) and compiles to CSS.
+ *
+ * Returns { cssVariables, report } or null if compilation fails.
+ * Logs warnings on error but does not throw.
+ */
+export function useThemeCompilation() {
+  const { overrides, isDarkMode, sourceId } = useThemeScope()
+  const { getTheme } = useThemeRegistry()
 
-    // Get primary color from scope overrides, or use a sensible default
-    const primary = overrides.primary
-    if (!primary) {
-      console.warn(
-        `[ThemeCompilation] No primary color in scope "${scopeId}", skipping compilation`
-      )
-      return
+  // Get source theme from registry if sourceId is set
+  const sourceTheme = useMemo(() => {
+    if (!sourceId) return null
+    return getTheme(sourceId)
+  }, [sourceId, getTheme])
+
+  // Merge source theme with scope overrides
+  const mergedTheme = useMemo(() => {
+    return mergeThemeWithOverrides(sourceTheme || {}, overrides)
+  }, [sourceTheme, overrides])
+
+  // Compile merged theme to CSS variables
+  const compilationResult = useMemo(() => {
+    if (!mergedTheme.primary) {
+      return null
     }
 
-    // Compile the theme
     const input: ThemeCompilationInput = {
-      primary,
-      isDarkMode,
+      primary: mergedTheme.primary,
+      isDarkMode: isDarkMode ?? false,
     }
 
-    const result = compile(input)
-
-    if (!result.report.success) {
-      console.warn(
-        `[ThemeCompilation] Failed to compile theme for scope "${scopeId}":`,
-        result.report.errors
-      )
-      return
+    try {
+      const result = compile(input)
+      if (!result.report.success) {
+        console.warn(
+          `[ThemeCompilation] Failed to compile theme:`,
+          result.report.errors
+        )
+        return null
+      }
+      return result
+    } catch (error) {
+      console.warn(`[ThemeCompilation] Compilation error:`, error)
+      return null
     }
+  }, [mergedTheme.primary, isDarkMode])
 
-    // Find the target element for this scope
-    // For root scope, target document.documentElement
-    // For other scopes, target element with data-scope-id="scopeId"
-    const targetElement =
-      scopeId === "root"
-        ? document.documentElement
-        : document.querySelector<HTMLElement>(`[data-scope-id="${scopeId}"]`)
-
-    if (!targetElement) {
-      console.warn(
-        `[ThemeCompilation] Could not find target element for scope "${scopeId}"`
-      )
-      return
-    }
-
-    // Apply CSS variables to target element
-    for (const [key, value] of Object.entries(result.cssVariables)) {
-      targetElement.style.setProperty(key, value)
-    }
-  }, [scopeId, overrides, isDarkMode])
+  return {
+    cssVariables: compilationResult?.cssVariables,
+    theme: mergedTheme,
+    compilationResult,
+  }
 }
