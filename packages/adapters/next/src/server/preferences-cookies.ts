@@ -1,6 +1,10 @@
 /**
  * Preference cookie definitions using services-cookies infrastructure.
  * These are adapter-level definitions (Next.js specific).
+ *
+ * Note: Only appearance and language are persisted via cookies.
+ * These are the critical preferences for SSR correctness.
+ * dateFormat and timeFormat are client-only and don't need server hydration.
  */
 import { defineCookie, enumCookieCodec } from "@repo/services-cookies"
 import {
