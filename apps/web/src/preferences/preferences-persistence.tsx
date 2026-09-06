@@ -5,7 +5,6 @@ import { useEffect, useRef } from "react"
 import {
   useAppearancePreference,
   useLanguagePreference,
-  usePreferences,
 } from "@repo/runtime-preferences"
 import { syncPreferencesToServer } from "./sync-preferences-to-server"
 
@@ -19,7 +18,6 @@ import { syncPreferencesToServer } from "./sync-preferences-to-server"
 export function PreferencesPersistence() {
   const appearance = useAppearancePreference()
   const language = useLanguagePreference()
-  const allPreferences = usePreferences()
   const isInitialRender = useRef(true)
 
   useEffect(() => {

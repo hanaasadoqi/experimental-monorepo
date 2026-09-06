@@ -6,7 +6,7 @@ import Script from "next/script"
 import { ApplicationProviders } from "../providers/application-providers"
 
 import { generateAppearanceBootstrapCode } from "@repo/adapters-theme-browser/bootstrap"
-import { readAppearancePreferenceCookie } from "../server/preferences/read-appearance-preference-cookie"
+import { readPreferencesCookie } from "@repo/adapters-next"
 
 import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/domain-preferences"
 
@@ -42,7 +42,8 @@ export const viewport: Viewport = {
 }
 
 export default async function RootLayout({ children }: RootLayoutProps) {
-  const storedPreference = await readAppearancePreferenceCookie()
+  const preferences = await readPreferencesCookie()
+  const storedPreference = preferences?.appearance
 
   const initialAppearance = storedPreference ?? DEFAULT_APPEARANCE_PREFERENCE
 
