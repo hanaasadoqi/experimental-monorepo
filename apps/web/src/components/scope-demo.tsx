@@ -1,0 +1,68 @@
+"use client"
+
+import { ThemeScopeProvider, useThemeScope } from "@repo/runtime-theme"
+import { ScopedThemeToggle } from "@repo/ui-theme/components"
+
+function ScopeDemoContent() {
+  const { isDarkModeEnabled, overrides, setDarkMode, setPrimaryColor } =
+    useThemeScope()
+
+  return (
+    <div
+      data-scope-id="demo"
+      className="rounded-lg border-2 border-dashed border-gray-300 p-6 dark:border-gray-600"
+      style={
+        overrides?.primaryColor
+          ? ({ "--scope-primary-color": overrides.primaryColor } as React.CSSProperties)
+          : undefined
+      }
+    >
+      <div className="space-y-4">
+        <div>
+          <h3 className="font-semibold text-base">Scoped Theme Demo</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Customize this section independently
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          <button
+            onClick={() => setDarkMode(!isDarkModeEnabled)}
+            className="rounded px-3 py-2 text-sm font-medium transition-colors bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            {isDarkModeEnabled ? "Disable Dark Mode" : "Enable Dark Mode"}
+          </button>
+
+          <div className="flex gap-2">
+            {["#3B82F6", "#8B5CF6", "#EC4899", "#F59E0B"].map((color) => (
+              <button
+                key={color}
+                onClick={() => setPrimaryColor(color)}
+                className="h-8 w-8 rounded transition-transform hover:scale-110"
+                style={{ backgroundColor: color }}
+                title={color}
+              />
+            ))}
+          </div>
+
+          <div className="text-xs text-gray-600 dark:text-gray-400">
+            <div>Dark mode: {isDarkModeEnabled ? "ON" : "OFF"}</div>
+            {overrides?.primaryColor && (
+              <div>Primary color: {overrides.primaryColor}</div>
+            )}
+          </div>
+        </div>
+
+        <ScopedThemeToggle />
+      </div>
+    </div>
+  )
+}
+
+export function ScopeDemo() {
+  return (
+    <ThemeScopeProvider scopeId="demo">
+      <ScopeDemoContent />
+    </ThemeScopeProvider>
+  )
+}

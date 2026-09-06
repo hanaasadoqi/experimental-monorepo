@@ -1,0 +1,32 @@
+{
+  "name": "@repo/adapters-theme-next",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "sideEffects": false,
+  "peerDependencies": {
+    "next": "^16.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "dependencies": {
+    "@repo/runtime-theme": "workspace:*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.server.json",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@repo/foundation-eslint-config": "workspace:*",
+    "@repo/foundation-prettier-config": "workspace:*",
+    "@repo/foundation-typescript-config": "workspace:*",
+    "@types/node": "^26.4.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "typescript": "^6.0.3"
+  },
+  "exports": {
+    "./server": "./src/server/index.ts",
+    "./client": "./src/client/index.ts"
+  }
+}
