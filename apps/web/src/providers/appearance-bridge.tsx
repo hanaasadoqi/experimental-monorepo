@@ -1,35 +1,26 @@
 "use client"
 
-import { useEffect, useState, type ReactNode } from "react"
+import { type ReactNode } from "react"
 
 import {
   useAppearancePreference,
   useSetAppearancePreference,
-} from "@repo/features-preferences"
+} from "@repo/runtime-preferences"
 
 import { ThemeToggleHotkey } from "@repo/ui-theme"
 import { resolveAppearance } from "@repo/runtime-theme"
 import {
-  detectSystemAppearance,
-  subscribeToSystemAppearanceChanges,
+  useSystemAppearance,
   applyAppearanceToDocument,
 } from "@repo/adapters-theme-browser"
-import type { ThemeMode } from "@repo/domain-theme/appearance"
+import type { ResolvedAppearancePreference } from "@repo/domain-preferences"
+import { useEffect } from "react"
 
-function useSystemAppearance(): ThemeMode {
-  const [systemAppearance, setSystemAppearance] = useState<ThemeMode>(() =>
-    detectSystemAppearance()
-  )
-
-  useEffect(() => {
-    const unsubscribe = subscribeToSystemAppearanceChanges(setSystemAppearance)
-    return unsubscribe
-  }, [])
-
-  return systemAppearance
-}
-
-function RootAppearanceSync({ appearance }: { appearance: ThemeMode }) {
+function RootAppearanceSync({
+  appearance,
+}: {
+  appearance: ResolvedAppearancePreference
+}) {
   useEffect(() => {
     applyAppearanceToDocument(appearance)
   }, [appearance])
@@ -47,18 +38,18 @@ export function AppearanceBridge({ children }: AppearanceBridgeProps) {
   const resolvedPreference = resolveAppearance(preference, systemAppearance)
   const setPreference = useSetAppearancePreference()
 
-  const handleAppearanceChange = (next: ThemeMode) => {
+  const handleAppearanceChange = (next: ResolvedAppearancePreference) => {
     setPreference(next)
   }
 
   return (
-    <div data-theme={resolvedPreference} className={resolvedPreference}>
+    <>
       <RootAppearanceSync appearance={resolvedPreference} />
       <ThemeToggleHotkey
         resolvedAppearance={resolvedPreference}
         onAppearanceChange={handleAppearanceChange}
       />
       {children}
-    </div>
+    </>
   )
 }

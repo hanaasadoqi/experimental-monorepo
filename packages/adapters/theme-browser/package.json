@@ -5,7 +5,10 @@
   "private": true,
   "sideEffects": false,
   "dependencies": {
-    "@repo/domain-theme": "workspace:*"
+    "@repo/domain-preferences": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^19.2.0"
   },
   "scripts": {
     "check-types": "tsc --noEmit",
@@ -20,12 +23,11 @@
     "@repo/foundation-prettier-config": "workspace:*",
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
-    "@repo/foundation-vitest-utils": "workspace:*",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5",
     "typescript": "^6.0.3",
     "eslint": "^9.39.5",
     "prettier": "^3.9.6",
+    "react": "19.2.4",
     "vitest": "^4.1.11",
     "@vitest/coverage-v8": "^4.1.11"
   },

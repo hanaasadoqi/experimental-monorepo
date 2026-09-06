@@ -72,7 +72,8 @@ describe("createRequiredContext", () => {
       id: string
     }
 
-    const { useRequiredValue } = createRequiredContext<TestValue>("CustomContext")
+    const { useRequiredValue } =
+      createRequiredContext<TestValue>("CustomContext")
 
     function TestComponent() {
       useRequiredValue()
@@ -116,7 +117,8 @@ describe("createRequiredContext", () => {
       role: "admin" | "user"
     }
 
-    const { Provider, useRequiredValue } = createRequiredContext<User>("UserContext")
+    const { Provider, useRequiredValue } =
+      createRequiredContext<User>("UserContext")
 
     const user: User = { id: 1, email: "test@example.com", role: "admin" }
 
@@ -144,7 +146,8 @@ describe("createRequiredContext", () => {
       level: number
     }
 
-    const { Provider, useRequiredValue } = createRequiredContext<Value>("NestedContext")
+    const { Provider, useRequiredValue } =
+      createRequiredContext<Value>("NestedContext")
 
     function TestComponent() {
       const value = useRequiredValue()
@@ -237,7 +240,8 @@ describe("createRequiredContext", () => {
       data: string
     }
 
-    const { Provider, useRequiredValue } = createRequiredContext<Value>("TestContext")
+    const { Provider, useRequiredValue } =
+      createRequiredContext<Value>("TestContext")
 
     function Consumer() {
       useRequiredValue()
@@ -342,7 +346,8 @@ describe("createRequiredContext", () => {
       id: string
     }
 
-    const { Provider, useRequiredValue } = createRequiredContext<Value>("TestContext")
+    const { Provider, useRequiredValue } =
+      createRequiredContext<Value>("TestContext")
 
     let renderCount = 0
     const sameValue = { id: "stable" }

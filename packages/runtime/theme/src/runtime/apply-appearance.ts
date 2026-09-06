@@ -1,4 +1,4 @@
-import type { ThemeMode } from "@repo/domain-theme/appearance"
+import type { ResolvedAppearancePreference } from "@repo/domain-preferences"
 
 export interface AppearanceTarget {
   classList: {
@@ -11,7 +11,7 @@ export interface AppearanceTarget {
 }
 
 export function applyAppearance(
-  appearance: ThemeMode,
+  appearance: ResolvedAppearancePreference,
   root: AppearanceTarget
 ): void {
   root.classList.toggle("dark", appearance === "dark")

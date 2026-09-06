@@ -10,16 +10,17 @@
     "./storybook": "./storybook.mjs"
   },
   "dependencies": {
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.39.5",
+    "@typescript-eslint/parser": "^8.69.0",
     "eslint-config-next": "^16.3.3",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-storybook": "^0.6.10",
+    "eslint-plugin-storybook": "^0.10.0",
     "eslint-plugin-turbo": "^1.7.0",
     "globals": "^15.2.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^7.9.0"
+    "typescript-eslint": "^8.0.0"
   },
   "peerDependencies": {
     "eslint": "^9.0.0"

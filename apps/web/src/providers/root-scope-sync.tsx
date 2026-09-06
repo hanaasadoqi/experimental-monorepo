@@ -1,46 +1,39 @@
 "use client"
 
 import { useEffect } from "react"
-import { useAppearancePreference, useSetAppearancePreference } from "@repo/features-preferences"
+import { useAppearancePreference } from "@repo/runtime-preferences"
 import { useThemeScope } from "@repo/runtime-theme"
+import { useSystemAppearance } from "@repo/adapters-theme-browser"
 
 /**
- * Syncs preferences ↔ root scope state.
+ * Syncs root scope state from preference.
  *
- * - When preference changes via PreferencesProvider, updates root scope
- * - When root scope dark mode changes, updates preference
+ * Preference is the source of truth.
+ * Root scope reacts to preference changes (one-way sync).
  *
- * This keeps both systems in sync during the migration to unified scoped-theme architecture.
+ * For "system" preference, resolves using actual system appearance.
+ * This replaces bidirectional sync, which was fragile and could cause loops.
  */
 export function RootScopeSync() {
   const preference = useAppearancePreference()
-  const setPreference = useSetAppearancePreference()
-  const { isDarkModeEnabled, setDarkMode } = useThemeScope()
+  const systemAppearance = useSystemAppearance()
+  const { setDarkMode } = useThemeScope()
 
   // Sync preference → root scope (preference is source of truth)
+  // One-way sync eliminates risk of synchronization loops.
+  // For "system" preference, resolve using actual system appearance.
   useEffect(() => {
     const nextDarkMode =
-      preference === "dark" ? true : preference === "light" ? false : undefined
+      preference === "dark"
+        ? true
+        : preference === "light"
+          ? false
+          : systemAppearance === "dark"
+            ? true
+            : false
 
-    if (isDarkModeEnabled !== nextDarkMode) {
-      setDarkMode(nextDarkMode)
-    }
-  }, [preference, isDarkModeEnabled, setDarkMode])
-
-  // Sync root scope → preference (detect independent scope changes)
-  // Explicitly handles all three cases: true, false, undefined (system)
-  useEffect(() => {
-    const nextPreference: typeof preference =
-      isDarkModeEnabled === true
-        ? "dark"
-        : isDarkModeEnabled === false
-          ? "light"
-          : "system"
-
-    if (preference !== nextPreference) {
-      setPreference(nextPreference)
-    }
-  }, [isDarkModeEnabled, preference, setPreference])
+    setDarkMode(nextDarkMode)
+  }, [preference, systemAppearance, setDarkMode])
 
   return null
 }

@@ -85,7 +85,7 @@ export function createStoreContext<TState>(
     if (store === null) {
       throw new Error(
         `\`useStoreApi()\` must be called within a <${name}Provider>.\n` +
-        `Ensure the component tree is wrapped with: <Provider value={store}>...</Provider>`
+          `Ensure the component tree is wrapped with: <Provider value={store}>...</Provider>`
       )
     }
     return store

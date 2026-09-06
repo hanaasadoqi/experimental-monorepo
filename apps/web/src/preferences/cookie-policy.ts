@@ -1,4 +1,4 @@
-import { appearancePreferenceSchema } from "@repo/features-preferences"
+import { appearancePreferenceSchema } from "@repo/domain-preferences"
 import { defineCookie } from "@repo/services-cookies"
 import {
   APPEARANCE_COOKIE_MAX_AGE,

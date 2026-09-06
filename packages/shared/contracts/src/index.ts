@@ -13,6 +13,9 @@ export type {
   SliceState,
   SliceExtractor,
   Selector,
+  ThemeState,
+  ThemeActions,
+  ThemeStore,
 } from "./types/store"
 export type { LoginMethod, AuthProvider } from "./types/auth"
 export { loginFormSchema, type LoginForm } from "./schemas/auth"

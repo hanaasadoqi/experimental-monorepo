@@ -1,5 +1,5 @@
 {
-  "extends": "./packages/foundation/tooling/typescript-config/base.json",
+  "extends": "@repo/foundation-typescript-config/base.json",
   "exclude": [
     "node_modules",
     "dist",

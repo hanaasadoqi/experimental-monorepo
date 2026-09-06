@@ -23,13 +23,14 @@
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-vitest-utils": "workspace:*",
     "eslint": "^9.39.5",
+    "next": "16.2.11",
     "prettier": "^3.9.6",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11",
     "@vitest/coverage-v8": "^4.1.11"
   },
   "peerDependencies": {
-    "next": "^16.3.3"
+    "next": "^16.2.11"
   },
   "peerDependenciesMeta": {
     "next": {

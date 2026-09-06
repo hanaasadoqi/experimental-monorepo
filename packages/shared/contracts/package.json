@@ -15,6 +15,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@repo/domain-theme": "workspace:*",
     "@repo/foundation-eslint-config": "workspace:*",
     "@repo/foundation-prettier-config": "workspace:*",
     "@repo/foundation-typescript-config": "workspace:*",
@@ -23,11 +24,17 @@
     "eslint": "^9.39.5",
     "prettier": "^3.9.6",
     "typescript": "^6.0.3",
+    "zustand": "^5.0.15",
     "vitest": "^4.1.11",
     "@vitest/coverage-v8": "^4.1.11"
   },
   "peerDependencies": {
     "zustand": "^5.0.15"
+  },
+  "peerDependenciesMeta": {
+    "zustand": {
+      "optional": true
+    }
   },
   "exports": {
     ".": "./src/index.ts",

@@ -2,13 +2,13 @@
 
 import { useEffect } from "react"
 
-import type { ThemeMode } from "@repo/domain-theme/appearance"
+import type { ResolvedAppearancePreference } from "@repo/domain-preferences"
 
 import { isTypingTarget } from "./is-typing-target"
 
 export interface ThemeToggleHotkeyProps {
-  resolvedAppearance: ThemeMode
-  onAppearanceChange: (next: ThemeMode) => void
+  resolvedAppearance: ResolvedAppearancePreference
+  onAppearanceChange: (next: ResolvedAppearancePreference) => void
 }
 
 export function ThemeToggleHotkey({

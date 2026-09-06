@@ -8,7 +8,7 @@ import { ApplicationProviders } from "../providers/application-providers"
 import { generateAppearanceBootstrapCode } from "@repo/adapters-theme-browser/bootstrap"
 import { readAppearancePreferenceCookie } from "../server/preferences/read-appearance-preference-cookie"
 
-import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/features-preferences"
+import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/domain-preferences"
 
 import "./globals.css"
 import { Viewport } from "next"
@@ -49,6 +49,11 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   const explicitAppearance =
     initialAppearance === "system" ? undefined : initialAppearance
 
+  // When preference is "system", we suppress hydration warnings because
+  // the theme class will be added by bootstrap script (beforeInteractive),
+  // which may differ from server render due to browser's system preference.
+  const needsHydrationSuppression = initialAppearance === "system"
+
   return (
     <html
       lang="en"
@@ -71,7 +76,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             }
           : undefined
       }
-      suppressHydrationWarning
+      suppressHydrationWarning={needsHydrationSuppression}
     >
       <body>
         <Script

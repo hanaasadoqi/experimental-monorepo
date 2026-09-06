@@ -1,9 +1,9 @@
 "use client"
 
 import {
-  AppearancePreference,
+  type AppearancePreference,
   appearancePreferenceSchema,
-} from "@repo/features-preferences"
+} from "@repo/domain-preferences"
 
 type AppearanceSelectProps = {
   preference: AppearancePreference

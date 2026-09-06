@@ -1,9 +1,0 @@
-{
-  "extends": "@repo/foundation-typescript-config/base.json",
-  "compilerOptions": {
-    "lib": ["ES2020"],
-    "noEmit": true
-  },
-  "include": ["src/server"],
-  "exclude": ["node_modules", "dist"]
-}

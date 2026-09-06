@@ -5,13 +5,13 @@
   "private": true,
   "sideEffects": false,
   "peerDependencies": {
-    "next": "16.2.6"
+    "next": "^16.2.11"
   },
   "dependencies": {
     "@repo/domain-preferences": "workspace:*"
   },
   "scripts": {
-    "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.server.json",
+    "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,mjs,js,json}\"",
@@ -23,7 +23,6 @@
     "@repo/foundation-prettier-config": "workspace:*",
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
-    "@repo/foundation-vitest-utils": "workspace:*",
     "@types/node": "^26.4.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",

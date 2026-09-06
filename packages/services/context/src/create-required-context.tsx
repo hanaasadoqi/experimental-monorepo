@@ -50,7 +50,7 @@ export interface RequiredContextResult<T> {
  * ```tsx
  * const value = useMemo(() => ({ data }), [dependencies])
  * <Provider value={value}><Child /></Provider>
-  * ```
+ * ```
  */
 export function createRequiredContext<T>(
   displayName: string
@@ -65,9 +65,7 @@ export function createRequiredContext<T>(
     value: T
     children: ReactNode
   }): ReactNode {
-    return (
-      <Context.Provider value={value}>{children}</Context.Provider>
-    )
+    return <Context.Provider value={value}>{children}</Context.Provider>
   }
 
   Provider.displayName = `${displayName}Provider`

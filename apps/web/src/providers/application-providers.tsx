@@ -2,18 +2,19 @@
 
 import type { ReactNode } from "react"
 
+import { PreferencesProvider } from "@repo/runtime-preferences"
+import type { AppearancePreference } from "@repo/domain-preferences"
 import {
-  PreferencesProvider,
-  type AppearancePreference,
-} from "@repo/features-preferences"
-import { ThemeScopeProvider, type ThemeScopeProviderProps } from "@repo/runtime-theme"
+  ThemeScopeProvider,
+  type ThemeScopeProviderProps,
+} from "@repo/runtime-theme"
 
 import { AppearanceBridge } from "./appearance-bridge"
 import { RootScopeSync } from "./root-scope-sync"
 
 import { PreferencesPersistence } from "../preferences/preferences-persistence"
 import { ClientApplicationProvider } from "./client-application-providers"
-
+// import { ThemeToggleHotkey } from "@repo/ui-theme/components"
 export interface ApplicationProvidersProps {
   children: ReactNode
   initialAppearance?: AppearancePreference
@@ -41,7 +42,11 @@ export function ApplicationProviders({
         On reload: cookie → PreferencesProvider → RootScopeSync → ThemeScopeProvider.
       */}
       <ThemeScopeProvider scopeId="root" {...scopeState}>
-        <PreferencesProvider initialAppearance={initialAppearance}>
+        <PreferencesProvider
+          initialPreferences={
+            initialAppearance ? { appearance: initialAppearance } : undefined
+          }
+        >
           <RootScopeSync />
           <PreferencesPersistence />
           <AppearanceBridge>{children}</AppearanceBridge>

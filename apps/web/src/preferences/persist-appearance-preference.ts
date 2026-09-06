@@ -1,4 +1,4 @@
-import type { AppearancePreference } from "@repo/features-preferences"
+import type { AppearancePreference } from "@repo/domain-preferences"
 import { syncAppearancePreferenceToServer } from "@repo/adapters-theme-next/client"
 
 export async function persistAppearancePreference(

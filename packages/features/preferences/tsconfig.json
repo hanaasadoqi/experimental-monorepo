@@ -1,13 +1,12 @@
 {
-  "extends": "@repo/foundation-typescript-config/react-library.json",
+  "extends": "@repo/foundation-typescript-config/base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
     "module": "esnext",
     "moduleResolution": "bundler",
-    "target": "es2025",
-    "lib": ["es2025", "dom", "DOM.Iterable", "DOM.AsyncIterable"],
-    "jsx": "react-jsx"
+    "target": "es2024",
+    "lib": ["es2024"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "coverage", "dist", ".turbo"]

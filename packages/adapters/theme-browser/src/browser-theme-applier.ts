@@ -3,7 +3,7 @@
  * Applies theme to document via CSS variables and attributes.
  */
 
-import type { ThemeMode } from "@repo/domain-theme/appearance"
+import type { ResolvedAppearancePreference } from "@repo/domain-preferences"
 
 export interface ScopeThemeOverrides {
   isDarkMode?: boolean
@@ -15,7 +15,9 @@ export interface ScopeThemeOverrides {
  * Toggles only the classes owned by appearance so application and font classes
  * on the root element remain intact.
  */
-export function applyAppearanceToDocument(appearance: ThemeMode): void {
+export function applyAppearanceToDocument(
+  appearance: ResolvedAppearancePreference
+): void {
   if (typeof document === "undefined") return
 
   const root = document.documentElement

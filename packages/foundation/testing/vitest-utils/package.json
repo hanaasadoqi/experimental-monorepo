@@ -28,25 +28,23 @@
     "@repo/foundation-vitest-config": "workspace:*",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.11",
     "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9.39.5",
-    "@eslint/js": "^10.0.1",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^15.2.0",
-    "@typescript-eslint/parser": "^6.7.1",
     "prettier": "^3.9.6"
   },
   "peerDependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "vitest": "^4.1.0",
-    "@vitest/coverage-v8": "^4.1.11",
-    "eslint": "^9.39.5",
-    "@eslint/js": "^10.0.1",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^15.2.0",
-    "@typescript-eslint/parser": "^6.7.1",
-    "prettier": "^3.9.6"
+    "vitest": "^4.1.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
   }
 }

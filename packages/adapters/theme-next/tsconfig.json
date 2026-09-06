@@ -3,6 +3,12 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["src/client"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "coverage",
+    ".turbo",
+    "**.test.ts",
+    "**/*.test.tsx"
+  ]
 }

@@ -51,7 +51,7 @@ export interface OptionalContextResult<T> {
  * ```tsx
  * const value = useMemo(() => ({ /data/ }), [dependencies])
  * <Provider value={value}><Child /></Provider>
-  * ```
+ * ```
  */
 export function createOptionalContext<T>(
   displayName: string
@@ -66,9 +66,7 @@ export function createOptionalContext<T>(
     value: T
     children: ReactNode
   }): ReactNode {
-    return (
-      <Context.Provider value={value}>{children}</Context.Provider>
-    )
+    return <Context.Provider value={value}>{children}</Context.Provider>
   }
 
   Provider.displayName = `${displayName}Provider`

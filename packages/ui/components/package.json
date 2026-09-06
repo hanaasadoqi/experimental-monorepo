@@ -46,6 +46,9 @@
     "@repo/foundation-vitest-utils": "workspace:*",
     "eslint": "^9.39.5",
     "jsdom": "^27.0.0",
+    "prettier": "^3.9.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11",
     "@vitest/coverage-v8": "^4.1.11"

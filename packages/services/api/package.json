@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "axios": "^1.7.7",
-    "@faker-js/faker": "^9.0.0"
+    "@faker-js/faker": "^10.5.0"
   },
   "devDependencies": {
     "@repo/foundation-eslint-config": "workspace:*",
@@ -23,11 +23,8 @@
     "@repo/foundation-vitest-utils": "workspace:*",
     "@types/node": "^26.4.0",
     "eslint": "^9.39.5",
-    "@eslint/js": "^10.0.1",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^15.2.0",
+    "prettier": "^3.9.6",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^7.9.0",
     "vitest": "^4.1.11",
     "@vitest/coverage-v8": "^4.1.11"
   },

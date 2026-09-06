@@ -1,25 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render } from "@testing-library/react"
+import { createMatchMediaMock } from "@repo/foundation-test-mocks/browser"
 import { AppearanceBridge } from "./appearance-bridge"
 
 const mockSetPreference = vi.fn()
 let mockPreference: "light" | "dark" | "system" = "system"
 let capturedOnAppearanceChange: ((next: "light" | "dark") => void) | undefined
 
-// Mock window.matchMedia for system appearance detection
-const mockMatchMedia = vi.fn(() => ({
-  matches: false,
-  media: "(prefers-color-scheme: dark)",
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn(),
-  dispatchEvent: vi.fn(),
-}))
+const { matchMedia: mockMatchMedia } = createMatchMediaMock(false)
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: mockMatchMedia,
 })
 
-vi.mock("@repo/features-preferences", () => ({
+vi.mock("@repo/runtime-preferences", () => ({
   useAppearancePreference: () => mockPreference,
   useSetAppearancePreference: () => mockSetPreference,
 }))
@@ -31,8 +25,18 @@ vi.mock("@repo/runtime-theme", () => ({
   ) => (preference === "system" ? systemAppearance : preference),
 }))
 
-// useSystemAppearance and RootAppearanceSync are now defined in appearance-bridge.tsx
-// No need to mock them since they're internal to the component
+vi.mock("@repo/adapters-theme-browser", () => ({
+  useSystemAppearance: () => "light",
+  applyAppearanceToDocument: (appearance: string) => {
+    // Mock implementation that applies theme to document root
+    document.documentElement.dataset.theme = appearance
+    if (appearance === "dark") {
+      document.documentElement.classList.add("dark")
+    } else if (appearance === "light") {
+      document.documentElement.classList.remove("dark")
+    }
+  },
+}))
 
 vi.mock("@repo/ui-theme", () => ({
   ThemeToggleHotkey: (props: {
@@ -69,13 +73,19 @@ describe("AppearanceBridge (app composition)", () => {
     expect(mockSetPreference).toHaveBeenCalledWith("light")
   })
 
-  it("sets the wrapper's data-theme and className to the resolved appearance", () => {
+  it("applies the appearance to the document element", () => {
     mockPreference = "dark"
-    const { container } = render(<AppearanceBridge>child</AppearanceBridge>)
-    const wrapper = container.firstElementChild as HTMLElement
-    expect(wrapper.dataset.theme).toBe("dark")
-    expect(wrapper.className).toBe("dark")
-    expect(wrapper.style.colorScheme).toBe("")
+    const { container } = render(
+      <AppearanceBridge>
+        <div>child</div>
+      </AppearanceBridge>
+    )
+
+    // AppearanceBridge now returns a fragment, so the child goes directly into container
+    expect(container.textContent).toContain("child")
+
+    // Theme is applied to the document root via RootAppearanceSync
+    expect(document.documentElement.dataset.theme).toBe("dark")
     expect(document.documentElement.classList.contains("dark")).toBe(true)
     expect(document.documentElement.classList.contains("font-variable")).toBe(
       true

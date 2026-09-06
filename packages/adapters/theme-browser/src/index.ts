@@ -3,6 +3,7 @@ export {
   detectSystemAppearance,
   subscribeToSystemAppearanceChanges,
 } from "./browser-appearance-environment"
+export { useSystemAppearance } from "./use-system-appearance"
 export type { AppearanceEnvironment } from "./browser-appearance-environment"
 
 export { getBrowserThemeStorage } from "./browser-storage"

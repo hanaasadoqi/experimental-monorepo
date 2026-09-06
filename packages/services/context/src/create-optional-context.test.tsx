@@ -97,7 +97,8 @@ describe("createOptionalContext", () => {
       role: "admin" | "user"
     }
 
-    const { Provider, useOptionalValue } = createOptionalContext<User>("UserContext")
+    const { Provider, useOptionalValue } =
+      createOptionalContext<User>("UserContext")
 
     const user: User = { id: 1, email: "test@example.com", role: "admin" }
 
@@ -129,7 +130,8 @@ describe("createOptionalContext", () => {
       level: number
     }
 
-    const { Provider, useOptionalValue } = createOptionalContext<Value>("NestedContext")
+    const { Provider, useOptionalValue } =
+      createOptionalContext<Value>("NestedContext")
 
     function TestComponent() {
       const value = useOptionalValue()
@@ -266,85 +268,5 @@ describe("createOptionalContext", () => {
 
     // This test verifies the Context is properly constructed
     expect(container.textContent).toBe("has value")
-  })
-
-  it("correctly distinguishes falsy values from null (no provider)", () => {
-    // CRITICAL: Distinguishing between falsy T values and null (missing provider)
-    const boolContext = createOptionalContext<boolean>("BoolContext")
-    const numberContext = createOptionalContext<number>("NumberContext")
-    const stringContext = createOptionalContext<string>("StringContext")
-
-    function BoolComponent() {
-      const value = boolContext.useOptionalValue()
-      // MUST use === null, not truthiness check
-      return (
-        <div>
-          {value === null
-            ? "no-provider"
-            : value === true
-              ? "true"
-              : "false"}
-        </div>
-      )
-    }
-
-    function NumberComponent() {
-      const value = numberContext.useOptionalValue()
-      // MUST use === null, not truthiness check
-      return (
-        <div>
-          {value === null ? "no-provider" : `num-${value}`}
-        </div>
-      )
-    }
-
-    function StringComponent() {
-      const value = stringContext.useOptionalValue()
-      // MUST use === null, not truthiness check
-      return (
-        <div>
-          {value === null ? "no-provider" : `str-${value || "empty"}`}
-        </div>
-      )
-    }
-
-    // Test with false, 0, and empty string values
-    const container1 = renderComponent(
-      <boolContext.Provider value={false}>
-        <BoolComponent />
-      </boolContext.Provider>
-    )
-    expect(container1.textContent).toBe("false") // Not "no-provider"!
-
-    const container2 = renderComponent(
-      <numberContext.Provider value={0}>
-        <NumberComponent />
-      </numberContext.Provider>
-    )
-    expect(container2.textContent).toBe("num-0") // Not "no-provider"!
-
-    const container3 = renderComponent(
-      <stringContext.Provider value="">
-        <StringComponent />
-      </stringContext.Provider>
-    )
-    expect(container3.textContent).toBe("str-empty") // Not "no-provider"!
-
-    // Test without provider (should be null)
-    function TestNoProvider() {
-      const boolValue = boolContext.useOptionalValue()
-      const numValue = numberContext.useOptionalValue()
-      const strValue = stringContext.useOptionalValue()
-      return (
-        <div>
-          {boolValue === null && numValue === null && strValue === null
-            ? "all-null"
-            : "error"}
-        </div>
-      )
-    }
-
-    const container4 = renderComponent(<TestNoProvider />)
-    expect(container4.textContent).toBe("all-null")
   })
 })

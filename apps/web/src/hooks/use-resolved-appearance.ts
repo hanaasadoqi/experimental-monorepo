@@ -1,12 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useAppearancePreference } from "@repo/features-preferences"
+import { useAppearancePreference } from "@repo/runtime-preferences"
 import { resolveAppearance } from "@repo/runtime-theme"
-import type { ThemeMode } from "@repo/domain-theme/appearance"
+import type { ResolvedAppearancePreference } from "@repo/domain-preferences"
 
-function useSystemAppearance(): ThemeMode {
-  const [system, setSystem] = useState<ThemeMode>(() => {
+function useSystemAppearance(): ResolvedAppearancePreference {
+  const [system, setSystem] = useState<ResolvedAppearancePreference>(() => {
     if (typeof window === "undefined") return "light"
     return window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
@@ -33,7 +33,7 @@ function useSystemAppearance(): ThemeMode {
  * and system detection. Re-renders when the OS setting changes, and is SSR-safe
  * (serves "light" on the server before hydration).
  */
-export function useResolvedAppearance(): ThemeMode {
+export function useResolvedAppearance(): ResolvedAppearancePreference {
   const preference = useAppearancePreference()
   const systemAppearance = useSystemAppearance()
 

@@ -1,37 +1,30 @@
-/**@example
+/**
+ * `@repo/features-preferences` — preferences feature layer.
  *
- * const appearance = useAppearancePreference()
- * const setAppearance = useSetAppearancePreference()
- * const appearancePref = usePreferencesStore((state) => state.appearance)
+ * Orchestration and high-level operations across preferences.
+ *
+ * Provides:
+ *   - PreferencesManager: Atomic batch operations, validation
+ *   - PreferencesReset: Reset to defaults with flexible options
+ *   - PreferencesSerializer: Import/export snapshots to JSON
+ *   - Types for preference operations and change events
+ *
+ * Composes: domain (types) + runtime (hooks) + ui (components)
+ *
+ * This layer is pure (no React, no Next.js, no browser APIs).
+ * See `.docs/architecture-boundaries.md`.
  */
 
-export {
-  appearancePreferenceSchema,
-  preferencesSchema,
-  DEFAULT_APPEARANCE_PREFERENCE,
-  DEFAULT_PREFERENCES,
+// Types & interfaces
+export type {
+  UserPreferences,
+  PreferencesChangeEvent,
+  PreferencesResetOptions,
+  PreferencesSnapshot,
+  PreferenceValidationResult,
 } from "./model"
 
-export type {
-  AppearancePreference,
-  Preferences,
-  PreferencesActions,
-  PreferencesState,
-} from "./model"
-
-export { createPreferencesStore } from "./store"
-
-export type {
-  PreferencesStore,
-  PreferencesStoreApi,
-  CreatePreferencesStoreOptions,
-} from "./store"
-
-export {
-  PreferencesProvider,
-  usePreferencesStore,
-  useAppearancePreference,
-  useSetAppearancePreference,
-} from "./react"
-
-export type { PreferencesProviderProps } from "./react"
+// Managers & utilities
+export { PreferencesManager } from "./preferences-manager"
+export { PreferencesReset } from "./preferences-reset"
+export { PreferencesSerializer } from "./preferences-serializer"

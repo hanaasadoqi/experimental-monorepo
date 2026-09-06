@@ -22,6 +22,8 @@ export async function readAppearanceCookie(): Promise<
   const cookieStore = await getCookieStore()
   const value = cookieStore.get(APPEARANCE_COOKIE_NAME)?.value
 
+  if (value === undefined) return undefined
+
   return appearancePreferenceSchema.safeParse(value).data
 }
 
@@ -29,28 +31,51 @@ export async function readAppearanceCookie(): Promise<
  * Write appearance preference to response cookies.
  * Server-only function (use in Server Components or API routes).
  *
+ * Returns success status and optional error message.
+ * Logs errors for debugging.
+ *
  * Usage in API route:
  * ```ts
  * export async function POST(request: Request) {
  *   const { preference } = await request.json()
- *   await writeAppearanceCookie(preference)
+ *   const result = await writeAppearanceCookie(preference)
+ *   if (!result.success) {
+ *     return Response.json({ ok: false, error: result.error }, { status: 500 })
+ *   }
  *   return Response.json({ ok: true })
  * }
  * ```
  */
 export async function writeAppearanceCookie(
   preference: AppearancePreference
-): Promise<void> {
-  const cookieStore = await getCookieStore()
-  const validatedPreference = appearancePreferenceSchema.parse(preference)
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const cookieStore = await getCookieStore()
+    const validatedPreference = appearancePreferenceSchema.parse(preference)
 
-  cookieStore.set(APPEARANCE_COOKIE_NAME, validatedPreference, {
-    maxAge: APPEARANCE_COOKIE_MAX_AGE,
-    path: "/",
-    httpOnly: false,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  })
+    cookieStore.set(APPEARANCE_COOKIE_NAME, validatedPreference, {
+      maxAge: APPEARANCE_COOKIE_MAX_AGE,
+      path: "/",
+      httpOnly: false,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    })
+
+    // Verify cookie was written correctly by reading it back
+    const written = cookieStore.get(APPEARANCE_COOKIE_NAME)?.value
+    if (written !== validatedPreference) {
+      return {
+        success: false,
+        error: `Cookie write failed verification: expected ${validatedPreference}, got ${written}`,
+      }
+    }
+
+    return { success: true }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error"
+    console.error(`Failed to write appearance cookie: ${message}`)
+    return { success: false, error: message }
+  }
 }
 
 /**

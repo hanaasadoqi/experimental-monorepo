@@ -54,7 +54,10 @@ export type FontFamilies = z.infer<typeof fontFamiliesSchema>
 export const typographyPresetSchema = z.object({
   headingScale: z.number().default(1.2).describe("Heading size multiplier"),
   lineHeightBase: z.number().default(1.5).describe("Line height for body text"),
-  lineHeightHeading: z.number().default(1.2).describe("Line height for headings"),
+  lineHeightHeading: z
+    .number()
+    .default(1.2)
+    .describe("Line height for headings"),
 })
 
 export type TypographyPreset = z.infer<typeof typographyPresetSchema>

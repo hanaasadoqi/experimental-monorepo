@@ -24,16 +24,19 @@
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-eslint-config": "workspace:*",
     "@repo/foundation-prettier-config": "workspace:*",
+    "@vitest/coverage-v8": "^4.1.11",
+    "typescript": "^6.0.3",
     "zustand": "^5.0.0",
     "vitest": "^4.1.11",
     "eslint": "^9.39.5",
-    "@eslint/js": "^10.0.1",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^15.2.0",
-    "@typescript-eslint/parser": "^6.7.1",
     "prettier": "^3.9.6"
   },
   "peerDependencies": {
     "zustand": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "zustand": {
+      "optional": true
+    }
   }
 }

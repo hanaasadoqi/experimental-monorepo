@@ -1,194 +1,82 @@
-import { render, screen, waitFor } from "@testing-library/react"
-import { describe, it, expect, beforeEach, vi } from "vitest"
+import { describe, it, expect, beforeEach, afterEach } from "vitest"
+import { applyAppearanceToDocument } from "@repo/adapters-theme-browser"
 
 /**
- * Integration test: preference changes sync to DOM.
+ * Integration test: Theme → DOM sync behavior
  *
- * Validates that changing the appearance preference actually updates
- * the theme classes on the document element.
+ * Tests that the appearance syncing logic correctly updates DOM when theme changes.
+ * This tests the domain logic independently of the React context setup complexity.
  */
 describe("Theme preference → DOM sync", () => {
   beforeEach(() => {
-    localStorage.clear()
-    // Reset HTML element classes
     document.documentElement.className = ""
+    document.documentElement.removeAttribute("data-theme")
+    document.documentElement.style.colorScheme = ""
   })
 
-  it("should apply dark class to html when preference is dark", () => {
-    // Simulate what happens when root layout sets initial theme
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.add("dark")
-    }
+  afterEach(() => {
+    document.documentElement.className = ""
+    document.documentElement.removeAttribute("data-theme")
+    document.documentElement.style.colorScheme = ""
+  })
 
-    const TestApp = () => {
-      const isDark = document.documentElement.classList.contains("dark")
-      return <div data-testid="theme-indicator">Theme: {isDark ? "dark" : "light"}</div>
-    }
+  it("applies dark class and data-theme attribute when appearance is dark", () => {
+    applyAppearanceToDocument("dark")
 
-    render(<TestApp />)
-
-    expect(screen.getByTestId("theme-indicator").textContent).toBe("Theme: dark")
     expect(document.documentElement.classList.contains("dark")).toBe(true)
-  })
-
-  it("should apply light class to html when preference is light", () => {
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.add("light")
-    }
-
-    const TestApp = () => {
-      const isLight = document.documentElement.classList.contains("light")
-      return <div data-testid="theme-indicator">Theme: {isLight ? "light" : "dark"}</div>
-    }
-
-    render(<TestApp />)
-
-    expect(screen.getByTestId("theme-indicator").textContent).toBe("Theme: light")
-    expect(document.documentElement.classList.contains("light")).toBe(true)
-  })
-
-  it("should correctly resolve system preference to dark or light", () => {
-    // When preference is system, the actual appearance depends on matchMedia
-    const matchMediaMock = vi.fn(() => ({
-      matches: true, // system prefers dark
-      media: "(prefers-color-scheme: dark)",
-      onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    }))
-
-    // Mock window.matchMedia
-    Object.defineProperty(window, "matchMedia", {
-      writable: true,
-      value: matchMediaMock,
-    })
-
-    const TestApp = () => {
-      // Simulate AppearanceBridge's system preference resolution
-      const systemDark =
-        typeof window !== "undefined" &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-
-      if (systemDark) {
-        document.documentElement.classList.add("dark")
-      }
-
-      return (
-        <div data-testid="system-theme">
-          System resolved to: {systemDark ? "dark" : "light"}
-        </div>
-      )
-    }
-
-    render(<TestApp />)
-
-    expect(screen.getByTestId("system-theme")).toHaveTextContent("System resolved to: dark")
-    expect(document.documentElement.classList.contains("dark")).toBe(true)
-  })
-
-  it("should not duplicate theme classes", () => {
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.add("dark")
-      document.documentElement.classList.add("light")
-    }
-
-    const classes = document.documentElement.className.split(" ")
-    // Both shouldn't be present at once (though this is app's responsibility)
-    const hasConflict = classes.includes("dark") && classes.includes("light")
-
-    const TestApp = () => (
-      <div data-testid="conflict-check">
-        Has both classes: {hasConflict ? "yes" : "no"}
-      </div>
-    )
-
-    render(<TestApp />)
-
-    // In real app, AppearanceBridge ensures this doesn't happen
-    expect(screen.getByTestId("conflict-check")).toBeInTheDocument()
-  })
-
-  it("should preserve non-theme classes on html element", () => {
-    if (typeof document !== "undefined") {
-      document.documentElement.className = "custom-class dark other-class"
-    }
-
-    const TestApp = () => {
-      const classes = document.documentElement.className
-      return <div data-testid="class-check">Classes: {classes}</div>
-    }
-
-    render(<TestApp />)
-
-    expect(document.documentElement.classList.contains("custom-class")).toBe(true)
-    expect(document.documentElement.classList.contains("dark")).toBe(true)
-    expect(document.documentElement.classList.contains("other-class")).toBe(true)
-  })
-
-  it("should set data-theme attribute when theme changes", () => {
-    if (typeof document !== "undefined") {
-      document.documentElement.dataset.theme = "dark"
-    }
-
-    const TestApp = () => {
-      const theme = document.documentElement.dataset.theme
-      return <div data-testid="data-attr">data-theme: {theme}</div>
-    }
-
-    render(<TestApp />)
-
     expect(document.documentElement.dataset.theme).toBe("dark")
-    expect(screen.getByTestId("data-attr").textContent).toBe("data-theme: dark")
-  })
-
-  it("should set colorScheme style property on html element", () => {
-    if (typeof document !== "undefined") {
-      document.documentElement.style.colorScheme = "dark"
-    }
-
-    const TestApp = () => {
-      const colorScheme = document.documentElement.style.colorScheme
-      return <div data-testid="color-scheme">colorScheme: {colorScheme}</div>
-    }
-
-    render(<TestApp />)
-
     expect(document.documentElement.style.colorScheme).toBe("dark")
   })
 
-  it("should handle preference changes without DOM mutations in wrong order", async () => {
-    const mutations: string[] = []
+  it("applies light class and data-theme attribute when appearance is light", () => {
+    applyAppearanceToDocument("light")
 
-    const observer = new MutationObserver((changes) => {
-      changes.forEach((change) => {
-        if (change.type === "attributes") {
-          mutations.push(`${change.attributeName} changed`)
-        }
-      })
-    })
+    expect(document.documentElement.classList.contains("light")).toBe(true)
+    expect(document.documentElement.dataset.theme).toBe("light")
+    expect(document.documentElement.style.colorScheme).toBe("light")
+  })
 
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class", "data-theme", "style"],
-    })
+  it("does not duplicate light/dark classes when switching appearance", () => {
+    applyAppearanceToDocument("light")
+    expect(document.documentElement.classList.contains("light")).toBe(true)
+    expect(document.documentElement.classList.contains("dark")).toBe(false)
 
-    // Simulate preference change from light to dark
-    document.documentElement.classList.remove("light")
-    document.documentElement.classList.add("dark")
-    document.documentElement.dataset.theme = "dark"
-    document.documentElement.style.colorScheme = "dark"
-
-    await waitFor(() => {
-      expect(mutations.length).toBeGreaterThan(0)
-    })
-
-    observer.disconnect()
-
-    // Verify final state is consistent
+    applyAppearanceToDocument("dark")
     expect(document.documentElement.classList.contains("dark")).toBe(true)
     expect(document.documentElement.classList.contains("light")).toBe(false)
+  })
+
+  it("preserves data-theme consistency across multiple changes", () => {
+    const appearances = ["dark", "light", "dark", "light"] as const
+
+    for (const appearance of appearances) {
+      applyAppearanceToDocument(appearance)
+      expect(document.documentElement.dataset.theme).toBe(appearance)
+    }
+  })
+
+  it("correctly handles rapid successive appearance changes", () => {
+    // Simulate rapid changes like user clicking theme toggle multiple times
+    for (let i = 0; i < 10; i++) {
+      const appearance = i % 2 === 0 ? "dark" : "light"
+      applyAppearanceToDocument(appearance)
+
+      // Verify no duplicates
+      const hasDark = document.documentElement.classList.contains("dark")
+      const hasLight = document.documentElement.classList.contains("light")
+      expect(hasDark || hasLight).toBe(true)
+      expect(hasDark && hasLight).toBe(false)
+      expect(document.documentElement.dataset.theme).toBe(appearance)
+    }
+  })
+
+  it("maintains colorScheme property in sync with class", () => {
+    const appearances = ["dark", "light"] as const
+
+    for (const appearance of appearances) {
+      applyAppearanceToDocument(appearance)
+      expect(document.documentElement.style.colorScheme).toBe(appearance)
+      expect(document.documentElement.classList.contains(appearance)).toBe(true)
+    }
   })
 })

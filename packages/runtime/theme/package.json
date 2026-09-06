@@ -5,9 +5,11 @@
   "private": true,
   "sideEffects": false,
   "dependencies": {
+    "@repo/domain-preferences": "workspace:*",
     "@repo/domain-theme": "workspace:*",
-    "@repo/features-preferences": "workspace:*",
+    "@repo/runtime-preferences": "workspace:*",
     "@repo/services-zustand": "workspace:*",
+    "@repo/shared-contracts": "workspace:*",
     "zustand": "^5.0.0",
     "zod": "^4.5.4"
   },
@@ -41,6 +43,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "eslint": "^9.39.5",
+    "prettier": "^3.9.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "typescript": "^6.0.3",

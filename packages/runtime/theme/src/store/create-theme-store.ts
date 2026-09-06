@@ -1,28 +1,72 @@
 import { create } from "zustand"
+import type { Theme } from "@repo/domain-theme"
 
-export type ThemeState = {
-  theme: "light" | "dark"
-  isDarkModeEnabled: boolean | undefined
+/**
+ * Internal types for implementation.
+ * Public ThemeStore interface is defined in @repo/shared-contracts.
+ */
+type InternalThemeState = {
+  themes: Record<string, Theme>
 }
 
-export type ThemeActions = {
+type InternalThemeActions = {
+  getTheme: (id: string) => Theme | undefined
+  getGlobalTheme: () => Theme
+  setGlobalThemeDarkMode: (darkMode: boolean | undefined) => void
   toggleTheme: () => void
-  setDarkMode: (isDarkMode: boolean | undefined) => void
-  toggleEnableMode: () => void
 }
 
-export type ThemeStore = ThemeState & ThemeActions
+type InternalThemeStore = InternalThemeState & InternalThemeActions
 
-export const useThemeStore = create<ThemeStore>((set) => ({
-  theme: "light",
-  toggleTheme: () =>
+/**
+ * Create a global theme instance with given darkMode state.
+ */
+function createGlobalTheme(darkMode: boolean | undefined): Theme {
+  return {
+    id: "root",
+    enableDarkMode: true,
+    darkMode,
+    scopeIds: ["root"],
+  }
+}
+
+export const useThemeStore = create<InternalThemeStore>((set, get) => ({
+  themes: {
+    root: createGlobalTheme(false),
+  },
+
+  getTheme: (id: string) => {
+    return get().themes[id]
+  },
+
+  getGlobalTheme: () => {
+    return get().themes["root"] ?? createGlobalTheme(false)
+  },
+
+  setGlobalThemeDarkMode: (darkMode: boolean | undefined) => {
     set((state) => ({
-      theme: state.theme === "light" ? "dark" : "light",
-    })),
-  isDarkModeEnabled: undefined,
-  toggleEnableMode: () =>
-    set((state) => ({
-      isDarkModeEnabled: !state.isDarkModeEnabled,
-    })),
-  setDarkMode: (isDarkMode) => set({ isDarkModeEnabled: isDarkMode }),
+      themes: {
+        ...state.themes,
+        root: {
+          ...state.themes["root"]!,
+          darkMode,
+        },
+      },
+    }))
+  },
+
+  toggleTheme: () => {
+    set((state) => {
+      const globalTheme = state.themes["root"]!
+      return {
+        themes: {
+          ...state.themes,
+          root: {
+            ...globalTheme,
+            darkMode: !globalTheme.darkMode,
+          },
+        },
+      }
+    })
+  },
 }))
