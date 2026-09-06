@@ -15,8 +15,10 @@ type InternalThemeState = {
 type InternalThemeActions = {
   getTheme: (id: string) => ThemeScopeRuntimeState | undefined
   getGlobalTheme: () => ThemeScopeRuntimeState
-  setGlobalThemeDarkMode: (darkMode: boolean | undefined) => void
-  toggleTheme: () => void
+  setGlobalDarkMode: (darkMode: boolean | undefined) => void
+  toggleDarkMode: () => void
+  setEnableDarkMode: (enableDarkMode: boolean) => void
+  toggleEnableDarkMode: () => void
 }
 
 type InternalThemeStore = InternalThemeState & InternalThemeActions
@@ -25,19 +27,20 @@ type InternalThemeStore = InternalThemeState & InternalThemeActions
  * Create a global theme scope instance with given darkMode state.
  */
 function createGlobalTheme(
-  darkMode: boolean | undefined
+  isDarkMode: boolean | undefined,
+  enableDarkMode: boolean
 ): ThemeScopeRuntimeState {
   return {
     id: "root",
-    enableDarkMode: true,
-    darkMode,
+    enableDarkMode,
+    isDarkMode,
     scopeIds: ["root"],
   }
 }
 
 export const useThemeStore = create<InternalThemeStore>((set, get) => ({
   themes: {
-    root: createGlobalTheme(false),
+    root: createGlobalTheme(undefined, true),
   },
 
   getTheme: (id: string) => {
@@ -45,22 +48,22 @@ export const useThemeStore = create<InternalThemeStore>((set, get) => ({
   },
 
   getGlobalTheme: () => {
-    return get().themes["root"] ?? createGlobalTheme(false)
+    return get().themes["root"] ?? createGlobalTheme(undefined, false)
   },
 
-  setGlobalThemeDarkMode: (darkMode: boolean | undefined) => {
+  setGlobalDarkMode: (darkMode: boolean | undefined) => {
     set((state) => ({
       themes: {
         ...state.themes,
         root: {
           ...state.themes["root"]!,
-          darkMode,
+          isDarkMode: (state.themes["root"]!.enableDarkMode ? darkMode : undefined)
         },
       },
     }))
   },
 
-  toggleTheme: () => {
+  toggleDarkMode: () => {
     set((state) => {
       const globalTheme = state.themes["root"]!
       return {
@@ -68,10 +71,40 @@ export const useThemeStore = create<InternalThemeStore>((set, get) => ({
           ...state.themes,
           root: {
             ...globalTheme,
-            darkMode: !globalTheme.darkMode,
+            isDarkMode: !globalTheme.isDarkMode,
           },
         },
       }
     })
   },
+  setEnableDarkMode: (enableDarkMode: boolean) => {
+    set((state) => {
+      const globalTheme = state.themes["root"]!
+      const globalEnableDarkMode = globalTheme.enableDarkMode
+      const isEqual = globalEnableDarkMode === enableDarkMode
+      if (isEqual) {
+        return state
+      }
+      return {
+        themes: {
+          ...state.themes,
+          root: {
+            ...globalTheme,
+            enableDarkMode,
+            // When disabling dark mode, clear isDarkMode
+            // When enabling dark mode, let ThemeScopeProvider set it via resolvedAppearance
+            isDarkMode: enableDarkMode ? globalTheme.isDarkMode : undefined,
+          },
+        },
+      }
+    })
+  },
+  toggleEnableDarkMode: () => {
+    set((state) => {
+      const globalTheme = state.themes["root"]!
+      const newEnableDarkMode = !globalTheme.enableDarkMode
+      state.setEnableDarkMode(newEnableDarkMode)
+      return state
+    })
+  }
 }))
