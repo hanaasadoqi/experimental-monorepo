@@ -1,4 +1,4 @@
-import { OklchColor, SemanticColorOverrides } from "../color/model"
+import { OklchColor, SemanticColorOverrides } from "../colors"
 import { ThemeMode } from "../appearance/model"
 
 export interface ThemeCompilationInput {

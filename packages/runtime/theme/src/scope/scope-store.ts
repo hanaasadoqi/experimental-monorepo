@@ -22,13 +22,15 @@ function readPersistedOverrides(value: unknown): ThemeOverrides | undefined {
     return undefined
   }
 
-  if (!("primaryColor" in overrides)) {
+  if (!("primary" in overrides)) {
     return {}
   }
 
-  return typeof overrides.primaryColor === "string"
-    ? { primaryColor: overrides.primaryColor }
-    : undefined
+  // primary field can be an oklch string or color object from the domain schema
+  if (typeof overrides.primary === "string") {
+    return { primary: overrides.primary as any }
+  }
+  return undefined
 }
 
 function readPersistedDarkMode(value: unknown): boolean | undefined {
@@ -51,7 +53,8 @@ export interface ScopeState {
 }
 
 export interface ScopeActions {
-  setPrimaryColor: (primaryColor: string) => void
+  // primary accepts oklch color string (e.g., "oklch(55% 0.1 200)")
+  setPrimaryColor: (primary: string) => void
   setDarkMode: (isDarkMode: boolean | undefined) => void
 }
 
@@ -125,9 +128,9 @@ export function createScopeStore({
         scopeId,
         overrides: initialOverrides,
         isDarkModeEnabled: darkModeEnabled,
-        setPrimaryColor: (primaryColor) => {
+        setPrimaryColor: (primary) => {
           set((state) => {
-            const newOverrides = { ...state.overrides, primaryColor }
+            const newOverrides = { ...state.overrides, primary } as ThemeOverrides
             persistOverrides?.(newOverrides)
             return { overrides: newOverrides }
           })

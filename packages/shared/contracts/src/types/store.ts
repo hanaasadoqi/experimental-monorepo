@@ -1,5 +1,16 @@
 import type { StateCreator, StoreApi, UseBoundStore } from "zustand"
-import type { Theme } from "@repo/domain-theme"
+
+/**
+ * Runtime theme scope state — predates the canonical ThemeDefinition pipeline.
+ * Currently handles dark-mode and scope overrides only; pending Phase 2 reconnection
+ * to the domain compiler and theme definition model.
+ */
+export type Theme = {
+  id: string
+  enableDarkMode: boolean
+  darkMode?: boolean
+  scopeIds: string[]
+}
 
 type Store<T> = UseBoundStore<StoreApi<T>>
 

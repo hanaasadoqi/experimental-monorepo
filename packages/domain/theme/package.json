@@ -32,13 +32,13 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./color": "./src/color/index.ts",
+    "./color": "./src/colors/index.ts",
     "./appearance": "./src/appearance/index.ts",
-    "./density": "./src/density/index.ts",
+    "./density": "./src/density.ts",
     "./theme": "./src/theme/index.ts",
     "./compiler": "./src/compiler/index.ts",
-    "./colors": "./src/color/index.ts",
-    "./model": "./src/color/model.ts",
+    "./colors": "./src/colors/index.ts",
+    "./model": "./src/colors/utils/core-model.ts",
     "./resolution": "./src/appearance/index.ts",
     "./core/resolution": "./src/appearance/index.ts",
     "./constants": "./src/constants.ts"

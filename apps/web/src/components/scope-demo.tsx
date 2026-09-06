@@ -19,9 +19,9 @@ function ScopeDemoContent() {
 
     applyScopeThemeToElement(scopeRef.current, {
       isDarkMode: isDarkModeEnabled,
-      primaryColor: overrides.primaryColor,
+      primaryColor: overrides.primary,
     })
-  }, [isDarkModeEnabled, overrides.primaryColor])
+  }, [isDarkModeEnabled, overrides.primary])
 
   return (
     <div
@@ -60,8 +60,8 @@ function ScopeDemoContent() {
 
           <div className="text-xs text-gray-600 dark:text-gray-400">
             <div>Dark mode: {isDarkModeEnabled ? "ON" : "OFF"}</div>
-            {overrides?.primaryColor && (
-              <div>Primary color: {overrides.primaryColor}</div>
+            {overrides?.primary && (
+              <div>Primary color: {overrides.primary}</div>
             )}
           </div>
         </div>

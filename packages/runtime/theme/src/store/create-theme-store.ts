@@ -1,17 +1,20 @@
 import { create } from "zustand"
-import type { Theme } from "@repo/domain-theme"
+import type { Theme } from "@repo/shared-contracts"
+
+// Internal alias for clarity within this module
+type ThemeScopeRuntimeState = Theme
 
 /**
  * Internal types for implementation.
  * Public ThemeStore interface is defined in @repo/shared-contracts.
  */
 type InternalThemeState = {
-  themes: Record<string, Theme>
+  themes: Record<string, ThemeScopeRuntimeState>
 }
 
 type InternalThemeActions = {
-  getTheme: (id: string) => Theme | undefined
-  getGlobalTheme: () => Theme
+  getTheme: (id: string) => ThemeScopeRuntimeState | undefined
+  getGlobalTheme: () => ThemeScopeRuntimeState
   setGlobalThemeDarkMode: (darkMode: boolean | undefined) => void
   toggleTheme: () => void
 }
@@ -19,9 +22,9 @@ type InternalThemeActions = {
 type InternalThemeStore = InternalThemeState & InternalThemeActions
 
 /**
- * Create a global theme instance with given darkMode state.
+ * Create a global theme scope instance with given darkMode state.
  */
-function createGlobalTheme(darkMode: boolean | undefined): Theme {
+function createGlobalTheme(darkMode: boolean | undefined): ThemeScopeRuntimeState {
   return {
     id: "root",
     enableDarkMode: true,

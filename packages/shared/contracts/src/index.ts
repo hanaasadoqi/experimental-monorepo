@@ -13,6 +13,7 @@ export type {
   SliceState,
   SliceExtractor,
   Selector,
+  Theme,
   ThemeState,
   ThemeActions,
   ThemeStore,

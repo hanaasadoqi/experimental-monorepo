@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { oklchColorSchema } from "./color/model"
+import { oklchColorSchema } from "./colors"
 
 /**
  * Canonical, versioned theme definition.

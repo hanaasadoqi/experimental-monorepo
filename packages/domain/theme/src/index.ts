@@ -17,7 +17,7 @@
  * There is deliberately no top-level `model/` or `core/`: splitting by kind
  * rather than by concept is what produced the duplicate trees this replaced.
  */
-export * from "./color"
+export * from "./colors"
 export * from "./appearance"
 export * from "./density"
 export * from "./theme"

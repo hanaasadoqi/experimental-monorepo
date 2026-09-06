@@ -1,4 +1,4 @@
-export * from "./color/constants"
+export * from "./colors/constants"
 // export * from "./font"
 
 export type ClientProviders = {

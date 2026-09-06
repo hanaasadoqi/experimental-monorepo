@@ -1,7 +1,7 @@
 import { type Rgb } from "culori"
 
-import { clampL, clampC, clampH } from "./color"
-import type { Oklch } from "./color"
+import { clampL, clampC, clampH } from "./colors"
+import type { Oklch } from "./colors"
 
 export type CssColorMode = "oklch" | "rgb" | "hex"
 
