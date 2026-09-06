@@ -1,0 +1,21 @@
+{
+  "extends": "@repo/foundation-typescript-config/react-library.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "es2024",
+    "lib": ["es2024", "dom", "dom.iterable", "dom.asynciterable"],
+    "jsx": "react-jsx"
+  },
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "coverage",
+    "dist",
+    ".turbo",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}
