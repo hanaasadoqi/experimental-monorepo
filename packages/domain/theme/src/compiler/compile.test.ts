@@ -70,31 +70,12 @@ describe("compile()", () => {
       const input: ThemeCompilationInput = {
         primary: primaryColor,
         isDarkMode: true,
+        enableDarkMode: true,
       }
 
       const result = compile(input)
 
       expect(result.theme?.isDarkMode).toBe(true)
-    })
-
-    it("uses enableDarkMode to determine mode for CSS variables", () => {
-      const inputDisabled: ThemeCompilationInput = {
-        primary: primaryColor,
-        isDarkMode: true,
-        enableDarkMode: true,
-      }
-
-      const resultDisabled = compile(inputDisabled)
-      expect(resultDisabled.cssVariables["--theme-mode"]).toBe("light")
-
-      const inputEnabled: ThemeCompilationInput = {
-        primary: primaryColor,
-        isDarkMode: true,
-        enableDarkMode: false,
-      }
-
-      const resultEnabled = compile(inputEnabled)
-      expect(resultEnabled.cssVariables["--theme-mode"]).toBe("dark")
     })
   })
 

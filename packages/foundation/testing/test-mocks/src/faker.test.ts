@@ -33,16 +33,17 @@ describe("Faker Factories — Schema Validation", () => {
         expect(theme.id).toBeTruthy()
         expect(typeof theme.enableDarkMode).toBe("boolean")
         expect(
-          theme.darkMode === undefined || typeof theme.darkMode === "boolean"
+          theme.isDarkMode === undefined ||
+            typeof theme.isDarkMode === "boolean"
         ).toBe(true)
         expect(Array.isArray(theme.scopeIds)).toBe(true)
       }
     })
 
     it("createFakeTheme with overrides preserves validity", () => {
-      const theme = createFakeTheme({ id: "custom-id", darkMode: true })
+      const theme = createFakeTheme({ id: "custom-id", isDarkMode: true })
       expect(theme.id).toBe("custom-id")
-      expect(theme.darkMode).toBe(true)
+      expect(theme.isDarkMode).toBe(true)
     })
 
     it("createFakeThemes produces array of valid themes", () => {

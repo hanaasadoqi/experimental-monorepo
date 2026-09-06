@@ -8,7 +8,7 @@ import type { StateCreator, StoreApi, UseBoundStore } from "zustand"
 export type Theme = {
   id: string
   enableDarkMode: boolean
-  darkMode?: boolean
+  isDarkMode?: boolean
   scopeIds: string[]
 }
 

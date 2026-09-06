@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useAppearancePreference } from "@repo/runtime-preferences"
-import { useThemeScope } from "@repo/runtime-theme"
+import { resolveAppearance, useThemeScope } from "@repo/runtime-theme"
 import { useSystemAppearance } from "@repo/adapters-theme-browser"
 
 /**
@@ -24,13 +24,7 @@ export function RootScopeSync() {
   // For "system" preference, resolve using actual system appearance.
   useEffect(() => {
     const nextDarkMode =
-      preference === "dark"
-        ? true
-        : preference === "light"
-          ? false
-          : systemAppearance === "dark"
-            ? true
-            : false
+      resolveAppearance(preference, systemAppearance) === "dark"
 
     setDarkMode(nextDarkMode)
   }, [preference, systemAppearance, setDarkMode])

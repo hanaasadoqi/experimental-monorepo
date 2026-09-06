@@ -36,18 +36,13 @@ export function compile(input: ThemeCompilationInput): ThemeCompilationResult {
   const warnings: string[] = []
 
   try {
-    const {
-      primary,
-      accent,
-      isDarkMode,
-      enableDarkMode,
-      customAccent,
-      harmony,
-    } = input
+    const { primary, accent, isDarkMode, customAccent, harmony } = input
 
     // Validate primary color is required
     if (!primary) {
-      errors.push("Primary color is required")
+      errors.push(
+        "Primary color is required: all theme definitions need a base color for shade palette generation"
+      )
       return {
         theme: null,
         cssVariables: {},
@@ -99,12 +94,64 @@ export function compile(input: ThemeCompilationInput): ThemeCompilationResult {
       }
     }
 
+    // isDarkMode is the resolved appearance (already determined at Runtime layer)
+    const shouldUseDarkMode = isDarkMode
+
     // Get accessible foreground colors
-    const primaryBg = getBackgroundForColor(primaryOklch, isDarkMode)
-    const accentBg = accentOklch
-      ? getBackgroundForColor(accentOklch, isDarkMode)
-      : undefined
-    const defaultBg = getBackgroundForColor(DEFAULT_OKLCH, isDarkMode)
+    let primaryBg: Oklch
+    let accentBg: Oklch | undefined
+    let defaultBg: Oklch
+
+    try {
+      const primaryBgResult = getBackgroundForColor(
+        primaryOklch,
+        shouldUseDarkMode
+      )
+      if (!primaryBgResult) {
+        errors.push("Failed to generate background shade for primary color")
+        return {
+          theme: null,
+          cssVariables: {},
+          report: createReport(false, errors, warnings),
+        }
+      }
+      primaryBg = primaryBgResult
+
+      if (accentOklch) {
+        const accentBgResult = getBackgroundForColor(
+          accentOklch,
+          shouldUseDarkMode
+        )
+        if (accentBgResult) {
+          accentBg = accentBgResult
+        } else {
+          warnings.push("Failed to generate background shade for accent color")
+        }
+      }
+
+      const defaultBgResult = getBackgroundForColor(
+        DEFAULT_OKLCH,
+        shouldUseDarkMode
+      )
+      if (!defaultBgResult) {
+        errors.push("Failed to generate background shade for default color")
+        return {
+          theme: null,
+          cssVariables: {},
+          report: createReport(false, errors, warnings),
+        }
+      }
+      defaultBg = defaultBgResult
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : String(err)
+      errors.push(`Shade generation error: ${errorMsg}`)
+      return {
+        theme: null,
+        cssVariables: {},
+        report: createReport(false, errors, warnings),
+      }
+    }
+
     const primaryBgCss = oklchToCss(primaryBg)
     const accentBgCss = accentBg ? oklchToCss(accentBg) : undefined
     const defaultBgCss = oklchToCss(defaultBg)
@@ -116,7 +163,7 @@ export function compile(input: ThemeCompilationInput): ThemeCompilationResult {
 
     // Build resolved theme
     const resolvedTheme: ResolvedTheme = {
-      isDarkMode,
+      isDarkMode: shouldUseDarkMode,
       colors: {
         primary,
         ...(customAccent && accentOklch ? { accent } : {}),
@@ -124,45 +171,68 @@ export function compile(input: ThemeCompilationInput): ThemeCompilationResult {
       },
     }
 
-    // Generate shade scales
-    const primaryShades = generateShades(primaryOklch)
-    const accentShades = accentOklch ? generateShades(accentOklch) : []
-    const defaultShades = generateShades(DEFAULT_OKLCH)
-
-    // Compile to CSS variables
+    // Generate shade scales and compile to CSS variables
     const cssVariables: CssVariables = {}
 
-    // Primary palette (shades based on actual primary color)
-    cssVariables["--color-primary"] = primaryBgCss
-    cssVariables["--color-primary-fg"] = primaryFg
-    primaryShades.forEach(({ step, css }) => {
-      cssVariables[`--color-primary-${step}`] = css
-    })
-
-    // Accent palette (shades based on actual accent color if provided)
-    if (accentOklch && accentBgCss) {
-      cssVariables["--color-accent"] = accentBgCss
-      cssVariables["--color-accent-fg"] = accentFg!
-      accentShades.forEach(({ step, css }) => {
-        cssVariables[`--color-accent-${step}`] = css
-      })
+    // Define all palettes (primary is always included, accent only if valid)
+    type Palette = {
+      name: string
+      oklch: Oklch
+      baseColor: string
+      foreground: string
+      background: string
     }
 
-    // Default/neutral palette (shades based on actual DEFAULT_OKLCH)
-    cssVariables["--color-default"] = defaultBgCss
-    cssVariables["--color-default-fg"] = defaultFg
-    defaultShades.forEach(({ step, css }) => {
-      cssVariables[`--color-default-${step}`] = css
-    })
+    const palettes: Palette[] = [
+      {
+        name: "primary",
+        oklch: primaryOklch,
+        baseColor: primaryBgCss,
+        foreground: primaryFg,
+        background: primaryBgCss,
+      },
+      ...(accentOklch && accentBgCss
+        ? [
+            {
+              name: "accent",
+              oklch: accentOklch,
+              baseColor: accentBgCss,
+              foreground: accentFg!,
+              background: accentBgCss,
+            },
+          ]
+        : []),
+      {
+        name: "default",
+        oklch: DEFAULT_OKLCH,
+        baseColor: defaultBgCss,
+        foreground: defaultFg,
+        background: defaultBgCss,
+      },
+    ]
+
+    // Compile each palette to CSS variables (DRY: single loop pattern)
+    for (const palette of palettes) {
+      const shades = generateShades(palette.oklch)
+
+      // Base color and foreground
+      cssVariables[`--color-${palette.name}`] = palette.baseColor
+      cssVariables[`--color-${palette.name}-fg`] = palette.foreground
+      cssVariables[`--color-${palette.name}-bg`] = palette.background
+
+      // Shade steps (50, 100, 200, ..., 950)
+      for (const shade of shades) {
+        cssVariables[`--color-${palette.name}-${shade.step}`] = shade.css
+      }
+    }
 
     // Theme mode indicator
-    cssVariables["--theme-mode"] =
-      enableDarkMode === true ? "light" : isDarkMode ? "dark" : "light"
+    cssVariables["--theme-mode"] = shouldUseDarkMode ? "dark" : "light"
 
-    // TODO: Semantic color derivation (Phase 2.5)
-    // - Error, warning, success, info semantic colors
-    // - Derived from accessibility requirements
-    // - Per-mode overrides
+    // Phase 3: Semantic color derivation
+    // Future work to add: error, warning, success, info semantic colors
+    // These will be derived from accessibility requirements and provide per-mode overrides
+    // See architecture guide for semantic color strategy
 
     return {
       theme: resolvedTheme,
@@ -184,33 +254,48 @@ export function compile(input: ThemeCompilationInput): ThemeCompilationResult {
  * Get background color for a given color based on mode.
  * Dark mode: returns darkest shade (step 950)
  * Light mode: returns lightest shade (step 50)
+ *
+ * @param color Base OKLCH color to derive shade from
+ * @param isDarkMode Whether to use dark mode (950 step) or light mode (50 step)
+ * @returns The selected shade as OKLCH color, or null if shade generation failed
+ * @throws {Error} If required shade properties are missing
  */
 function getBackgroundForColor(
   color: Oklch,
   isDarkMode: boolean | undefined
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): any {
+): Oklch | null {
   const shades = generateShades(color)
-  // Shades are ordered 50, 100, 200, ..., 950
-  return isDarkMode
-    ? shades[shades.length - 1]?.l !== undefined
-      ? {
-          l: shades[shades.length - 1]?.l,
-          c: shades[shades.length - 1]?.c,
-          h: shades[shades.length - 1]?.h,
-        }
-      : color
-    : shades[0]?.l !== undefined
-      ? {
-          l: shades[0].l,
-          c: shades[0].c,
-          h: shades[0].h,
-        }
-      : color
+
+  // Find specific shade step: use 950 for dark mode, 50 for light mode
+  const targetStep = isDarkMode ? 950 : 50
+  const shade = shades.find((s) => s.step === targetStep)
+
+  if (!shade) {
+    // Shade generation failed to produce required step
+    return null
+  }
+
+  // Validate all required properties exist
+  if (shade.l === undefined || shade.c === undefined || shade.h === undefined) {
+    throw new Error(
+      `Shade step ${targetStep} missing required properties: ` +
+        `l=${shade.l}, c=${shade.c}, h=${shade.h}`
+    )
+  }
+
+  return { l: shade.l, c: shade.c, h: shade.h }
 }
 
 /**
- * Helper to create a compilation report.
+ * Create a compilation report with success status and diagnostic messages.
+ *
+ * Reports capture non-fatal issues (warnings) and blocking errors.
+ * Used for debugging compilation failures and tracking degradation (e.g., missing accent).
+ *
+ * @param success Whether compilation succeeded without errors
+ * @param errors Fatal issues that prevented full compilation
+ * @param warnings Non-fatal issues (accent missing, shape generation incomplete)
+ * @returns Report object with all diagnostic information
  */
 function createReport(
   success: boolean,

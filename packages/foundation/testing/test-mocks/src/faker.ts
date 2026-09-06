@@ -40,7 +40,7 @@ export function createFakeTheme(overrides?: Partial<Theme>): Theme {
   const theme: Theme = {
     id: faker.string.uuid(),
     enableDarkMode: faker.datatype.boolean(),
-    darkMode: faker.datatype.boolean(),
+    isDarkMode: faker.datatype.boolean(),
     scopeIds: ["root"],
     ...overrides,
   }
@@ -52,8 +52,8 @@ export function createFakeTheme(overrides?: Partial<Theme>): Theme {
   if (typeof theme.enableDarkMode !== "boolean") {
     throw new Error("Invalid theme: enableDarkMode must be boolean")
   }
-  if (theme.darkMode !== undefined && typeof theme.darkMode !== "boolean") {
-    throw new Error("Invalid theme: darkMode must be boolean or undefined")
+  if (theme.isDarkMode !== undefined && typeof theme.isDarkMode !== "boolean") {
+    throw new Error("Invalid theme: isDarkMode must be boolean or undefined")
   }
   if (!Array.isArray(theme.scopeIds)) {
     throw new Error("Invalid theme: scopeIds must be an array")

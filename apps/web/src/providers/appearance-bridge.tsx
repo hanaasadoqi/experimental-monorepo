@@ -8,25 +8,13 @@ import {
 } from "@repo/runtime-preferences"
 
 import { ThemeToggleHotkey } from "@repo/ui-theme"
-import { resolveAppearance } from "@repo/runtime-theme"
 import {
-  useSystemAppearance,
-  applyAppearanceToDocument,
-} from "@repo/adapters-theme-browser"
+  resolveAppearance,
+  useThemeScope,
+  useThemeStore,
+} from "@repo/runtime-theme"
+import { useSystemAppearance } from "@repo/adapters-theme-browser"
 import type { ResolvedAppearancePreference } from "@repo/domain-preferences"
-import { useEffect } from "react"
-
-function RootAppearanceSync({
-  appearance,
-}: {
-  appearance: ResolvedAppearancePreference
-}) {
-  useEffect(() => {
-    applyAppearanceToDocument(appearance)
-  }, [appearance])
-
-  return null
-}
 
 export interface AppearanceBridgeProps {
   children: ReactNode
@@ -37,14 +25,20 @@ export function AppearanceBridge({ children }: AppearanceBridgeProps) {
   const systemAppearance = useSystemAppearance()
   const resolvedPreference = resolveAppearance(preference, systemAppearance)
   const setPreference = useSetAppearancePreference()
+  const { setDarkMode } = useThemeScope()
+  const setGlobalThemeDarkMode = useThemeStore(
+    (state) => state.setGlobalDarkMode
+  )
 
   const handleAppearanceChange = (next: ResolvedAppearancePreference) => {
+    const nextIsDarkMode = next === "dark"
+    setDarkMode(nextIsDarkMode)
+    setGlobalThemeDarkMode(nextIsDarkMode)
     setPreference(next)
   }
 
   return (
     <>
-      <RootAppearanceSync appearance={resolvedPreference} />
       <ThemeToggleHotkey
         resolvedAppearance={resolvedPreference}
         onAppearanceChange={handleAppearanceChange}

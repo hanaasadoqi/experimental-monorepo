@@ -5,7 +5,7 @@ import type {
 
 export function resolveAppearance(
   preference: AppearancePreference,
-  systemAppearance: ResolvedAppearancePreference
+  systemAppearance?: ResolvedAppearancePreference
 ): ResolvedAppearancePreference {
-  return preference === "system" ? systemAppearance : preference
+  return preference === "system" ? (systemAppearance ?? "light") : preference
 }

@@ -12,10 +12,10 @@ import type { ScopeStore } from "./scope-store"
  * Usage:
  * ```tsx
  * function MyComponent() {
- *   const { isDarkModeEnabled, setDarkMode, overrides, setPrimaryColor } = useThemeScope()
+ *   const { isDarkMode, setDarkMode, overrides, setPrimaryColor } = useThemeScope()
  *   return (
- *     <button onClick={() => setDarkMode(!isDarkModeEnabled)}>
- *       Toggle: {isDarkModeEnabled ? "dark" : "light"}
+ *     <button onClick={() => setDarkMode(!isDarkMode)}>
+ *       Toggle: {isDarkMode ? "dark" : "light"}
  *     </button>
  *   )
  * }
@@ -25,7 +25,7 @@ import type { ScopeStore } from "./scope-store"
  * This ensures the component re-renders when store state updates, and does NOT
  * capture stale closures (unlike bare useContext + .getState()).
  */
-export function useThemeScope(): ScopeStore {
+export function useThemeScope(scopeId?: string): ScopeStore {
   const store = useContext(ScopeContext)
 
   if (!store) {
@@ -37,6 +37,7 @@ export function useThemeScope(): ScopeStore {
 
   // Subscribe to all store changes; re-render when state updates
   const state = useSyncExternalStore(
+
     (callback) => {
       // Subscribe to store changes; Zustand returns unsubscribe function
       return store.subscribe(callback)

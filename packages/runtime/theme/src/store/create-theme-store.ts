@@ -57,7 +57,9 @@ export const useThemeStore = create<InternalThemeStore>((set, get) => ({
         ...state.themes,
         root: {
           ...state.themes["root"]!,
-          isDarkMode: (state.themes["root"]!.enableDarkMode ? darkMode : undefined)
+          isDarkMode: state.themes["root"]!.enableDarkMode
+            ? darkMode
+            : undefined,
         },
       },
     }))
@@ -106,5 +108,5 @@ export const useThemeStore = create<InternalThemeStore>((set, get) => ({
       state.setEnableDarkMode(newEnableDarkMode)
       return state
     })
-  }
+  },
 }))

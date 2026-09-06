@@ -7,7 +7,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "format:check": "prettier . --check",
+    "format:check": "turbo run format:check",
     "typecheck": "turbo run check-types",
     "check": "turbo run lint && turbo run check-types",
     "check:boundaries": "node scripts/check-architecture-boundaries.mjs && turbo boundaries",

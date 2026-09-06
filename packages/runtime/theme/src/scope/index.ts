@@ -14,5 +14,7 @@ export type { ThemeScopeProviderProps } from "./scope-provider"
 
 export { useThemeScope } from "./use-theme-scope"
 
+export { useThemeCompilation } from "./use-theme-compilation"
+
 // Context (advanced use only; prefer useThemeScope hook)
 export { ScopeContext } from "./scope-context"

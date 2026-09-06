@@ -212,7 +212,10 @@ export function ThemeScopeProvider({
     // Try immediately on mount
     const initialState = store.getState()
     if (initialState.overrides.primary) {
-      const applied = compileAndApply(initialState)
+      const applied = compileAndApply({
+        ...initialState,
+        
+      })
       if (!applied && scopeId !== "root") {
         // Element not found, set up retry for scoped themes
         setupRetry()

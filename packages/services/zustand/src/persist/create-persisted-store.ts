@@ -37,6 +37,8 @@ export function createPersistedStore<T>(
   return createStore(
     persist(stateBuilder, {
       ...options,
+      name: options.name,
+      version: options.version,
       migrate: (state: unknown, version: number) => {
         const result = validator(state)
         if (!result.success) {

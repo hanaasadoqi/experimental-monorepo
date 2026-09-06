@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest"
 import { applyAppearanceToDocument } from "@repo/adapters-theme-browser"
+import { resolveAppearance } from "@repo/runtime-theme"
 
 /**
  * Integration test: Theme → DOM sync behavior
@@ -79,4 +80,18 @@ describe("Theme preference → DOM sync", () => {
       expect(document.documentElement.classList.contains(appearance)).toBe(true)
     }
   })
+
+  it.each([
+    ["system", "dark", "dark"],
+    ["system", "light", "light"],
+    ["dark", "light", "dark"],
+  ] as const)(
+    "resolves %s against system %s before applying %s",
+    (preference, systemAppearance, expected) => {
+      applyAppearanceToDocument(resolveAppearance(preference, systemAppearance))
+
+      expect(document.documentElement.dataset.theme).toBe(expected)
+      expect(document.documentElement.classList.contains(expected)).toBe(true)
+    }
+  )
 })

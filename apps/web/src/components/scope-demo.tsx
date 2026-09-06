@@ -8,20 +8,23 @@ import {
 } from "@repo/adapters-theme-browser"
 import { ThemeScopeProvider, useThemeScope } from "@repo/runtime-theme"
 import { ScopedThemeToggle } from "@repo/ui-theme/components"
+import { useResolvedAppearance } from "../hooks/use-resolved-appearance"
+
+const demoTheme = { enableDarkMode: true } as const
 
 function ScopeDemoContent() {
   const scopeRef = useRef<HTMLDivElement>(null)
-  const { isDarkModeEnabled, overrides, setDarkMode, setPrimaryColor } =
+  const { isDarkMode, overrides, setPrimaryColor, enableDarkMode, toggleEnableDarkMode } =
     useThemeScope()
 
   useEffect(() => {
     if (!scopeRef.current) return
 
     applyScopeThemeToElement(scopeRef.current, {
-      isDarkMode: isDarkModeEnabled,
+      isDarkMode,
       primaryColor: overrides.primary,
     })
-  }, [isDarkModeEnabled, overrides.primary])
+  }, [isDarkMode, overrides.primary])
 
   return (
     <div
@@ -40,10 +43,11 @@ function ScopeDemoContent() {
 
         <div className="space-y-3">
           <button
-            onClick={() => setDarkMode(!isDarkModeEnabled)}
+            onClick={() => toggleEnableDarkMode()}
             className="rounded bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+
           >
-            {isDarkModeEnabled ? "Disable Dark Mode" : "Enable Dark Mode"}
+            {enableDarkMode ? "Disable Dark Mode" : "Enable Dark Mode"}
           </button>
 
           <div className="flex gap-2">
@@ -59,7 +63,7 @@ function ScopeDemoContent() {
           </div>
 
           <div className="text-xs text-gray-600 dark:text-gray-400">
-            <div>Dark mode: {isDarkModeEnabled ? "ON" : "OFF"}</div>
+            <div>Dark mode: {isDarkMode ? "ON" : "OFF"}</div>
             {overrides?.primary && (
               <div>Primary color: {overrides.primary}</div>
             )}
@@ -73,8 +77,15 @@ function ScopeDemoContent() {
 }
 
 export function ScopeDemo() {
+  const resolvedAppearance = useResolvedAppearance()
+
   return (
-    <ThemeScopeProvider scopeId="demo" getStorage={getBrowserThemeStorage}>
+    <ThemeScopeProvider
+      scopeId="demo"
+      theme={demoTheme}
+      resolvedAppearance={resolvedAppearance}
+      getStorage={getBrowserThemeStorage}
+    >
       <ScopeDemoContent />
     </ThemeScopeProvider>
   )

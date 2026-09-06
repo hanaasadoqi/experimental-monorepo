@@ -45,15 +45,15 @@ describe("Seeds — Idempotency & Structure", () => {
       expect(themes[2]!.id).toBe(SEED_IDS.AUTO_THEME)
     })
 
-    it("light theme has darkMode false", () => {
+    it("light theme has isDarkMode false", () => {
       const light = getDefaultLightThemeSeed()
-      expect(light.darkMode).toBe(false)
+      expect(light.isDarkMode).toBe(false)
       expect(light.id).toBe(SEED_IDS.LIGHT_THEME)
     })
 
-    it("dark theme has darkMode true", () => {
+    it("dark theme has isDarkMode true", () => {
       const dark = getDefaultDarkThemeSeed()
-      expect(dark.darkMode).toBe(true)
+      expect(dark.isDarkMode).toBe(true)
       expect(dark.id).toBe(SEED_IDS.DARK_THEME)
     })
   })

@@ -35,34 +35,25 @@ export function ScopedThemeToggle({
   className,
   showAlert = true,
 }: ScopedThemeToggleProps) {
-  const { isDarkModeEnabled, setDarkMode } = useThemeScope()
+  const { enableDarkMode, isDarkMode, toggleDarkMode } = useThemeScope()
   const [showWarning, setShowWarning] = useState(false)
 
   // Proper useCallback with explicit dependencies
-  // (isDarkModeEnabled comes from hook subscription, never stale)
+  // (isDarkMode comes from hook subscription, never stale)
   const handleToggle = useCallback(() => {
-    const currentState = isDarkModeEnabled
+    if (!enableDarkMode) return
 
-    if (currentState === undefined) {
-      // Currently inheriting global theme; toggle to explicit override
-      if (showAlert) {
-        setShowWarning(true)
-        setTimeout(() => setShowWarning(false), 3000)
-      }
-      setDarkMode(true)
-    } else if (currentState === true) {
-      // Currently in dark mode override; toggle to light mode
-      setDarkMode(false)
-    } else {
-      // Currently in light mode override; toggle back to inherit
-      setDarkMode(undefined)
+    if (showAlert) {
+      setShowWarning(true)
+      setTimeout(() => setShowWarning(false), 3000)
     }
-  }, [isDarkModeEnabled, setDarkMode, showAlert])
+
+    toggleDarkMode()
+  }, [enableDarkMode, showAlert, toggleDarkMode])
 
   const getLabel = () => {
-    if (isDarkModeEnabled === undefined) return "Inherit Theme"
-    if (isDarkModeEnabled === true) return "Dark Mode (Override)"
-    return "Light Mode (Override)"
+    if (!enableDarkMode) return "Dark Mode Unavailable"
+    return isDarkMode ? "Dark Mode" : "Light Mode"
   }
 
   return (
@@ -71,11 +62,11 @@ export function ScopedThemeToggle({
         onClick={handleToggle}
         className="px-3 py-2 rounded-md text-sm font-medium transition-colors bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
         title={
-          isDarkModeEnabled !== undefined
-            ? "Click to inherit global theme"
-            : "Click to override theme"
+          enableDarkMode
+            ? "Toggle this scoped theme mode"
+            : "This theme does not enable dark mode"
         }
-        disabled={!isDarkModeEnabled}
+        disabled={!enableDarkMode}
       >
         {children || getLabel()}
       </button>

@@ -8,6 +8,7 @@ describe("resolveAppearance", () => {
     ["dark", "light", "dark"],
     ["system", "light", "light"],
     ["system", "dark", "dark"],
+    ["system", undefined, "light"],
   ] as const)(
     "resolves preference %s with system appearance %s to %s",
     (preference, systemAppearance, expected) => {

@@ -11,8 +11,8 @@ import { syncPreferencesToServer } from "./sync-preferences-to-server"
 /**
  * Sync preference changes to server (cookies).
  *
- * Skips initial render to avoid unnecessary API calls on hydration.
- * When preferences change, syncs appearance + language to server cookies.
+ * On first render (initial), writes initial preference cookies.
+ * On subsequent changes, syncs appearance + language to server cookies.
  * dateFormat + timeFormat stay client-only (localStorage via Zustand).
  */
 export function PreferencesPersistence() {
@@ -22,10 +22,18 @@ export function PreferencesPersistence() {
 
   useEffect(() => {
     if (isInitialRender.current) {
+      // On first render, write initial cookies to ensure they exist
       isInitialRender.current = false
+      void syncPreferencesToServer({
+        appearance,
+        language,
+      }).catch((error: unknown) => {
+        console.warn("Failed to create initial preference cookies", error)
+      })
       return
     }
 
+    // On subsequent changes, sync to server
     void syncPreferencesToServer({
       appearance,
       language,

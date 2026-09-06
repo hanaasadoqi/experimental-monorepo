@@ -13,3 +13,4 @@ export type {
   StoreMigration,
   StoreMigrations,
 } from "./types"
+export { createPersistedStore } from "./create-persisted-store"

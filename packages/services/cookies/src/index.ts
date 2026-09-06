@@ -1,4 +1,4 @@
-export { enumCookieCodec, stringCookieCodec } from "./codecs.js"
+export { enumCookieCodec, stringCookieCodec } from "./codecs"
 
 export {
   deleteCookie,

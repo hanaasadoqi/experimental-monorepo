@@ -67,7 +67,7 @@ export function persistScopeDarkModeToStorage(
         ...parsed,
         state: {
           ...parsed.state,
-          isDarkModeEnabled: isDarkMode,
+          isDarkMode,
         },
       })
     )
@@ -125,7 +125,7 @@ export function createScopeStorageAdapters(
             ...parsed,
             state: {
               ...parsed.state,
-              isDarkModeEnabled: isDarkMode,
+              isDarkMode,
             },
           })
         )

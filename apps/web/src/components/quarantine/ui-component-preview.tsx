@@ -1,24 +1,14 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { Moon, Sun } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   useAppearancePreference,
   useSetAppearancePreference,
 } from "@repo/features-preferences/react"
+import { useSystemAppearance } from "@repo/adapters-theme-browser"
 import { resolveAppearance } from "@repo/runtime-theme"
 import { Button } from "@repo/ui-components/base/button"
-
-function useSystemAppearance(): "light" | "dark" {
-  const [system, setSystem] = useState<"light" | "dark">("light")
-  useEffect(() => {
-    if (typeof window === "undefined") return
-    const mq = window.matchMedia("(prefers-color-scheme: dark)")
-    setSystem(mq.matches ? "dark" : "light")
-  }, [])
-  return system
-}
 import {
   Card,
   CardHeader,

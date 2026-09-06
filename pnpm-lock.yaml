@@ -320,15 +320,24 @@ importers:
       '@repo/foundation-prettier-config':
         specifier: workspace:*
         version: link:../../foundation/tooling/prettier-config
+      '@repo/foundation-test-mocks':
+        specifier: workspace:*
+        version: link:../../foundation/testing/test-mocks
       '@repo/foundation-typescript-config':
         specifier: workspace:*
         version: link:../../foundation/tooling/typescript-config
       '@repo/foundation-vitest-config':
         specifier: workspace:*
         version: link:../../foundation/testing/vitest-config
+      '@testing-library/react':
+        specifier: ^16.3.3
+        version: 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@types/react':
         specifier: ^19.2.18
         version: 19.2.18
+      '@types/react-dom':
+        specifier: ^19.2.5
+        version: 19.2.5(@types/react@19.2.18)
       '@vitest/coverage-v8':
         specifier: ^4.1.11
         version: 4.1.11(vitest@4.1.11)
@@ -341,6 +350,9 @@ importers:
       react:
         specifier: 19.2.4
         version: 19.2.4
+      react-dom:
+        specifier: 19.2.4
+        version: 19.2.4(react@19.2.4)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

@@ -58,19 +58,19 @@ export function getDefaultSeedThemes(): Theme[] {
     createFakeTheme({
       id: SEED_IDS.LIGHT_THEME,
       enableDarkMode: true,
-      darkMode: false,
+      isDarkMode: false,
       scopeIds: ["root"],
     }),
     createFakeTheme({
       id: SEED_IDS.DARK_THEME,
       enableDarkMode: true,
-      darkMode: true,
+      isDarkMode: true,
       scopeIds: ["root"],
     }),
     createFakeTheme({
       id: SEED_IDS.AUTO_THEME,
       enableDarkMode: true,
-      darkMode: undefined, // System preference
+      isDarkMode: undefined, // Initialized from appearance when first enabled
       scopeIds: ["root"],
     }),
   ]

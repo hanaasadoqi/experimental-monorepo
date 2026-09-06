@@ -4,6 +4,8 @@ import { createMatchMediaMock } from "@repo/foundation-test-mocks/browser"
 import { AppearanceBridge } from "./appearance-bridge"
 
 const mockSetPreference = vi.fn()
+const mockSetDarkMode = vi.fn()
+const mockSetGlobalDarkMode = vi.fn()
 let mockPreference: "light" | "dark" | "system" = "system"
 let capturedOnAppearanceChange: ((next: "light" | "dark") => void) | undefined
 
@@ -23,6 +25,12 @@ vi.mock("@repo/runtime-theme", () => ({
     preference: "light" | "dark" | "system",
     systemAppearance: "light" | "dark"
   ) => (preference === "system" ? systemAppearance : preference),
+  useThemeScope: () => ({ setDarkMode: mockSetDarkMode }),
+  useThemeStore: (
+    selector: (state: {
+      setGlobalThemeDarkMode: typeof mockSetGlobalDarkMode
+    }) => unknown
+  ) => selector({ setGlobalThemeDarkMode: mockSetGlobalDarkMode }),
 }))
 
 vi.mock("@repo/adapters-theme-browser", () => ({
@@ -51,7 +59,10 @@ vi.mock("@repo/ui-theme", () => ({
 describe("AppearanceBridge (app composition)", () => {
   beforeEach(() => {
     document.documentElement.className = "font-variable antialiased"
+    document.documentElement.removeAttribute("data-theme")
     mockSetPreference.mockClear()
+    mockSetDarkMode.mockClear()
+    mockSetGlobalDarkMode.mockClear()
     mockPreference = "system"
     capturedOnAppearanceChange = undefined
   })
@@ -70,10 +81,12 @@ describe("AppearanceBridge (app composition)", () => {
     render(<AppearanceBridge>child</AppearanceBridge>)
     expect(capturedOnAppearanceChange).toBeDefined()
     capturedOnAppearanceChange?.("light")
+    expect(mockSetDarkMode).toHaveBeenCalledWith(false)
+    expect(mockSetGlobalDarkMode).toHaveBeenCalledWith(false)
     expect(mockSetPreference).toHaveBeenCalledWith("light")
   })
 
-  it("applies the appearance to the document element", () => {
+  it("does not own document appearance application", () => {
     mockPreference = "dark"
     const { container } = render(
       <AppearanceBridge>
@@ -84,9 +97,8 @@ describe("AppearanceBridge (app composition)", () => {
     // AppearanceBridge now returns a fragment, so the child goes directly into container
     expect(container.textContent).toContain("child")
 
-    // Theme is applied to the document root via RootAppearanceSync
-    expect(document.documentElement.dataset.theme).toBe("dark")
-    expect(document.documentElement.classList.contains("dark")).toBe(true)
+    expect(document.documentElement.dataset.theme).toBeUndefined()
+    expect(document.documentElement.classList.contains("dark")).toBe(false)
     expect(document.documentElement.classList.contains("font-variable")).toBe(
       true
     )

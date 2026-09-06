@@ -1,5 +1,5 @@
 import React, { type ReactNode } from "react"
-import { Geist, Geist_Mono, Inter } from "next/font/google"
+// import { Geist, Geist_Mono, Inter } from "next/font/google"
 import { cn } from "@repo/ui-components/lib/utils"
 import Script from "next/script"
 
@@ -13,25 +13,46 @@ import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/domain-preferences"
 import "./globals.css"
 import { Viewport } from "next"
 import AppShell from "./app-shell"
+import { Raleway, IBM_Plex_Sans, Geist_Mono } from "next/font/google"
+
+const raleway = Raleway({
+  subsets: ["latin"],
+  variable: "--font-raleway",
+})
+
+const ibmPlexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  variable: "--font-ibm-plex-sans",
+})
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+})
+
+// const inter = Inter({
+//   subsets: ["latin"],
+//   variable: "--font-family-sans",
+// })
 
 export interface RootLayoutProps {
   children: ReactNode
 }
 
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-family-heading",
-})
+// const geist = Geist({
+//   subsets: ["latin"],
+//   variable: "--font-family-heading",
+// })
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-family-sans",
-})
+// const inter = Inter({
+//   subsets: ["latin"],
+//   variable: "--font-family-sans",
+// })
 
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-family-mono",
-})
+// const fontMono = Geist_Mono({
+//   subsets: ["latin"],
+//   variable: "--font-family-mono",
+// })
 
 export const viewport: Viewport = {
   colorScheme: "light dark",
@@ -44,6 +65,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: RootLayoutProps) {
   const preferences = await readPreferencesCookie()
   const storedPreference = preferences?.appearance
+  const storedLanguage = preferences?.language ?? "en"
 
   const initialAppearance = storedPreference ?? DEFAULT_APPEARANCE_PREFERENCE
 
@@ -57,13 +79,16 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 
   return (
     <html
-      lang="en"
+      lang={storedLanguage}
       className={cn(
         "antialiased",
-        fontMono.variable,
+        // fontMono.variable,
         "font-sans",
-        inter.variable,
-        geist.variable,
+        // inter.variable,
+        // geist.variable,
+        raleway.variable,
+        ibmPlexSans.variable,
+        geistMono.variable,
         {
           dark: explicitAppearance === "dark",
           light: explicitAppearance === "light",
@@ -79,7 +104,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       }
       suppressHydrationWarning={needsHydrationSuppression}
     >
-      <body>
+      <body className="antialiased typeset">
         <Script
           id="appearance-bootstrap"
           strategy="beforeInteractive"
@@ -87,7 +112,12 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             __html: generateAppearanceBootstrapCode(initialAppearance),
           }}
         />
-        <ApplicationProviders initialAppearance={initialAppearance}>
+        <ApplicationProviders
+          initialPreferences={{
+            appearance: initialAppearance,
+            language: storedLanguage,
+          }}
+        >
           <AppShell>{children}</AppShell>
         </ApplicationProviders>
       </body>

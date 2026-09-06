@@ -4,6 +4,7 @@ export * from "./colors/constants"
 export type ClientProviders = {
   scope: string
   scopeId: string
-  isDarkMode: false
+  isDarkMode: undefined | boolean
+  enableDarkMode: boolean
   themes: []
 }
