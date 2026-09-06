@@ -27,7 +27,7 @@ describe("Theme preference → DOM sync", () => {
 
     render(<TestApp />)
 
-    expect(screen.getByTestId("theme-indicator")).toHaveTextContent("Theme: dark")
+    expect(screen.getByTestId("theme-indicator").textContent).toBe("Theme: dark")
     expect(document.documentElement.classList.contains("dark")).toBe(true)
   })
 
@@ -43,7 +43,7 @@ describe("Theme preference → DOM sync", () => {
 
     render(<TestApp />)
 
-    expect(screen.getByTestId("theme-indicator")).toHaveTextContent("Theme: light")
+    expect(screen.getByTestId("theme-indicator").textContent).toBe("Theme: light")
     expect(document.documentElement.classList.contains("light")).toBe(true)
   })
 
@@ -141,7 +141,7 @@ describe("Theme preference → DOM sync", () => {
     render(<TestApp />)
 
     expect(document.documentElement.dataset.theme).toBe("dark")
-    expect(screen.getByTestId("data-attr")).toHaveTextContent("data-theme: dark")
+    expect(screen.getByTestId("data-attr").textContent).toBe("data-theme: dark")
   })
 
   it("should set colorScheme style property on html element", () => {

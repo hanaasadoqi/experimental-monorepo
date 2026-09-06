@@ -1,13 +1,15 @@
 import { z } from "zod"
-import { themeColorsSchema, type ThemeColors } from "./theme/model"
+import { oklchColorSchema } from "./color/model"
 
 /**
  * Canonical, versioned theme definition.
  *
  * This is the single source of truth for theme authorial data:
- * - Color palette (primary, accent, semantic)
- * - Typography (font families, sizes, weights)
+ * - Base color palette (primary, accent, neutral) — authorial input
+ * - Typography (font families, sizes, presets)
  * - Metadata (version, name, description)
+ *
+ * Does NOT include runtime overrides or per-scope variations (see ThemeOverrides).
  *
  * All theme editing UIs, APIs, and persistence should reference this model.
  *
@@ -22,6 +24,20 @@ import { themeColorsSchema, type ThemeColors } from "./theme/model"
  *   }
  * }
  */
+
+/* -------------------------------------------------------------------------- */
+/* Base colors: authorial data only (no runtime overrides)                    */
+/* -------------------------------------------------------------------------- */
+
+export const themeBaseColorsSchema = z.object({
+  primary: oklchColorSchema.describe("Primary brand color"),
+  accent: oklchColorSchema.describe("Accent/secondary color"),
+  neutral: oklchColorSchema
+    .optional()
+    .describe("Optional neutral anchor (auto-derived if omitted)"),
+})
+
+export type ThemeBaseColors = z.infer<typeof themeBaseColorsSchema>
 
 /* -------------------------------------------------------------------------- */
 /* Typography model                                                          */
@@ -45,7 +61,13 @@ export type TypographyPreset = z.infer<typeof typographyPresetSchema>
 
 export const typographySchema = z.object({
   fontFamilies: fontFamiliesSchema,
-  presets: z.record(z.string(), typographyPresetSchema).optional(),
+  presets: z
+    .record(z.string(), typographyPresetSchema)
+    .refine((presets) => presets.default !== undefined, {
+      message: "Typography presets must include a 'default' preset",
+      path: ["default"],
+    })
+    .describe("Typography definitions with required 'default' preset"),
 })
 
 export type Typography = z.infer<typeof typographySchema>
@@ -64,7 +86,7 @@ export const themeMetadataSchema = z.object({
 export type ThemeMetadata = z.infer<typeof themeMetadataSchema>
 
 /* -------------------------------------------------------------------------- */
-/* Complete theme definition                                                 */
+/* Complete theme definition (authorial data only)                           */
 /* -------------------------------------------------------------------------- */
 
 export const themeDefinitionSchema = z.object({
@@ -75,7 +97,9 @@ export const themeDefinitionSchema = z.object({
 
   metadata: themeMetadataSchema,
 
-  colors: themeColorsSchema.describe("Color palette: primary, accent, semantic"),
+  colors: themeBaseColorsSchema.describe(
+    "Base color palette: primary, accent, neutral (authorial input only)"
+  ),
 
   typography: typographySchema.describe("Typography: fonts, sizes, presets"),
 })
@@ -87,8 +111,6 @@ export type ThemeDefinition = z.infer<typeof themeDefinitionSchema>
  *
  * @throws {z.ZodError} if definition is invalid
  */
-export function createThemeDefinition(
-  input: unknown
-): ThemeDefinition {
+export function createThemeDefinition(input: unknown): ThemeDefinition {
   return themeDefinitionSchema.parse(input)
 }
