@@ -4,7 +4,6 @@ import { AppearanceBridge } from "./appearance-bridge"
 
 const mockSetPreference = vi.fn()
 let mockPreference: "light" | "dark" | "system" = "system"
-let mockSystemAppearance: "light" | "dark" = "light"
 let capturedOnAppearanceChange: ((next: "light" | "dark") => void) | undefined
 
 vi.mock("@repo/features-preferences", () => ({
@@ -19,10 +18,8 @@ vi.mock("@repo/runtime-theme", () => ({
   ) => (preference === "system" ? systemAppearance : preference),
 }))
 
-vi.mock("@repo/features-theme-react", () => ({
-  useSystemAppearance: () => mockSystemAppearance,
-  RootAppearanceSync: () => null,
-}))
+// useSystemAppearance and RootAppearanceSync are now defined in appearance-bridge.tsx
+// No need to mock them since they're internal to the component
 
 vi.mock("@repo/ui-theme", () => ({
   ThemeToggleHotkey: (props: {
@@ -38,7 +35,6 @@ describe("AppearanceBridge (app composition)", () => {
   beforeEach(() => {
     mockSetPreference.mockClear()
     mockPreference = "system"
-    mockSystemAppearance = "light"
     capturedOnAppearanceChange = undefined
   })
 

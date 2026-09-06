@@ -21,7 +21,6 @@
     "@hugeicons/react": "^1.1.10",
     "@repo/domain-theme": "workspace:*",
     "@repo/features-preferences": "workspace:*",
-    "@repo/features-theme-react": "workspace:*",
     "@repo/runtime-theme": "workspace:*",
     "@repo/services-cookies": "workspace:*",
     "@repo/ui-components": "workspace:*",

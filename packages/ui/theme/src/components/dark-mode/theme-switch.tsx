@@ -3,16 +3,16 @@
 import { MoonIcon, SunIcon } from "lucide-react"
 import { useId } from "react"
 import { Switch } from "@repo/ui-components/base/switch"
-import { useThemeScopeStore } from "@repo/features-theme-react"
+import { useThemeScope } from "@repo/runtime-theme"
 
 const ThemeSwitch = ({ enabled }: { enabled: boolean }) => {
   const id = useId()
-  const store = useThemeScopeStore()
+  const { isDarkModeEnabled, setDarkMode } = useThemeScope()
+
   const handleChange = (value: boolean) => {
-    store.getState().setDarkMode(value)
+    setDarkMode(value)
   }
 
-  const isDarkModeEnabled = store.getState().isDarkModeEnabled
   const darkMode = !isDarkModeEnabled
 
   return (

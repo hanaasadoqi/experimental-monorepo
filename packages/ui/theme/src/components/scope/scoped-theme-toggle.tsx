@@ -75,6 +75,7 @@ export function ScopedThemeToggle({
             ? "Click to inherit global theme"
             : "Click to override theme"
         }
+        disabled={!isDarkModeEnabled}
       >
         {children || getLabel()}
       </button>

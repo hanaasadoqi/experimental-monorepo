@@ -5,7 +5,7 @@ import Script from "next/script"
 
 import { ApplicationProviders } from "../providers/application-providers"
 
-import { generateBootstrapCode } from "@repo/runtime-theme"
+import { generateBootstrapCode, generateScopeBootstrapCode } from "@repo/runtime-theme"
 import { readAppearancePreferenceCookie } from "../server/preferences/read-appearance-preference-cookie"
 
 import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/features-preferences"
@@ -79,6 +79,13 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: generateBootstrapCode(initialAppearance),
+          }}
+        />
+        <Script
+          id="scope-bootstrap"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: generateScopeBootstrapCode(),
           }}
         />
         <ApplicationProviders initialAppearance={initialAppearance}>

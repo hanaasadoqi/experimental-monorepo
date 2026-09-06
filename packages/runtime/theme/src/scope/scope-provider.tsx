@@ -2,6 +2,7 @@
 
 import { createScopeStore, type CreateScopeStoreOptions } from "./scope-store"
 import { ScopeContext } from "./scope-context"
+import { clearScopeBootstrapData } from "../adapters/scope-bootstrap"
 import { useEffect, useState, type ReactNode } from "react"
 
 export interface ThemeScopeProviderProps {
@@ -46,11 +47,13 @@ export interface ThemeScopeProviderProps {
  * 4. Store is provided via context (no direct .getState() in components)
  * 5. Components use useThemeScope hook (not context directly)
  *
- * SSR/Hydration:
+ * SSR/Hydration (FOUC prevention):
  * - This is a client-only component ("use client")
- * - Initial server-rendered state (if any) is passed via props
- * - rehydrate() loads persisted state from storage
- * - Reconciliation: component receives initialOverrides; storage may override
+ * - Bootstrap script runs BEFORE React, reads localStorage, applies scope to DOM
+ * - Bootstrap script stores initial scope state in window.__INITIAL_SCOPES__
+ * - Provider rehydrates from bootstrap state + persisted storage
+ * - Reconciliation: bootstrap state (from localStorage) is canonical; storage is merged
+ * - Result: scope is applied before React renders, no FOUC
  */
 export function ThemeScopeProvider({
   scopeId,
@@ -71,11 +74,15 @@ export function ThemeScopeProvider({
     })
   )
 
-  // Rehydrate persisted state from storage
-  // After this effect runs, the store's state may change from initial values
-  // to what was persisted in storage (if anything exists)
+  // Rehydrate persisted state from storage + bootstrap data
+  // Bootstrap script (if present) already applied scope to DOM before React loaded
+  // This effect syncs React store with what bootstrap did
   useEffect(() => {
     void store.persist.rehydrate()
+
+    // Clear bootstrap data after hydration completes
+    // (prevents accidental re-use if provider remounts)
+    clearScopeBootstrapData()
   }, [store])
 
   return <ScopeContext.Provider value={store}>{children}</ScopeContext.Provider>

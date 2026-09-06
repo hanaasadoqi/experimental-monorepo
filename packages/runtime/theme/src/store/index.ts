@@ -1,15 +1,17 @@
+// Scope store: moved to ../scope/ for better organization with provider pattern
 export {
-  createThemeScopeStore,
-  getThemeScopeStorageKey,
-} from "./create-theme-scope-store"
+  createScopeStore as createThemeScopeStore,
+  getScopeStorageKey as getThemeScopeStorageKey,
+} from "../scope/scope-store"
 
 export type {
-  CreateThemeScopeStoreOptions,
-  ThemeScopeActions,
-  ThemeScopeState,
-  ThemeScopeStore,
-  ThemeScopeStoreApi,
-} from "./create-theme-scope-store"
+  CreateScopeStoreOptions as CreateThemeScopeStoreOptions,
+  ScopeActions as ThemeScopeActions,
+  ScopeState as ThemeScopeState,
+  ScopeStore as ThemeScopeStore,
+  ScopeStoreApi as ThemeScopeStoreApi,
+} from "../scope/scope-store"
+
 export {
   useThemeStore,
   type ThemeState,
