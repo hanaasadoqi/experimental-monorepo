@@ -25,7 +25,7 @@ import type { ScopeStore } from "./scope-store"
  * This ensures the component re-renders when store state updates, and does NOT
  * capture stale closures (unlike bare useContext + .getState()).
  */
-export function useThemeScope(scopeId?: string): ScopeStore {
+export function useThemeScope(): ScopeStore {
   const store = useContext(ScopeContext)
 
   if (!store) {

@@ -70,7 +70,7 @@ import { useEffect, type ReactNode } from "react"
 
 import { PreferencesProvider } from "@repo/runtime-preferences"
 import type { Preferences } from "@repo/domain-preferences"
-import { ThemeScopeProvider, useThemeStore } from "@repo/runtime-theme"
+import { ThemeScopeProvider, useThemeStore, ThemeRegistryProvider } from "@repo/runtime-theme"
 import { applyAppearanceToDocument } from "@repo/adapters-theme-browser"
 import { DEFAULT_PRIMARY_COLOR } from "@repo/domain-theme/colors"
 
@@ -79,6 +79,7 @@ import { useResolvedAppearance } from "../hooks/use-resolved-appearance"
 
 import { PreferencesPersistence } from "../preferences/preferences-persistence"
 import { ClientApplicationProvider } from "./client-application-providers"
+import { AVAILABLE_THEMES, DEFAULT_THEME_ID } from "../app/theme-definitions"
 // import { ThemeToggleHotkey } from "@repo/ui-theme/components"
 export interface ApplicationProvidersProps {
   children: ReactNode
@@ -159,13 +160,15 @@ export function ApplicationProviders({
   }
 
   return (
-    <ClientApplicationProvider>
-      <PreferencesProvider initialPreferences={initialPreferences}>
-        <RootThemeScope>
-          <PreferencesPersistence />
-          <AppearanceBridge>{children}</AppearanceBridge>
-        </RootThemeScope>
-      </PreferencesProvider>
-    </ClientApplicationProvider>
+    <ThemeRegistryProvider initialThemes={AVAILABLE_THEMES} initialSelectedId={DEFAULT_THEME_ID}>
+      <ClientApplicationProvider>
+        <PreferencesProvider initialPreferences={initialPreferences}>
+          <RootThemeScope>
+            <PreferencesPersistence />
+            <AppearanceBridge>{children}</AppearanceBridge>
+          </RootThemeScope>
+        </PreferencesProvider>
+      </ClientApplicationProvider>
+    </ThemeRegistryProvider>
   )
 }

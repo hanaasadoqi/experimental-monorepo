@@ -38,3 +38,4 @@ export {
   useThemeRegistry,
   type ThemeRegistryProviderProps,
 } from "./theme-registry-context"
+export { changeTheme, getThemeById, type ThemeChangeOptions } from "./change-theme"
