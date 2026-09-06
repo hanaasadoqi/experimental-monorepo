@@ -1,6 +1,6 @@
 "use client"
 
-import { ThemeScopeProvider } from "@repo/ui-theme"
+import { ThemeScopeProvider } from "@repo/ui-"
 
 export const DemoProviders = ({ children }: { children: React.ReactNode }) => {
   return (
