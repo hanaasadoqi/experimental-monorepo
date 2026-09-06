@@ -5,3 +5,5 @@ export type {
   ResolvedTheme,
   CssVariables,
 } from "./model"
+
+export { compile } from "./compile"
