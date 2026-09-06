@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function SettingsPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       <PreferencesForm />
     </div>
   )

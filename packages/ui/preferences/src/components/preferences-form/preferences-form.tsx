@@ -100,7 +100,9 @@ export function PreferencesForm() {
     autoSaveInterval: "30",
   })
 
-  const handleImportPreferences = (imported: Partial<typeof allPreferences>) => {
+  const handleImportPreferences = (
+    imported: Partial<typeof allPreferences>
+  ) => {
     if (imported.appearance !== undefined)
       setAppearance(imported.appearance as Parameters<typeof setAppearance>[0])
     if (imported.language !== undefined)
@@ -112,7 +114,8 @@ export function PreferencesForm() {
   }
 
   const handleLanguageChange = (newLanguage: string | null) => {
-    if (newLanguage) setLanguage(newLanguage as Parameters<typeof setLanguage>[0])
+    if (newLanguage)
+      setLanguage(newLanguage as Parameters<typeof setLanguage>[0])
   }
 
   const handleAppearanceChange = (newAppearance: string | null) => {
@@ -199,7 +202,10 @@ export function PreferencesForm() {
                 <Label htmlFor="theme" className="mb-2 block">
                   Theme
                 </Label>
-                <Select value={appearance} onValueChange={handleAppearanceChange}>
+                <Select
+                  value={appearance}
+                  onValueChange={handleAppearanceChange}
+                >
                   <SelectTrigger id="theme">
                     <SelectValue />
                   </SelectTrigger>

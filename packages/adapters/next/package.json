@@ -14,8 +14,8 @@
   "scripts": {
     "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "lint": "eslint .",
-    "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,mjs,js,json}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,mjs,js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mjs,js,json,md}\"",
     "test": "vitest run",
     "test:run": "vitest run --coverage"
   },

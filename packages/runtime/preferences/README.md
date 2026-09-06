@@ -19,15 +19,15 @@ import { PreferencesProvider } from "@repo/runtime-preferences"
 
 ```typescript
 import {
-  usePreferences,                    // all 4 preferences
-  useAppearancePreference,           // "light" | "dark" | "system"
-  useSetAppearancePreference,        // setter
-  useLanguagePreference,             // locale code
-  useSetLanguagePreference,          // setter
-  useDateFormatPreference,           // date format
-  useSetDateFormatPreference,        // setter
-  useTimeFormatPreference,           // time format
-  useSetTimeFormatPreference,        // setter
+  usePreferences, // all 4 preferences
+  useAppearancePreference, // "light" | "dark" | "system"
+  useSetAppearancePreference, // setter
+  useLanguagePreference, // locale code
+  useSetLanguagePreference, // setter
+  useDateFormatPreference, // date format
+  useSetDateFormatPreference, // setter
+  useTimeFormatPreference, // time format
+  useSetTimeFormatPreference, // setter
 } from "@repo/runtime-preferences"
 
 // In any client component

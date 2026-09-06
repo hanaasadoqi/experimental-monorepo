@@ -10,8 +10,8 @@ Next.js-specific preferences adapter — server cookie I/O.
 
 ```typescript
 import {
-  readPreferencesCookie,      // read cookies from request
-  writePreferencesCookie,     // write cookies to response
+  readPreferencesCookie, // read cookies from request
+  writePreferencesCookie, // write cookies to response
   clearAppearanceCookie,
   clearLanguageCookie,
   clearAllPreferencesCookies,
@@ -30,6 +30,7 @@ const result = await writePreferencesCookie({
 ## Architecture
 
 Bridges domain preferences to Next.js cookie API:
+
 - Validates all preferences with Zod schemas
 - Handles cookie lifecycle (name, max-age, sameSite, secure)
 - Provides typed read/write functions
@@ -79,10 +80,12 @@ export async function POST(request: Request) {
 ## Cookie Names & Options
 
 Preferences persisted as cookies:
+
 - **appearance** → `appearance=dark` (HTTPOnly: false, SameSite: lax)
 - **language** → `language=en` (HTTPOnly: false, SameSite: lax)
 
 Non-persisted (client-only):
+
 - **dateFormat** → client localStorage only
 - **timeFormat** → client localStorage only
 

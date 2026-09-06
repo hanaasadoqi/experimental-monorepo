@@ -28,9 +28,11 @@ export function exportPreferences(preferences: Preferences): string {
  * Validates structure and returns only valid preferences.
  * Returns partial preferences (invalid fields are skipped).
  */
-export function importPreferences(
-  jsonString: string
-): { success: boolean; preferences?: Partial<Preferences>; error?: string } {
+export function importPreferences(jsonString: string): {
+  success: boolean
+  preferences?: Partial<Preferences>
+  error?: string
+} {
   try {
     const data = JSON.parse(jsonString)
 
@@ -72,20 +74,18 @@ export function importPreferences(
       }
 
       if (preferencesToValidate.dateFormat !== undefined) {
-        const dateFormatResult =
-          preferencesSchema.shape.dateFormat.safeParse(
-            preferencesToValidate.dateFormat
-          )
+        const dateFormatResult = preferencesSchema.shape.dateFormat.safeParse(
+          preferencesToValidate.dateFormat
+        )
         if (dateFormatResult.success) {
           partial.dateFormat = dateFormatResult.data
         }
       }
 
       if (preferencesToValidate.timeFormat !== undefined) {
-        const timeFormatResult =
-          preferencesSchema.shape.timeFormat.safeParse(
-            preferencesToValidate.timeFormat
-          )
+        const timeFormatResult = preferencesSchema.shape.timeFormat.safeParse(
+          preferencesToValidate.timeFormat
+        )
         if (timeFormatResult.success) {
           partial.timeFormat = timeFormatResult.data
         }

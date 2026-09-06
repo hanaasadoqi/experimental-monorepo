@@ -103,11 +103,7 @@ export function ExportImportSection({
             Download your preferences as a JSON file for backup or transfer to
             another device
           </p>
-          <Button
-            onClick={handleExport}
-            variant="outline"
-            className="gap-2"
-          >
+          <Button onClick={handleExport} variant="outline" className="gap-2">
             <HugeiconsIcon icon={Download} className="size-4" />
             Export as JSON
           </Button>
