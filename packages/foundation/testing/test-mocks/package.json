@@ -7,7 +7,10 @@
     ".": "./src/index.ts",
     "./browser": "./src/browser.ts",
     "./storage": "./src/storage.ts",
-    "./zustand": "./src/zustand.ts"
+    "./zustand": "./src/zustand.ts",
+    "./faker": "./src/faker.ts",
+    "./seeds": "./src/seeds.ts",
+    "./mock-responses": "./src/mock-responses.ts"
   },
   "scripts": {
     "lint": "eslint .",
@@ -17,9 +20,11 @@
     "check-types": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@repo/shared-contracts": "workspace:*"
+    "@repo/shared-contracts": "workspace:*",
+    "@repo/domain-preferences": "workspace:*"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.0.0",
     "@repo/foundation-typescript-config": "workspace:*",
     "@repo/foundation-vitest-config": "workspace:*",
     "@repo/foundation-eslint-config": "workspace:*",
