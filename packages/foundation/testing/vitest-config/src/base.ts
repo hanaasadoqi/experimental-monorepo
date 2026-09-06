@@ -5,9 +5,13 @@ export const baseConfig = defineConfig({
     clearMocks: true,
     coverage: {
       reporter: ["text", "json", "html"],
+      exclude: ["node_modules/", ".archives/"],
     },
     mockReset: true,
     passWithNoTests: true,
     restoreMocks: true,
+  },
+  resolve: {
+    alias: {},
   },
 })

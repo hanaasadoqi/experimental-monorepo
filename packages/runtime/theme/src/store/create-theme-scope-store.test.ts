@@ -93,7 +93,10 @@ describe("createThemeScopeStore", () => {
     expect(
       JSON.parse(storage.getItem(getThemeScopeStorageKey("dark-override"))!)
     ).toEqual({
-      state: { overrides: { primaryColor: "#112233" }, isDarkModeEnabled: true },
+      state: {
+        overrides: { primaryColor: "#112233" },
+        isDarkModeEnabled: true,
+      },
       version: 2,
     })
   })
@@ -104,7 +107,10 @@ describe("createThemeScopeStore", () => {
     first.getState().setPrimaryColor("#445566")
     first.getState().setDarkMode(true)
 
-    const restored = createThemeScopeStore({ scopeId: "dark-override", storage })
+    const restored = createThemeScopeStore({
+      scopeId: "dark-override",
+      storage,
+    })
     await restored.persist.rehydrate()
 
     expect(restored.getState().overrides).toEqual({ primaryColor: "#445566" })

@@ -1,14 +1,13 @@
 "use client"
 
-import { createContext, useContext } from 'react'
-import { useThemeStore } from '@repo/runtime-theme/store'
-
+import { createContext, useContext } from "react"
+import { useThemeStore } from "@repo/runtime-theme/store"
 
 const ThemeContext = createContext<{
-  theme: 'light' | 'dark'
+  theme: "light" | "dark"
   toggleTheme: () => void
 }>({
-  theme: 'light',
+  theme: "light",
   toggleTheme: () => {},
 })
 

@@ -1,9 +1,14 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@workspace/ui", "@repo/ui-design-system"],
+  transpilePackages: [
+    "@repo/ui-components",
+    "@repo/ui-theme",
+    "@repo/ui-design-system",
+    "@repo/domain-theme",
+  ],
   serverExternalPackages: [
-    "@repo/service-cookies",
+    "@repo/services-cookies",
     "@repo/foundation-typescript-config",
     "@repo/foundation-eslint-config",
     "@repo/foundation-prettier-config",
@@ -12,11 +17,7 @@ const nextConfig: NextConfig = {
     "@repo/foundation-test-mocks",
   ],
   experimental: {
-    optimizePackageImports: [
-      "@hugeicons/core-free-icons",
-      "@hugeicons/react",
-      "@repo/domain-themes",
-    ],
+    optimizePackageImports: ["@hugeicons/core-free-icons", "@hugeicons/react"],
   },
 }
 

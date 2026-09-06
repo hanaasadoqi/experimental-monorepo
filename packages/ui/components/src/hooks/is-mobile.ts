@@ -13,7 +13,7 @@ export function useIsMobile() {
 
   const getSnapshot = React.useCallback(
     () => window.innerWidth < MOBILE_BREAKPOINT,
-    [],
+    []
   )
 
   return React.useSyncExternalStore(subscribe, getSnapshot, () => false)

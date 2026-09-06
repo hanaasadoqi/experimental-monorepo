@@ -1,4 +1,6 @@
-export * from "./display"
+export * from "./colors"
+export * from "./dark-mode"
 export * from "./hotkeys"
+export * from "./scope"
 export * from "../utils/build-channel-gradient"
 export * from "../utils/get-color-harmonies"

@@ -63,8 +63,8 @@ describe("schema-utils", () => {
 
         // Verify error structure matches ValidationError type
         errors.forEach((error) => {
-          expect(typeof error.field).toBe("email")
-          expect(typeof error.message).toBe("Invalid email format")
+          expect(error.field).toBe("email")
+          expect(error.message).toBe("Invalid email format")
         })
       }
     })
@@ -146,7 +146,7 @@ describe("schema-utils", () => {
         level1: z.object({
           level2: z.object({
             level3: z.object({
-              value: z.number().positive(),
+              value: z.number().positive("must be positive"),
             }),
           }),
         }),

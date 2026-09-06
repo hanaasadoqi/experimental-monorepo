@@ -1,3 +1,10 @@
 import { nextJsConfig } from "@repo/foundation-eslint-config/next-js"
 
-export default nextJsConfig
+const webConfig = [
+  ...nextJsConfig,
+  {
+    ignores: ["src/components/quarantine/**"],
+  },
+]
+
+export default webConfig

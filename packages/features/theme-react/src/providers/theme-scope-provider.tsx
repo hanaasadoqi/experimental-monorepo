@@ -4,7 +4,7 @@ import { createContext, useContext, useId, useRef, type ReactNode } from "react"
 import type { ThemeScopeStoreApi } from "@repo/runtime-theme"
 import { createThemeScopeStore } from "@repo/runtime-theme"
 import { useScopedAppearance } from "../hooks/use-scoped-appearance"
-import { useThemeStore } from "@repo/runtime-theme/store";
+import { useThemeStore } from "@repo/runtime-theme/store"
 
 interface ThemeScopeContextValue {
   store: ThemeScopeStoreApi
@@ -37,9 +37,7 @@ export function ThemeScopeProvider({
 }: ThemeScopeProviderProps) {
   const storeRef = useRef<ThemeScopeStoreApi | null>(null)
   const elementRef = useRef<HTMLDivElement>(null)
-  const theme = useThemeStore(
-    (state) => state.theme
-  )
+  const theme = useThemeStore((state) => state.theme)
   const scopedThemeId = themeId ?? useId()
 
   if (storeRef.current === null) {
@@ -54,7 +52,13 @@ export function ThemeScopeProvider({
 
   return (
     <ThemeScopeContext.Provider value={{ store: storeRef.current, scopeId }}>
-      <div ref={elementRef} className={className} data-theme={theme} data-scope-id={scopeId} data-theme-id={scopedThemeId}>
+      <div
+        ref={elementRef}
+        className={className}
+        data-theme={theme}
+        data-scope-id={scopeId}
+        data-theme-id={scopedThemeId}
+      >
         {children}
       </div>
     </ThemeScopeContext.Provider>

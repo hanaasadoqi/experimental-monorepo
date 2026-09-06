@@ -911,6 +911,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      lucide-react:
+        specifier: ^1.39.0
+        version: 1.39.0(react@19.2.4)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -923,6 +926,9 @@ importers:
       react-resizable-panels:
         specifier: ^4.12.3
         version: 4.12.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      shiki:
+        specifier: ^4.4.3
+        version: 4.4.3
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
@@ -1108,12 +1114,18 @@ importers:
       '@repo/features-preferences':
         specifier: workspace:*
         version: link:../../features/preferences
+      '@repo/features-theme-react':
+        specifier: workspace:*
+        version: link:../../features/theme-react
       '@repo/runtime-theme':
         specifier: workspace:*
         version: link:../../runtime/theme
       '@repo/ui-components':
         specifier: workspace:*
         version: link:../components
+      lucide-react:
+        specifier: ^1.39.0
+        version: 1.39.0(react@19.2.8)
       next:
         specifier: ^16.0.0
         version: 16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@types/node@26.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -9763,6 +9775,10 @@ snapshots:
   lucide-react@1.39.0(react@19.2.4):
     dependencies:
       react: 19.2.4
+
+  lucide-react@1.39.0(react@19.2.8):
+    dependencies:
+      react: 19.2.8
 
   lz-string@1.5.0: {}
 

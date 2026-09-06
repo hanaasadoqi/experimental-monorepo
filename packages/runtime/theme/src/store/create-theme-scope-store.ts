@@ -22,8 +22,6 @@ function readPersistedOverrides(value: unknown): ThemeOverrides | undefined {
     return undefined
   }
 
-
-
   if (!("primaryColor" in overrides)) {
     return {}
   }
@@ -34,7 +32,11 @@ function readPersistedOverrides(value: unknown): ThemeOverrides | undefined {
 }
 
 function readPersistedDarkMode(value: unknown): boolean | undefined {
-  if (typeof value !== "object" || value === null || !("isDarkModeEnabled" in value)) {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    !("isDarkModeEnabled" in value)
+  ) {
     return undefined
   }
 
@@ -87,11 +89,13 @@ export function createThemeScopeStore({
           }))
         },
         setDarkMode: (isDarkMode) => {
-          set({ isDarkModeEnabled: isDarkMode, overrides: { ...initialOverrides, darkMode: isDarkMode } })
+          set({
+            isDarkModeEnabled: isDarkMode,
+          })
         },
         setDarkModeEnabled: (isDarkMode: boolean) => {
           set({ isDarkModeEnabled: isDarkMode })
-        }
+        },
       }),
       {
         name: getThemeScopeStorageKey(scopeId),

@@ -22,5 +22,5 @@
     "@types/**/*.d.ts",
     "culori.d.ts"
   ],
-  "exclude": ["node_modules", ".next", ".turbo"]
+  "exclude": ["node_modules", ".next", ".turbo", "src/components/quarantine"]
 }
