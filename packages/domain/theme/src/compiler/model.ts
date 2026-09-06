@@ -1,22 +1,18 @@
-import { OklchColor, SemanticColorOverrides } from "../colors"
-import { ThemeMode } from "../appearance/model"
+import { ColorHarmony, OklchString } from "../colors/utils"
+import { ThemeDefColors } from "../definition"
 
 export interface ThemeCompilationInput {
-  mode: ThemeMode
-  primary: OklchColor
-  accent?: OklchColor
-  neutral?: OklchColor
-  semantic?: SemanticColorOverrides
+  isDarkMode?: boolean
+  enableDarkMode?: boolean
+  customAccent?: boolean
+  primary: OklchString
+  accent?: OklchString
+  harmony?: ColorHarmony
 }
 
 export interface ResolvedTheme {
-  mode: ThemeMode
-  colors: {
-    primary: OklchColor
-    accent: OklchColor
-    neutral: OklchColor
-    semantic: Record<string, OklchColor>
-  }
+  isDarkMode?: boolean
+  colors: ThemeDefColors
 }
 
 export interface CssVariables {

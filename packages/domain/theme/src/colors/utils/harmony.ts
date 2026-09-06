@@ -2,6 +2,21 @@ import { clampH, clampL, maxChromaInGamut } from "./gamut"
 import type { ColorHarmony, Oklch } from "./core-model"
 
 /**
+ * All available harmony types.
+ */
+export const COLOR_HARMONY_OPTIONS = [
+  "analogous",
+  "complementary",
+  "split-complementary",
+  "triadic",
+  "tetradic",
+  "square",
+  "rectangle",
+  "double-split-complementary",
+  "monochromatic",
+] as const
+
+/**
  * Hue offsets (degrees, relative to the seed) for every rotation-based
  * harmony type. `monochromatic` isn't here — it doesn't rotate hue at all,
  * see `generateHarmony` below.
@@ -66,5 +81,7 @@ export function generateHarmony(seed: Oklch, type: ColorHarmony): Oklch[] {
   if (type === "monochromatic") {
     return monochromaticVariants(seed)
   }
-  return HARMONY_HUE_OFFSETS[type].map((offset) => rotatedColor(seed, offset))
+  return (
+    HARMONY_HUE_OFFSETS[type]?.map((offset) => rotatedColor(seed, offset)) || []
+  )
 }

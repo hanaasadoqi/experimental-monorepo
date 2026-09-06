@@ -3,7 +3,7 @@ export * from "./colors/constants"
 
 export type ClientProviders = {
   scope: string
-  ScopeId: string
-  darkMode: false
+  scopeId: string
+  isDarkMode: false
   themes: []
 }

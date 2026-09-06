@@ -5,7 +5,7 @@ import {
   isInSrgbGamut,
   oklchToHex,
   type Oklch,
-} from "@repo/domain-theme/color"
+} from "@repo/domain-theme/colors"
 /**
  * Build a CSS `linear-gradient()` previewing how one channel varies while the
  * other two are held at the given base values. Used as the background of a

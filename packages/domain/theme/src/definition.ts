@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { oklchColorSchema } from "./colors"
+import { colorHarmonySchema, oklchStrSchema } from "./colors"
 
 /**
  * Canonical, versioned theme definition.
@@ -29,51 +29,56 @@ import { oklchColorSchema } from "./colors"
 /* Base colors: authorial data only (no runtime overrides)                    */
 /* -------------------------------------------------------------------------- */
 
-export const themeBaseColorsSchema = z.object({
-  primary: oklchColorSchema.describe("Primary brand color"),
-  accent: oklchColorSchema.describe("Accent/secondary color"),
-  neutral: oklchColorSchema
-    .optional()
-    .describe("Optional neutral anchor (auto-derived if omitted)"),
+export const themeDefDarkModeSchema = z.object({
+  isDarkMode: z.boolean().describe("Whether theme is dark or light").optional(),
 })
 
-export type ThemeBaseColors = z.infer<typeof themeBaseColorsSchema>
+export const themeDefColorsSchema = z.object({
+  primary: oklchStrSchema.describe("Primary brand color"),
+  accent: oklchStrSchema.describe("Accent/secondary color").optional(),
+  harmony: colorHarmonySchema
+    .describe("Color harmony for accent color")
+    .optional(),
+})
+
+export type ThemeDefDarkMode = z.infer<typeof themeDefDarkModeSchema>
+export type ThemeDefColors = z.infer<typeof themeDefColorsSchema>
 
 /* -------------------------------------------------------------------------- */
 /* Typography model                                                          */
 /* -------------------------------------------------------------------------- */
 
-export const fontFamiliesSchema = z.object({
-  body: z.string().describe("Font family for body text"),
-  heading: z.string().describe("Font family for headings"),
-  mono: z.string().optional().describe("Font family for code/monospace"),
-})
+// export const fontFamiliesSchema = z.object({
+//   body: z.string().describe("Font family for body text"),
+//   heading: z.string().describe("Font family for headings"),
+//   mono: z.string().optional().describe("Font family for code/monospace"),
+// })
 
-export type FontFamilies = z.infer<typeof fontFamiliesSchema>
+// export type FontFamilies = z.infer<typeof fontFamiliesSchema>
 
-export const typographyPresetSchema = z.object({
-  headingScale: z.number().default(1.2).describe("Heading size multiplier"),
-  lineHeightBase: z.number().default(1.5).describe("Line height for body text"),
-  lineHeightHeading: z
-    .number()
-    .default(1.2)
-    .describe("Line height for headings"),
-})
+// export const typographyPresetSchema = z.object({
+//   headingScale: z.number().default(1.2).describe("Heading size multiplier"),
+//   lineHeightBase: z.number().default(1.5).describe("Line height for body text"),
+//   lineHeightHeading: z
+//     .number()
+//     .default(1.2)
+//     .describe("Line height for headings"),
+// })
 
-export type TypographyPreset = z.infer<typeof typographyPresetSchema>
+// export type TypographyPreset = z.infer<typeof typographyPresetSchema>
 
-export const typographySchema = z.object({
-  fontFamilies: fontFamiliesSchema,
-  presets: z
-    .record(z.string(), typographyPresetSchema)
-    .refine((presets) => presets.default !== undefined, {
-      message: "Typography presets must include a 'default' preset",
-      path: ["default"],
-    })
-    .describe("Typography definitions with required 'default' preset"),
-})
+// export const typographySchema = z.object({
+//   fontFamilies: fontFamiliesSchema,
+//   presets: z
+//     .record(z.string(), typographyPresetSchema)
+//     .refine((presets) => presets.default !== undefined, {
+//       message: "Typography presets must include a 'default' preset",
+//       path: ["default"],
+//     })
+//     .describe("Typography definitions with required 'default' preset"),
+// })
 
-export type Typography = z.infer<typeof typographySchema>
+// export type Typography = z.infer<typeof typographySchema>
 
 /* -------------------------------------------------------------------------- */
 /* Theme metadata                                                            */
@@ -81,8 +86,8 @@ export type Typography = z.infer<typeof typographySchema>
 
 export const themeMetadataSchema = z.object({
   name: z.string().describe("Human-readable theme name"),
-  author: z.string().optional().describe("Theme designer/owner"),
   description: z.string().optional().describe("Theme purpose or notes"),
+  author: z.string().optional().describe("Theme designer/owner"),
   license: z.string().optional().describe("License for this theme"),
 })
 
@@ -99,12 +104,16 @@ export const themeDefinitionSchema = z.object({
     .describe("Semantic version (e.g., 1.0.0)"),
 
   metadata: themeMetadataSchema,
-
-  colors: themeBaseColorsSchema.describe(
+  colors: themeDefColorsSchema.describe(
     "Base color palette: primary, accent, neutral (authorial input only)"
   ),
+  darkMode: themeDefDarkModeSchema.describe("Dark mode settings"),
+  // typography: typographySchema.describe("Typography: fonts, sizes, presets"),
+  // colors: themeBaseColorsSchema.describe(
+  //   "Base color palette: primary, accent, neutral (authorial input only)"
+  // ),
 
-  typography: typographySchema.describe("Typography: fonts, sizes, presets"),
+  // typography: typographySchema.describe("Typography: fonts, sizes, presets"),
 })
 
 export type ThemeDefinition = z.infer<typeof themeDefinitionSchema>

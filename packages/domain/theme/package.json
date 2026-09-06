@@ -32,15 +32,13 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./color": "./src/colors/index.ts",
-    "./appearance": "./src/appearance/index.ts",
-    "./density": "./src/density.ts",
-    "./theme": "./src/theme/index.ts",
-    "./compiler": "./src/compiler/index.ts",
     "./colors": "./src/colors/index.ts",
-    "./model": "./src/colors/utils/core-model.ts",
-    "./resolution": "./src/appearance/index.ts",
-    "./core/resolution": "./src/appearance/index.ts",
-    "./constants": "./src/constants.ts"
+    "./dark-mode": "./src/dark-mode/index.ts",
+    "./theme": "./src/theme/index.ts",
+    "./theme-form": "./src/theme-form/index.ts",
+    "./compiler": "./src/compiler/index.ts",
+    "./constants": "./src/constants.ts",
+    "./definition": "./src/definition.ts",
+    "./density": "./src/density.ts"
   }
 }

@@ -32,14 +32,6 @@ export const MAX_HUE = 360
 
 export const DEFAULT_PRIMARY_BASE = "oklch(65% 0.15 250)"
 
-/* -------------------------------------------------------------------------- */
-/* Shade ramp                                                                 */
-/* -------------------------------------------------------------------------- */
-
-export const SHADE_STEPS = [
-  50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
-] as const
-
 /** Target lightness per step, independent of the base color. */
 export const STEP_LIGHTNESS: Record<number, number> = {
   50: 0.97,

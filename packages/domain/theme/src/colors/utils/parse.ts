@@ -183,7 +183,7 @@ export function parseRgbStringToOklch(rgbString: string): OklchColor | null {
 
     // Delegate to the adapter in ./convert, which already handles culori's
     // mode discriminator and alpha (`alpha` vs this package's `a`) mapping.
-    const normalized = normalizeRgbBytes({ r, g, b, a })
+    const normalized = normalizeRgbBytes({ r, g, b, alpha: a })
     return toOklch({
       r: normalized.r,
       g: normalized.g,

@@ -61,6 +61,11 @@ export function validateRgba(value: unknown): boolean {
 export function validateOklch(
   value: OklchInput | unknown
 ): OklchValidationResult {
+  if (!value)
+    return {
+      success: false,
+      error: new TypeError("Value is null or undefined"),
+    }
   if (typeof value === "string") {
     const parsed = oklchStrSchema.safeParse(value)
     return parsed.success

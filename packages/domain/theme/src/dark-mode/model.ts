@@ -4,12 +4,19 @@ import { z } from "zod"
  * A concrete, rendered appearance. Never "system" — that has already been
  * resolved by the time a `ThemeMode` exists.
  */
-export const darkModeSchema = z.object({
-  darkMode: z.boolean().describe("Whether dark mode is enabled").optional(),
+export type ThemeMode = "light" | "dark"
+
+export const enableDarkModeSchema = z.object({
   enableDarkMode: z
     .boolean()
     .describe("Whether dark mode is enabled")
     .default(false),
 })
 
-export type darkMode = z.infer<typeof darkModeSchema.shape.darkMode>
+export const darkModeSchema = z.object({
+  enableDarkMode: enableDarkModeSchema.shape,
+  isDarkMode: z.boolean().describe("Whether theme is dark or light").optional(),
+})
+
+export type DarkModeOptions = z.infer<typeof darkModeSchema>
+export type DisabledDarkModeOptions = z.infer<typeof enableDarkModeSchema>

@@ -4,7 +4,7 @@ import {
   persist,
   type StateStorage,
 } from "zustand/middleware"
-import { ThemeOverrides } from "@repo/domain-theme"
+import { PrimaryThemeColor, ThemeOverrides } from "@repo/domain-theme"
 
 const SCOPE_STORAGE_PREFIX = "synapcity:scope:"
 
@@ -27,10 +27,13 @@ function readPersistedOverrides(value: unknown): ThemeOverrides | undefined {
   }
 
   // primary field can be an oklch string or color object from the domain schema
-  if (typeof overrides.primary === "string") {
-    return { primary: overrides.primary as any }
+  if (
+    typeof overrides.primary === "string" ||
+    (typeof overrides.primary === "object" && overrides.primary !== null)
+  ) {
+    return { primary: overrides.primary as unknown as PrimaryThemeColor }
   }
-  return undefined
+  return {}
 }
 
 function readPersistedDarkMode(value: unknown): boolean | undefined {
@@ -130,7 +133,10 @@ export function createScopeStore({
         isDarkModeEnabled: darkModeEnabled,
         setPrimaryColor: (primary) => {
           set((state) => {
-            const newOverrides = { ...state.overrides, primary } as ThemeOverrides
+            const newOverrides = {
+              ...state.overrides,
+              primary,
+            } as ThemeOverrides
             persistOverrides?.(newOverrides)
             return { overrides: newOverrides }
           })

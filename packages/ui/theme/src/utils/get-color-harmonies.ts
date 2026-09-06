@@ -3,7 +3,7 @@ import {
   HARMONY_HUE_OFFSETS,
   type Oklch,
   type ColorHarmony,
-} from "@repo/domain-theme/color"
+} from "@repo/domain-theme/colors"
 
 /**
  * Named hue-rotation sets for color harmony generation.

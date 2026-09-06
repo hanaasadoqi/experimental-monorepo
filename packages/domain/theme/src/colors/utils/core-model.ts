@@ -1,7 +1,6 @@
 import { z } from "zod"
 
 import {
-  COLOR_TYPE_OPTIONS,
   MAX_CHROMA,
   MAX_HUE,
   MAX_LIGHTNESS,
@@ -10,7 +9,6 @@ import {
   MIN_LIGHTNESS,
   OKLCH_REGEX,
 } from "../constants"
-
 /**
  * ARCHITECTURE: Three distinct color representations
  *
@@ -178,7 +176,7 @@ export const colorScaleStepSchema = z.enum([
   "800",
   "900",
   "950",
-])
+] as const)
 
 export type ColorScaleStep = z.infer<typeof colorScaleStepSchema>
 
@@ -216,23 +214,19 @@ export interface Shade {
 /* Harmony                                                                    */
 /* -------------------------------------------------------------------------- */
 
-export const COLOR_HARMONY_OPTIONS = [
+export const colorHarmonySchema = z.enum([
   "analogous",
   "complementary",
   "split-complementary",
   "triadic",
-  // "tetradic" is ambiguous (per the color-system repair contract) — kept
-  // for backward compatibility as an alias of "square" (identical 90°
-  // geometry, see harmony.ts), not removed per the no-deletion policy.
   "tetradic",
   "square",
   "rectangle",
   "double-split-complementary",
   "monochromatic",
-] as const
+] as const)
 
-export type ColorHarmonyOption = (typeof COLOR_HARMONY_OPTIONS)[number]
-export const colorHarmonySchema = z.enum(COLOR_HARMONY_OPTIONS)
+export type ColorHarmonyOption = z.infer<typeof colorHarmonySchema>
 
 export type ColorHarmony = z.infer<typeof colorHarmonySchema>
 
@@ -262,6 +256,5 @@ export type SemanticColorOverrides = z.infer<
   typeof semanticColorOverridesSchema
 >
 
-export const DEFAULT_COLOR_TYPE = "oklch"
-export const colorTypeSchema = z.enum(COLOR_TYPE_OPTIONS)
+export const colorTypeSchema = z.enum(["hex", "oklch", "rgb", ""] as const)
 export type CssColorType = z.infer<typeof colorTypeSchema>

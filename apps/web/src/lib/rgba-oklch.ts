@@ -1,27 +1,30 @@
-import { type RGBColor as Rgb } from "react-color"
-import type {} from "react-color"
-import { converter, parseColorInput } from "@repo/domain-theme/colors"
-import type { CuloriOklch, CuloriRgb } from "@repo/domain-theme/colors"
+import {
+  parseColorInput,
+  toOklch,
+  toRgb,
+  type RgbColor as Rgb,
+} from "@repo/domain-theme/colors"
 
-const oklch = converter("oklch") as (
-  color: Parameters<ReturnType<typeof converter>>[0]
-) => CuloriOklch | undefined
-const rgb = converter("rgb") as (
-  color: Parameters<ReturnType<typeof converter>>[0]
-) => CuloriRgb | undefined
-type Rgba = Omit<Rgb, "mode"> & { a?: number }
+/**
+ * RGB color type matching Culori's RGB structure.
+ * r, g, b are normalized to 0-1 range in Culori,
+ * but stored as 0-255 in our Rgba type.
+ */
+
+const oklch = toOklch
+const rgb = toRgb
 const clamp255 = (value: number) => {
   return Math.min(255, Math.max(0, Math.round(value)))
 }
 
-function oklchToRgbaObj(colorStr: string): Rgba {
+function oklchToRgbObj(colorStr: string): Rgb {
   const parsed = parseColorInput(colorStr)
 
   if (!parsed) {
     return { r: 0, g: 0, b: 0, a: 1 }
   }
 
-  const rgbObj = rgb({ mode: "oklch", l: parsed.l, c: parsed.c, h: parsed.h })
+  const rgbObj = rgb({ l: parsed.l, c: parsed.c, h: parsed.h })
 
   if (!rgbObj) {
     return { r: 0, g: 0, b: 0, a: 1 }
@@ -34,7 +37,7 @@ function oklchToRgbaObj(colorStr: string): Rgba {
     a: 1,
   }
 }
-function rgbaObjToOklchStr(rgbaObj: Rgba): string {
+function rgbaObjToOklchStr(rgbaObj: Rgb): string {
   const culoriRgb: Rgb = {
     b: rgbaObj.b / 255,
     r: rgbaObj.r / 255,
@@ -43,8 +46,6 @@ function rgbaObjToOklchStr(rgbaObj: Rgba): string {
 
   const oklchObj = oklch({
     ...culoriRgb,
-
-    mode: "rgb",
   })
 
   if (!oklchObj) {
@@ -58,5 +59,5 @@ function rgbaObjToOklchStr(rgbaObj: Rgba): string {
   return `oklch(${l} ${c} ${h})`
 }
 
-export { oklchToRgbaObj, rgbaObjToOklchStr }
-export { oklch, rgb, type CuloriOklch, type Rgb, type Rgba }
+export { oklchToRgbObj, rgbaObjToOklchStr }
+export { oklch, rgb, type Rgb }

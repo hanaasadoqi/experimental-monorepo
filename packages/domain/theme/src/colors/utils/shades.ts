@@ -1,8 +1,11 @@
-import { SHADE_STEPS, STEP_LIGHTNESS } from "../constants"
+import { STEP_LIGHTNESS } from "../constants"
 import { oklchToCss, oklchToHex } from "./convert"
 import { clampC, clampH, clampL, maxChromaInGamut } from "./gamut"
 import type { Oklch, Shade } from "./core-model"
 
+export const SHADE_STEPS = [
+  50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
+] as const
 /** One of the 11 canonical shade steps. */
 export type ShadeStep = (typeof SHADE_STEPS)[number]
 
@@ -63,8 +66,22 @@ export interface GenerateShadeScaleOptions {
 }
 
 const lastStep = SHADE_STEPS[SHADE_STEPS.length - 1] ?? 950
-const LIGHT_REFERENCE_L = STEP_LIGHTNESS[SHADE_STEPS[0]] ?? 0.97
-const DARK_REFERENCE_L = STEP_LIGHTNESS[lastStep] ?? 0.16
+let _LIGHT_REFERENCE_L: number | undefined
+let _DARK_REFERENCE_L: number | undefined
+
+function getLightReferenceL() {
+  if (_LIGHT_REFERENCE_L === undefined) {
+    _LIGHT_REFERENCE_L = STEP_LIGHTNESS[SHADE_STEPS[0]] ?? 0.97
+  }
+  return _LIGHT_REFERENCE_L
+}
+
+function getDarkReferenceL() {
+  if (_DARK_REFERENCE_L === undefined) {
+    _DARK_REFERENCE_L = STEP_LIGHTNESS[lastStep] ?? 0.16
+  }
+  return _DARK_REFERENCE_L
+}
 
 /**
  * Generate an 11-step shade ramp anchored so the seed color occupies the
@@ -97,8 +114,8 @@ export function generateShadeScale({
   const anchorReferenceL = STEP_LIGHTNESS[anchorShade] ?? seedL
   // Guarantee headroom above/below the seed even when it's already near an
   // extreme, so neighboring steps never collapse onto the anchor's value.
-  const ceilingL = Math.min(1, Math.max(LIGHT_REFERENCE_L, seedL + 0.02))
-  const floorL = Math.max(0, Math.min(DARK_REFERENCE_L, seedL - 0.02))
+  const ceilingL = Math.min(1, Math.max(getLightReferenceL(), seedL + 0.02))
+  const floorL = Math.max(0, Math.min(getDarkReferenceL(), seedL - 0.02))
 
   return SHADE_STEPS.map((step) => {
     const isBase = step === anchorShade
@@ -109,13 +126,13 @@ export function generateShadeScale({
       targetL = seedL
     } else if (referenceL > anchorReferenceL) {
       // Lighter than the anchor in the reference curve's ordering.
-      const span = LIGHT_REFERENCE_L - anchorReferenceL
+      const span = getLightReferenceL() - anchorReferenceL
       const t = span > 0 ? (referenceL - anchorReferenceL) / span : 1
       targetL = seedL + t * (ceilingL - seedL)
     } else {
       // Darker than (or equal to, which shouldn't happen given distinct
       // STEP_LIGHTNESS values) the anchor.
-      const span = anchorReferenceL - DARK_REFERENCE_L
+      const span = anchorReferenceL - getDarkReferenceL()
       const t = span > 0 ? (anchorReferenceL - referenceL) / span : 1
       targetL = seedL - t * (seedL - floorL)
     }

@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { generateShades, generateShadeScale } from "./shades"
-import { SHADE_STEPS } from "../constants"
+import { generateShades, generateShadeScale, SHADE_STEPS } from "./shades"
 import { maxChromaInGamut } from "./gamut"
 import type { Oklch } from "./core-model"
 

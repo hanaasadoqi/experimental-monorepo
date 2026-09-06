@@ -24,7 +24,9 @@ type InternalThemeStore = InternalThemeState & InternalThemeActions
 /**
  * Create a global theme scope instance with given darkMode state.
  */
-function createGlobalTheme(darkMode: boolean | undefined): ThemeScopeRuntimeState {
+function createGlobalTheme(
+  darkMode: boolean | undefined
+): ThemeScopeRuntimeState {
   return {
     id: "root",
     enableDarkMode: true,

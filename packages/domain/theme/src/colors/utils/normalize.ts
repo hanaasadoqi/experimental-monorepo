@@ -55,7 +55,7 @@ export function normalizeRgbBytes(rgb: {
   r: number
   g: number
   b: number
-  a?: number
+  alpha?: number
 }): Rgb {
   const normalize = (v: number) => Math.max(0, Math.min(1, v / 255))
   return {
@@ -63,9 +63,9 @@ export function normalizeRgbBytes(rgb: {
     r: normalize(rgb.r),
     g: normalize(rgb.g),
     b: normalize(rgb.b),
-    // culori's Rgb names its alpha channel `alpha`, not this package's `a` —
-    // the declared `Rgb` return type requires it (finding #1, alpha mapping).
-    ...(rgb.a !== undefined && { alpha: Math.max(0, Math.min(1, rgb.a)) }),
+    ...(rgb.alpha !== undefined && {
+      alpha: Math.max(0, Math.min(1, rgb.alpha)),
+    }),
   }
 }
 
@@ -73,11 +73,11 @@ export function normalizeRgbBytes(rgb: {
  * Denormalize RGB values from 0-1 range to 0-255 byte range.
  * Used when outputting to CSS rgb(255, 128, 0) format or for display.
  */
-export function denormalizeRgbBytes(rgb: Rgb & { a?: number }): {
+export function denormalizeRgbBytes(rgb: Rgb & { alpha?: number }): {
   r: number
   g: number
   b: number
-  a?: number
+  alpha?: number
 } {
   const denormalize = (v: number | undefined) =>
     Math.round(Math.max(0, Math.min(1, v ?? 0)) * 255)
@@ -85,7 +85,9 @@ export function denormalizeRgbBytes(rgb: Rgb & { a?: number }): {
     r: denormalize(rgb.r),
     g: denormalize(rgb.g),
     b: denormalize(rgb.b),
-    ...(rgb.a !== undefined && { a: Math.max(0, Math.min(1, rgb.a)) }),
+    ...(rgb.alpha !== undefined && {
+      alpha: Math.max(0, Math.min(1, rgb.alpha)),
+    }),
   }
 }
 
@@ -100,19 +102,25 @@ export function normalizeHex(hexString: string): string {
     return DEFAULT_HEX
   }
 
-  const cleaned = hexString.slice(1).toUpperCase()
+  const cleaned = hexString.replace(/^#/, "").toUpperCase()
 
-  // 3-char format: #abc → #aabbcc
   if (cleaned.length === 3) {
-    const expanded =
-      (cleaned[0] ?? "0") +
-      (cleaned[0] ?? "0") +
-      cleaned[1] +
-      cleaned[1] +
-      cleaned[2] +
-      cleaned[2]
-    return "#" + expanded
+    return (
+      "#" +
+      cleaned
+        .split("")
+        .map((c) => c + c)
+        .join("")
+    )
   }
 
-  return "#" + cleaned
+  if (cleaned.length === 6 && /^[0-9A-F]{6}$/.test(cleaned)) {
+    return "#" + cleaned
+  }
+
+  if (cleaned.length === 8 && /^[0-9A-F]{8}$/.test(cleaned)) {
+    return "#" + cleaned.slice(0, 6)
+  }
+
+  return DEFAULT_HEX
 }

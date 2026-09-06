@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { maxChromaInGamut } from "@repo/domain-theme/color"
+import { maxChromaInGamut } from "@repo/domain-theme/colors"
 
 import { getColorHarmonies } from "./get-color-harmonies"
 
