@@ -2,6 +2,7 @@
 
 import { LanguageForm } from "./language-form"
 import { DateTimeForm } from "./date-time-form"
+import { ExportImportSection } from "./export-import-section"
 import { useState } from "react"
 import {
   Bell,
@@ -14,6 +15,7 @@ import {
   Eye,
   Lock,
   Database,
+  Download,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
@@ -49,6 +51,7 @@ import {
   useSetDateFormatPreference,
   useTimeFormatPreference,
   useSetTimeFormatPreference,
+  usePreferences,
 } from "@repo/runtime-preferences"
 
 interface SettingsFormData {
@@ -81,6 +84,7 @@ export function PreferencesForm() {
   const setDateFormat = useSetDateFormatPreference()
   const timeFormat = useTimeFormatPreference()
   const setTimeFormat = useSetTimeFormatPreference()
+  const allPreferences = usePreferences()
 
   // Local UI state (not persisted preferences)
   const [settings, setSettings] = useState<SettingsFormData>({
@@ -95,6 +99,17 @@ export function PreferencesForm() {
     autoSave: true,
     autoSaveInterval: "30",
   })
+
+  const handleImportPreferences = (imported: Partial<typeof allPreferences>) => {
+    if (imported.appearance !== undefined)
+      setAppearance(imported.appearance as Parameters<typeof setAppearance>[0])
+    if (imported.language !== undefined)
+      setLanguage(imported.language as Parameters<typeof setLanguage>[0])
+    if (imported.dateFormat !== undefined)
+      setDateFormat(imported.dateFormat as Parameters<typeof setDateFormat>[0])
+    if (imported.timeFormat !== undefined)
+      setTimeFormat(imported.timeFormat as Parameters<typeof setTimeFormat>[0])
+  }
 
   const handleLanguageChange = (newLanguage: string | null) => {
     if (newLanguage) setLanguage(newLanguage as Parameters<typeof setLanguage>[0])
@@ -138,7 +153,7 @@ export function PreferencesForm() {
       </div>
 
       <Tabs defaultValue="appearance" className="w-full">
-        <TabsList className="grid w-full grid-cols-6 mb-8">
+        <TabsList className="grid w-full grid-cols-7 mb-8">
           <TabsTrigger value="appearance" className="gap-2">
             <HugeiconsIcon icon={Palette} className="size-4" />
             <span className="hidden sm:inline">Appearance</span>
@@ -162,6 +177,10 @@ export function PreferencesForm() {
           <TabsTrigger value="privacy" className="gap-2">
             <HugeiconsIcon icon={Lock} className="size-4" />
             <span className="hidden sm:inline">Privacy</span>
+          </TabsTrigger>
+          <TabsTrigger value="backup" className="gap-2">
+            <HugeiconsIcon icon={Download} className="size-4" />
+            <span className="hidden sm:inline">Backup</span>
           </TabsTrigger>
         </TabsList>
 
@@ -492,6 +511,14 @@ export function PreferencesForm() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        {/* Backup & Restore Tab */}
+        <TabsContent value="backup">
+          <ExportImportSection
+            preferences={allPreferences}
+            onImport={handleImportPreferences}
+          />
         </TabsContent>
       </Tabs>
 

@@ -29,6 +29,10 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./appearance": "./src/appearance.ts"
+    "./appearance": "./src/appearance/index.ts",
+    "./language": "./src/language/index.ts",
+    "./date-time": "./src/date-time/index.ts",
+    "./preferences": "./src/preferences/index.ts",
+    "./export-import": "./src/export-import/index.ts"
   }
 }

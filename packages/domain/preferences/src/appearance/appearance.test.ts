@@ -1,9 +1,7 @@
 import { describe, expect, it } from "vitest"
 
-import {
-  appearancePreferenceSchema,
-  DEFAULT_APPEARANCE_PREFERENCE,
-} from "./appearance"
+import { appearancePreferenceSchema } from "./model"
+import { DEFAULT_APPEARANCE_PREFERENCE } from "./defaults"
 
 describe("appearance preference", () => {
   it.each(["light", "dark", "system"])("accepts %s", (preference) => {
