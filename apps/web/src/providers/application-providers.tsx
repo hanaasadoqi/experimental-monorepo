@@ -167,14 +167,14 @@ export function ApplicationProviders({
       initialThemes={AVAILABLE_THEMES}
       initialSelectedId={DEFAULT_THEME_ID}
     >
-      <ClientApplicationProvider>
-        <PreferencesProvider initialPreferences={initialPreferences}>
-          <RootThemeScope>
+      <PreferencesProvider initialPreferences={initialPreferences}>
+        <RootThemeScope>
+          <ClientApplicationProvider>
             <PreferencesPersistence />
             <AppearanceBridge>{children}</AppearanceBridge>
-          </RootThemeScope>
-        </PreferencesProvider>
-      </ClientApplicationProvider>
+          </ClientApplicationProvider>
+        </RootThemeScope>
+      </PreferencesProvider>
     </ThemeRegistryProvider>
   )
 }
