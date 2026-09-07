@@ -71,11 +71,29 @@ export function getColorHarmonies(base: Oklch): ColorHarmonyResult[] {
       colors: colorsExcludingSeed(base, "tetradic"),
     },
     {
+      type: "square",
+      name: "Square",
+      description: "Four evenly spaced hues — balanced and energetic",
+      colors: colorsExcludingSeed(base, "square"),
+    },
+    {
       // Rectangle: two complementary pairs, offset so one axis stays dominant.
       type: "rectangle",
       name: "Rectangle",
       description: "Two complementary pairs — complex but balanced",
       colors: colorsExcludingSeed(base, "rectangle"),
+    },
+    {
+      type: "double-split-complementary",
+      name: "Double Split Complementary",
+      description: "Two nearby pairs around the complement — nuanced contrast",
+      colors: colorsExcludingSeed(base, "double-split-complementary"),
+    },
+    {
+      type: "monochromatic",
+      name: "Monochromatic",
+      description: "One hue across lightness — focused and cohesive",
+      colors: generateHarmony(base, "monochromatic"),
     },
   ]
 }
