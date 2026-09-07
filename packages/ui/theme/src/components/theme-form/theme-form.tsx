@@ -27,14 +27,12 @@ import {
   SelectTrigger,
   SelectValue,
   SelectGroup,
-  SelectLabel,
 } from "@repo/ui-components/base/select"
 import { Slider } from "@repo/ui-components/base/slider"
 import {
   RadioGroup,
   RadioGroupItem,
 } from "@repo/ui-components/base/radio-group"
-import { Badge } from "@repo/ui-components/base/badge"
 import {
   oklchToCss,
   parseOklchString,
@@ -43,8 +41,6 @@ import {
   DEFAULT_PRIMARY_COLOR,
 } from "@repo/domain-theme/colors"
 import { getColorHarmonies } from "../../utils/get-color-harmonies"
-import type { Oklch } from "@repo/domain-theme/colors"
-
 const RADIUS_OPTIONS = [
   { value: "0", label: "None", style: "0px" },
   { value: "0.25", label: "Small", style: "4px" },
@@ -117,8 +113,6 @@ export const ThemeForm = () => {
 
   const primaryColor = parseOklchString(primaryColorStr)
   const harmonies = primaryColor ? getColorHarmonies(primaryColor) : []
-  const selectedHarmony = harmonies.find((h) => h.type === harmonyType)
-
   const wcagLevel = primaryColor
     ? getWCAGLevel(contrastRatio(oklchToCss(primaryColor), "oklch(95% 0 0)"))
     : undefined
@@ -137,7 +131,13 @@ export const ThemeForm = () => {
   return (
     <div className="space-y-6">
       <form id="form-theme" onSubmit={form.handleSubmit(onSubmit)}>
-        <FieldGroup className="space-y-4">
+        <FieldGroup className="gap-6 pb-24">
+          <div className="border-border/70 flex items-center gap-3 border-b pb-2">
+            <span className="bg-primary size-1.5 rounded-full" />
+            <span className="text-muted-foreground text-[10px] font-semibold tracking-[0.16em] uppercase">
+              Identity
+            </span>
+          </div>
           {/* Name */}
           <Controller
             name="name"
@@ -207,68 +207,68 @@ export const ThemeForm = () => {
           {/* Primary Color Picker */}
           <Field>
             <FieldLabel>Primary Color</FieldLabel>
-            <div className="flex items-end gap-3">
-              <div className="flex-1 space-y-2">
-                <Controller
-                  name="primaryColor"
-                  control={form.control}
-                  render={({ field }) => (
-                    <InputGroupInput
-                      {...field}
-                      type="text"
-                      placeholder="oklch(70% 0.14 180)"
-                    />
-                  )}
-                />
-              </div>
-              {primaryColor && (
-                <div className="space-y-1 text-right">
+            <div className="bg-muted/30 border-border/70 rounded-xl border p-3">
+              <div className="grid grid-cols-[56px_minmax(0,1fr)] items-center gap-3">
+                {primaryColor && (
                   <div
-                    className="size-12 rounded-lg border border-border shadow-sm"
-                    style={{ backgroundColor: oklchToCss(primaryColor) }}
+                    className="h-14 w-14 justify-self-start rounded-lg border border-foreground/20 shadow-inner"
+                    style={{
+                      width: "3.5rem",
+                      height: "3.5rem",
+                      backgroundColor: oklchToCss(primaryColor),
+                      backgroundImage: `linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.18) 50%)`,
+                    }}
+                    aria-label="Primary color swatch"
                   />
-                  <div className="text-xs space-y-0.5">
-                    <div className="font-medium">
-                      {wcagLevel ? `WCAG ${wcagLevel}` : "—"}
-                    </div>
-                    <div className="text-muted-foreground">
-                      {contrastRatio(
-                        oklchToCss(primaryColor),
-                        "oklch(95% 0 0)"
-                      ).toFixed(2)}
-                      :1
-                    </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <Controller
+                    name="primaryColor"
+                    control={form.control}
+                    render={({ field }) => (
+                      <InputGroupInput
+                        {...field}
+                        type="text"
+                        className="bg-background/70 font-mono text-xs"
+                        placeholder="oklch(70% 0.14 180)"
+                      />
+                    )}
+                  />
+                  <div className="text-muted-foreground mt-2 flex items-center justify-between gap-2 text-[11px]">
+                    <span className="font-mono truncate">
+                      {primaryColorStr}
+                    </span>
+                    <span className="shrink-0 font-medium">
+                      {wcagLevel ? `WCAG ${wcagLevel}` : "Invalid color"}
+                      {primaryColor &&
+                        ` · ${contrastRatio(oklchToCss(primaryColor), "oklch(95% 0 0)").toFixed(2)}:1`}
+                    </span>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
-            {primaryColor && (
-              <FieldDescription className="mt-2">
-                {primaryColorStr}
-              </FieldDescription>
-            )}
           </Field>
 
           {/* Color Harmony */}
           {harmonies.length > 0 && (
-            <Field>
+            <Field className="gap-3">
               <FieldLabel>Color Harmony Type</FieldLabel>
               <FieldDescription>
                 Select a harmony pattern for accent color options
               </FieldDescription>
-              <div className="mt-3 space-y-2 max-h-60 overflow-y-auto">
+              <div className="mt-1 grid max-h-72 grid-cols-2 gap-2 overflow-y-auto pr-1">
                 {harmonies.map((harmony) => (
                   <button
                     key={harmony.type}
                     type="button"
                     onClick={() => form.setValue("harmonyType", harmony.type)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all text-left ${
+                    className={`relative flex min-h-24 w-full flex-col items-start justify-between gap-2 rounded-xl border p-2.5 text-left transition-all ${
                       harmonyType === harmony.type
                         ? "border-primary/60 bg-primary/5"
                         : "border-border hover:border-border/80"
                     }`}
                   >
-                    <div className="flex gap-1 shrink-0">
+                    <div className="flex gap-1.5 shrink-0">
                       {harmony.colors.slice(0, 4).map((c, i) => (
                         <div
                           key={i}
@@ -292,8 +292,14 @@ export const ThemeForm = () => {
             </Field>
           )}
 
-          {/* Fonts */}
-          <div className="grid grid-cols-3 gap-3">
+          {/* Typography */}
+          <div className="border-border/70 flex items-center gap-3 border-b pb-2 pt-1">
+            <span className="bg-primary size-1.5 rounded-full" />
+            <span className="text-muted-foreground text-[10px] font-semibold tracking-[0.16em] uppercase">
+              Typography
+            </span>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
             <Controller
               name="headingFont"
               control={form.control}
@@ -395,6 +401,13 @@ export const ThemeForm = () => {
             )}
           />
 
+          {/* Shape */}
+          <div className="border-border/70 flex items-center gap-3 border-b pb-2 pt-1">
+            <span className="bg-primary size-1.5 rounded-full" />
+            <span className="text-muted-foreground text-[10px] font-semibold tracking-[0.16em] uppercase">
+              Shape
+            </span>
+          </div>
           {/* Border Radius */}
           <Controller
             name="borderRadius"
@@ -438,7 +451,7 @@ export const ThemeForm = () => {
 
       <Field
         orientation="horizontal"
-        className="gap-2 pt-4 border-t border-border"
+        className="bg-background/95 border-border sticky bottom-0 z-10 -mx-4 gap-2 border-t px-4 pt-4 pb-1 backdrop-blur"
       >
         <Button type="button" variant="outline" onClick={() => form.reset()}>
           Reset
