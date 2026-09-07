@@ -33,6 +33,7 @@ import {
 } from "@repo/ui-components/base/sheet"
 import { ThemeForm } from "@repo/ui-theme"
 import { AppContentHeader } from "./app-content-header"
+import { AppSidebar } from "./app-sidebar"
 
 // const navigation = [
 //   { label: "Overview", icon: Home01Icon, href: "/" },
@@ -42,7 +43,7 @@ import { AppContentHeader } from "./app-content-header"
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
-
+      <AppSidebar />
       <SidebarInset>
         <div className="flex min-h-0 flex-1 flex-col">
           <AppContentHeader />
