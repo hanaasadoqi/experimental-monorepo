@@ -89,7 +89,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         raleway.variable,
         ibmPlexSans.variable,
         geistMono.variable,
-        "max-w-screen min-h-svh w-full"
+        "max-w-screen min-h-svh w-full",
         {
           dark: explicitAppearance === "dark",
           light: explicitAppearance === "light",
