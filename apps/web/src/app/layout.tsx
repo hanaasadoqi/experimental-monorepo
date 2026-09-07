@@ -98,13 +98,13 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       style={
         explicitAppearance
           ? {
-              colorScheme: explicitAppearance,
-            }
+            colorScheme: explicitAppearance,
+          }
           : undefined
       }
       suppressHydrationWarning={needsHydrationSuppression}
     >
-      <body className="typeset antialiased">
+      <body className="max-w-screen min-h-screen size-full bg-background text-foreground antialiased">
         <Script
           id="appearance-bootstrap"
           strategy="beforeInteractive"
