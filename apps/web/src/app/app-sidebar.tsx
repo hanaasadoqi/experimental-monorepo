@@ -1,7 +1,30 @@
-import { Home01Icon, PaintBoardIcon, Settings02Icon } from "@hugeicons/core-free-icons"
+import {
+  Home01Icon,
+  PaintBoardIcon,
+  Settings02Icon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { SidebarHeader, SidebarSeparator, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarRail, Sidebar } from "@repo/ui-components"
-import { SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, Sheet } from "@repo/ui-components/base/sheet"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from "@repo/ui-components"
+import {
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  Sheet,
+} from "@repo/ui-components/base/sheet"
 import { ThemeForm } from "@repo/ui-theme"
 
 const navigation = [
@@ -9,13 +32,12 @@ const navigation = [
   { label: "Theme system", icon: PaintBoardIcon, href: "/" },
 ]
 
-
 export const AppSidebar = () => {
   return (
     <Sidebar side="left" variant="sidebar" collapsible="icon">
-      <SidebarHeader className="p-3">
+      <SidebarHeader className="border-border/70 gap-0 border-b px-3 py-4">
         <div className="flex items-center gap-3 px-1 group-data-[collapsible=icon]:justify-center">
-          <div className="bg-primary text-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-lg text-sm font-semibold">
+          <div className="bg-primary text-primary-foreground flex size-9 shrink-0 items-center justify-center rounded-xl text-sm font-semibold shadow-sm">
             T
           </div>
           <div className="min-w-0 group-data-[collapsible=icon]:hidden">
@@ -26,18 +48,20 @@ export const AppSidebar = () => {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarSeparator />
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+      <SidebarContent className="px-2 py-3">
+        <SidebarGroup className="p-0">
+          <SidebarGroupLabel className="text-muted-foreground/70 px-2 text-[10px] font-medium tracking-[0.12em] uppercase">
+            Workspace
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="pl-0 flex flex-col place-items-center">
+            <SidebarMenu>
               {navigation.map((item) => (
-                <SidebarMenuItem key={item.label} className="w-full list-none pl-0 flex-col /iflex place-items-center">
+                <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton
+                    className="h-9 text-sm font-medium"
                     render={<a href={item.href} />}
                     tooltip={item.label}
-                    isActive={item.label === "Theme system"}
+                    isActive={item.label === "Overview"}
                   >
                     <HugeiconsIcon icon={item.icon} strokeWidth={2} />
                     <span>{item.label}</span>
@@ -48,7 +72,7 @@ export const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-border/70 border-t p-3">
         <SidebarMenu>
           <SidebarMenuItem>
             <Sheet>
