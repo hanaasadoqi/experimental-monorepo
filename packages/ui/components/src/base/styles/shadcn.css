@@ -1,4 +1,4 @@
-/* :root {
+:root {
   --background: var(--ds-color-background);
   --foreground: var(--ds-color-foreground);
   --card: var(--ds-color-surface);
@@ -18,13 +18,11 @@
   --border: var(--ds-color-border);
   --input: var(--ds-color-input);
   --ring: var(--ds-color-ring);
-
   --chart-1: var(--accent-300);
   --chart-2: var(--accent-500);
   --chart-3: var(--accent-600);
   --chart-4: var(--default-700);
   --chart-5: var(--default-800);
-
   --sidebar: var(--ds-color-surface);
   --sidebar-foreground: var(--ds-color-surface-foreground);
   --sidebar-primary: var(--ds-color-primary);
@@ -33,6 +31,15 @@
   --sidebar-accent-foreground: var(--ds-color-accent-foreground);
   --sidebar-border: var(--ds-color-border);
   --sidebar-ring: var(--ds-color-ring);
+
+  --success: var(--primary-500);
+  --success-foreground: var(--primary-900);
+  --info: var(--primary-500);
+  --info-foreground: var(--primary-900);
+  --warning: var(--accent-500);
+  --warning-foreground: var(--accent-900);
+  --invert: var(--default-900);
+  --invert-foreground: var(--default-50);
 }
 
 .dark,
@@ -42,7 +49,12 @@
   --chart-3: var(--accent-600);
   --chart-4: var(--accent-800);
   --chart-5: var(--accent-900);
-} */
+  --success-foreground: var(--primary-100);
+  --info-foreground: var(--primary-100);
+  --warning-foreground: var(--accent-100);
+  --invert: var(--default-700);
+  --invert-foreground: var(--default-50);
+}
 
 :root {
   --destructive-foreground: var(--color-red-800);

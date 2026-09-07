@@ -31,21 +31,21 @@ function ScopeDemoContent() {
   return (
     <div
       ref={scopeRef}
-      className="border-primary rounded-lg border-2 border-dashed p-6"
+      className="border-primary bg-background text-foreground rounded-lg border-2 border-dashed p-6"
       suppressHydrationWarning
     >
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         <div>
           <h3 className="text-base font-semibold">Scoped Theme Demo</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground text-sm">
             Customize this section independently
           </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="flex flex-col gap-3">
           <button
             onClick={() => toggleEnableDarkMode()}
-            className="rounded bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded px-3 py-2 text-sm font-medium transition-colors"
           >
             {enableDarkMode ? "Disable Dark Mode" : "Enable Dark Mode"}
           </button>
@@ -62,7 +62,7 @@ function ScopeDemoContent() {
             ))}
           </div>
 
-          <div className="text-xs text-gray-600 dark:text-gray-400">
+          <div className="text-muted-foreground text-xs">
             <div>Dark mode: {isDarkMode ? "ON" : "OFF"}</div>
             {overrides?.primary && (
               <div>Primary color: {overrides.primary}</div>

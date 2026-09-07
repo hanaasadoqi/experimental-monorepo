@@ -13,7 +13,7 @@ import { DEFAULT_APPEARANCE_PREFERENCE } from "@repo/domain-preferences"
 import "./globals.css"
 import { Viewport } from "next"
 import AppShell from "./app-shell"
-import { Raleway, IBM_Plex_Sans, Geist_Mono } from "next/font/google"
+import { Geist_Mono, IBM_Plex_Sans, Raleway } from "next/font/google"
 
 const raleway = Raleway({
   subsets: ["latin"],
