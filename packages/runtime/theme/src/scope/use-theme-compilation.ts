@@ -1,11 +1,11 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useRef } from "react"
 import { compile } from "@repo/domain-theme/compiler"
 import type { ThemeCompilationInput } from "@repo/domain-theme/compiler"
 import { useThemeScope } from "./use-theme-scope"
 import { useThemeRegistry } from "../registry/theme-registry-context"
-import { ThemeDefinition } from "@repo/domain-theme";
+import { ThemeDefinition } from "@repo/domain-theme"
 
 /**
  * Merge source theme with scope overrides to get the full theme for compilation.
@@ -13,7 +13,10 @@ import { ThemeDefinition } from "@repo/domain-theme";
  * Priority: overrides take precedence over source theme properties.
  * Returns the merged theme object ready for compile().
  */
-function mergeThemeWithOverrides(sourceTheme: ThemeDefinition, overrides: Partial<ThemeDefinition>): ThemeDefinition {
+function mergeThemeWithOverrides(
+  sourceTheme: ThemeDefinition,
+  overrides: Partial<ThemeDefinition>
+): ThemeDefinition {
   return {
     ...sourceTheme,
     ...overrides,
@@ -30,8 +33,13 @@ function mergeThemeWithOverrides(sourceTheme: ThemeDefinition, overrides: Partia
  * Logs warnings on error but does not throw.
  */
 export function useThemeCompilation() {
-  const { overrides, isDarkMode, sourceId } = useThemeScope()
+  const { overrides, isDarkMode, sourceId, scopeId } = useThemeScope()
   const { getTheme } = useThemeRegistry()
+
+  // Cache compilation results by fingerprint to avoid recomputation
+  const compilationCacheRef = useRef<
+    Record<string, ReturnType<typeof compile>>
+  >({})
 
   // Get source theme from registry if sourceId is set
   const sourceTheme = useMemo(() => {
@@ -41,9 +49,18 @@ export function useThemeCompilation() {
 
   // Merge source theme with scope overrides
   const mergedTheme = useMemo(() => {
-    return mergeThemeWithOverrides(sourceTheme ?? {} as ThemeDefinition, overrides as Partial<ThemeDefinition>)
+    return mergeThemeWithOverrides(
+      sourceTheme ?? ({} as ThemeDefinition),
+      overrides as Partial<ThemeDefinition>
+    )
   }, [sourceTheme, overrides])
 
+  const cacheKey = `${scopeId ?? "default"}-${sourceId ?? "default"}`
+
+  // Return cached result if available
+  if (compilationCacheRef.current[cacheKey]) {
+    return compilationCacheRef.current[cacheKey]
+  }
   const compilationResult = useMemo(() => {
     if (!mergedTheme.colors.primary) {
       return null
@@ -63,6 +80,7 @@ export function useThemeCompilation() {
         )
         return null
       }
+      compilationCacheRef.current[cacheKey] = result
       return result
     } catch (error) {
       console.warn(`[ThemeCompilation] Compilation error:`, error)

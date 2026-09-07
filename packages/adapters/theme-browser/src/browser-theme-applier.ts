@@ -79,3 +79,12 @@ export function applyScopeThemeToElement(
     element.style.removeProperty("--primary")
   }
 }
+
+export function applyCssToElement(
+  element: HTMLElement,
+  cssVariables: Record<string, string>
+): void {
+  Object.entries(cssVariables).forEach(([key, value]) => {
+    element.style.setProperty(key, value)
+  })
+}

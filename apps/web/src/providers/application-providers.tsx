@@ -70,8 +70,12 @@ import { useEffect, type ReactNode } from "react"
 
 import { PreferencesProvider } from "@repo/runtime-preferences"
 import type { Preferences } from "@repo/domain-preferences"
-import { ThemeScopeProvider, useThemeStore, ThemeRegistryProvider } from "@repo/runtime-theme"
-import { applyAppearanceToDocument } from "@repo/adapters-theme-browser"
+import {
+  ThemeScopeProvider,
+  useThemeStore,
+  ThemeRegistryProvider,
+} from "@repo/runtime-theme"
+// import { applyAppearanceToDocument } from "@repo/adapters-theme-browser"
 import { DEFAULT_PRIMARY_COLOR } from "@repo/domain-theme/colors"
 
 import { AppearanceBridge } from "./appearance-bridge"
@@ -104,22 +108,21 @@ export interface ApplicationProvidersProps {
  */
 function RootThemeScope({ children }: { children: ReactNode }) {
   const resolvedAppearance = useResolvedAppearance()
-  const theme = useThemeStore((state) => state.getGlobalTheme())
-  const setGlobalDarkMode = useThemeStore((state) => state.setGlobalDarkMode)
+  const setDarkMode = useThemeStore((state) => state.setGlobalDarkMode)
+  const darkMode = useThemeStore((state) => state.themes["root"]?.isDarkMode)
 
   useEffect(() => {
-    if (!theme.enableDarkMode) return
-    setGlobalDarkMode(resolvedAppearance === "dark")
-  }, [resolvedAppearance, setGlobalDarkMode, theme.enableDarkMode])
+    setDarkMode(resolvedAppearance === "dark")
+  }, [resolvedAppearance, setDarkMode])
 
   return (
     <ThemeScopeProvider
       scopeId="root"
-      theme={theme}
-      resolvedAppearance={resolvedAppearance}
-      followResolvedAppearance
-      applyResolvedAppearance={applyAppearanceToDocument}
-      initialOverrides={{ primary: DEFAULT_PRIMARY_COLOR }}
+      overrides={{
+        enableDarkMode: true,
+        isDarkMode: darkMode && resolvedAppearance === "dark",
+        primary: DEFAULT_PRIMARY_COLOR,
+      }}
     >
       {children}
     </ThemeScopeProvider>
@@ -160,7 +163,10 @@ export function ApplicationProviders({
   }
 
   return (
-    <ThemeRegistryProvider initialThemes={AVAILABLE_THEMES} initialSelectedId={DEFAULT_THEME_ID}>
+    <ThemeRegistryProvider
+      initialThemes={AVAILABLE_THEMES}
+      initialSelectedId={DEFAULT_THEME_ID}
+    >
       <ClientApplicationProvider>
         <PreferencesProvider initialPreferences={initialPreferences}>
           <RootThemeScope>

@@ -37,7 +37,6 @@ export function useThemeScope(): ScopeStore {
 
   // Subscribe to all store changes; re-render when state updates
   const state = useSyncExternalStore(
-
     (callback) => {
       // Subscribe to store changes; Zustand returns unsubscribe function
       return store.subscribe(callback)

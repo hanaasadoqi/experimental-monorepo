@@ -41,8 +41,7 @@ export function createThemeRegistry(
 ): ThemeRegistry {
   const themes = new Map(Object.entries(initialThemes))
   let selectedThemeId =
-    initialSelectedId &&
-    themes.has(initialSelectedId)
+    initialSelectedId && themes.has(initialSelectedId)
       ? initialSelectedId
       : Array.from(themes.keys())[0] || "default"
 

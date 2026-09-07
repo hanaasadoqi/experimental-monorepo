@@ -14,3 +14,4 @@ export type {
   StoreMigrations,
 } from "./types"
 export { createPersistedStore } from "./create-persisted-store"
+export { createPersistOptions } from "./create-persist-options"

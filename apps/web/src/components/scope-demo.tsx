@@ -2,10 +2,7 @@
 
 import { useEffect, useRef } from "react"
 
-import {
-  applyScopeThemeToElement,
-  getBrowserThemeStorage,
-} from "@repo/adapters-theme-browser"
+import { applyScopeThemeToElement } from "@repo/adapters-theme-browser"
 import { ThemeScopeProvider, useThemeScope } from "@repo/runtime-theme"
 import { ScopedThemeToggle } from "@repo/ui-theme/components"
 import { useResolvedAppearance } from "../hooks/use-resolved-appearance"
@@ -14,17 +11,22 @@ const demoTheme = { enableDarkMode: true } as const
 
 function ScopeDemoContent() {
   const scopeRef = useRef<HTMLDivElement>(null)
-  const { isDarkMode, overrides, setPrimaryColor, enableDarkMode, toggleEnableDarkMode } =
-    useThemeScope()
+  const {
+    isDarkMode,
+    overrides,
+    setPrimaryColor,
+    enableDarkMode,
+    toggleEnableDarkMode,
+  } = useThemeScope()
 
   useEffect(() => {
     if (!scopeRef.current) return
 
     applyScopeThemeToElement(scopeRef.current, {
-      isDarkMode,
+      isDarkMode: enableDarkMode && isDarkMode,
       primaryColor: overrides.primary,
     })
-  }, [isDarkMode, overrides.primary])
+  }, [enableDarkMode, isDarkMode, overrides.primary])
 
   return (
     <div
@@ -44,7 +46,6 @@ function ScopeDemoContent() {
           <button
             onClick={() => toggleEnableDarkMode()}
             className="rounded bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-
           >
             {enableDarkMode ? "Disable Dark Mode" : "Enable Dark Mode"}
           </button>
@@ -81,9 +82,11 @@ export function ScopeDemo() {
   return (
     <ThemeScopeProvider
       scopeId="demo"
-      theme={demoTheme}
-      resolvedAppearance={resolvedAppearance}
-      getStorage={getBrowserThemeStorage}
+      overrides={{
+        ...demoTheme,
+        enableDarkMode: demoTheme.enableDarkMode,
+        isDarkMode: demoTheme.enableDarkMode && resolvedAppearance === "dark",
+      }}
     >
       <ScopeDemoContent />
     </ThemeScopeProvider>

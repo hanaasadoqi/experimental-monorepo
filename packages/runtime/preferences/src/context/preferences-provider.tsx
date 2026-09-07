@@ -44,22 +44,7 @@ export function PreferencesProvider({
     try {
       storeRef.current = createPreferencesStore({
         initialState: initialPreferences,
-        enablePersistence: true
       })
-
-      // Immediately persist server-provided preferences to localStorage
-      // so they're available on next load (don't wait for async hydration)
-      if (initialPreferences && Object.keys(initialPreferences).length > 0) {
-        try {
-          localStorage.setItem(
-            "preferences-store",
-            JSON.stringify({ state: initialPreferences, version: 1 })
-          )
-        } catch (e) {
-          // localStorage might not be available (private mode, quota exceeded, etc.)
-          console.warn("Failed to persist initial preferences:", e)
-        }
-      }
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err))
       setError(error)

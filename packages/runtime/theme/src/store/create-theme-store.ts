@@ -1,8 +1,13 @@
 import { create } from "zustand"
-import type { Theme } from "@repo/shared-contracts"
+import { ThemeOverrides } from "@repo/domain-theme"
 
 // Internal alias for clarity within this module
-type ThemeScopeRuntimeState = Theme
+type ThemeScopeRuntimeState = {
+  id: string
+  isDarkMode: boolean
+  scopeIds: string[]
+  overrides?: ThemeOverrides
+}
 
 /**
  * Internal types for implementation.
@@ -17,8 +22,6 @@ type InternalThemeActions = {
   getGlobalTheme: () => ThemeScopeRuntimeState
   setGlobalDarkMode: (darkMode: boolean | undefined) => void
   toggleDarkMode: () => void
-  setEnableDarkMode: (enableDarkMode: boolean) => void
-  toggleEnableDarkMode: () => void
 }
 
 type InternalThemeStore = InternalThemeState & InternalThemeActions
@@ -27,20 +30,21 @@ type InternalThemeStore = InternalThemeState & InternalThemeActions
  * Create a global theme scope instance with given darkMode state.
  */
 function createGlobalTheme(
-  isDarkMode: boolean | undefined,
-  enableDarkMode: boolean
+  isDarkMode: boolean,
+  scopeIds: string[] = ["root"],
+  overrides: ThemeOverrides
 ): ThemeScopeRuntimeState {
   return {
     id: "root",
-    enableDarkMode,
     isDarkMode,
-    scopeIds: ["root"],
+    scopeIds,
+    overrides,
   }
 }
 
 export const useThemeStore = create<InternalThemeStore>((set, get) => ({
   themes: {
-    root: createGlobalTheme(undefined, true),
+    root: createGlobalTheme(false, ["root"], {}),
   },
 
   getTheme: (id: string) => {
@@ -48,7 +52,7 @@ export const useThemeStore = create<InternalThemeStore>((set, get) => ({
   },
 
   getGlobalTheme: () => {
-    return get().themes["root"] ?? createGlobalTheme(undefined, false)
+    return get().themes["root"] ?? createGlobalTheme(false, ["root"], {})
   },
 
   setGlobalDarkMode: (darkMode: boolean | undefined) => {
@@ -57,9 +61,7 @@ export const useThemeStore = create<InternalThemeStore>((set, get) => ({
         ...state.themes,
         root: {
           ...state.themes["root"]!,
-          isDarkMode: state.themes["root"]!.enableDarkMode
-            ? darkMode
-            : undefined,
+          isDarkMode: darkMode ?? state.themes["root"]!.isDarkMode,
         },
       },
     }))
@@ -77,36 +79,6 @@ export const useThemeStore = create<InternalThemeStore>((set, get) => ({
           },
         },
       }
-    })
-  },
-  setEnableDarkMode: (enableDarkMode: boolean) => {
-    set((state) => {
-      const globalTheme = state.themes["root"]!
-      const globalEnableDarkMode = globalTheme.enableDarkMode
-      const isEqual = globalEnableDarkMode === enableDarkMode
-      if (isEqual) {
-        return state
-      }
-      return {
-        themes: {
-          ...state.themes,
-          root: {
-            ...globalTheme,
-            enableDarkMode,
-            // When disabling dark mode, clear isDarkMode
-            // When enabling dark mode, let ThemeScopeProvider set it via resolvedAppearance
-            isDarkMode: enableDarkMode ? globalTheme.isDarkMode : undefined,
-          },
-        },
-      }
-    })
-  },
-  toggleEnableDarkMode: () => {
-    set((state) => {
-      const globalTheme = state.themes["root"]!
-      const newEnableDarkMode = !globalTheme.enableDarkMode
-      state.setEnableDarkMode(newEnableDarkMode)
-      return state
     })
   },
 }))

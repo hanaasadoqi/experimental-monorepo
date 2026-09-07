@@ -104,7 +104,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       }
       suppressHydrationWarning={needsHydrationSuppression}
     >
-      <body className="antialiased typeset">
+      <body className="typeset antialiased">
         <Script
           id="appearance-bootstrap"
           strategy="beforeInteractive"

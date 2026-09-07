@@ -25,7 +25,7 @@ export type PreferencesStoreApi = StoreApi<PreferencesStore>
 
 export function createPreferencesStore({
   initialState,
-  enablePersistence = true,
+  enablePersistence = initialState === undefined,
 }: CreatePreferencesStoreOptions = {}): PreferencesStoreApi {
   const initialPreferences: Preferences = {
     ...DEFAULT_PREFERENCES,

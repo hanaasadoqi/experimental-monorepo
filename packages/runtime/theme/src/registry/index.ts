@@ -30,12 +30,23 @@
  * ```
  */
 
-export { createThemeRegistry, type ThemeRegistry, type ThemeRegistryState } from "./theme-registry"
+export {
+  createThemeRegistry,
+  type ThemeRegistry,
+  type ThemeRegistryState,
+} from "./theme-registry"
 export { resolveThemeSelection, type ThemeSelection } from "./theme-selection"
-export { createThemeRegistryStore, type ThemeRegistryStoreState } from "./create-theme-registry-store"
+export {
+  createThemeRegistryStore,
+  type ThemeRegistryStoreState,
+} from "./create-theme-registry-store"
 export {
   ThemeRegistryProvider,
   useThemeRegistry,
   type ThemeRegistryProviderProps,
 } from "./theme-registry-context"
-export { changeTheme, getThemeById, type ThemeChangeOptions } from "./change-theme"
+export {
+  changeTheme,
+  getThemeById,
+  type ThemeChangeOptions,
+} from "./change-theme"

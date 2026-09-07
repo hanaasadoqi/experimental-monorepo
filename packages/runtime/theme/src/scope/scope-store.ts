@@ -1,10 +1,9 @@
 import { createStore, type Mutate, type StoreApi } from "zustand/vanilla"
-import {
-  createJSONStorage,
-  persist,
-  type StateStorage,
-} from "zustand/middleware"
-import { PrimaryThemeColor, ThemeOverrides } from "@repo/domain-theme"
+import { persist, type StateStorage } from "zustand/middleware"
+import { createPersistOptions } from "@repo/services-zustand"
+import { type ThemeOverrides } from "@repo/domain-theme"
+import { useSyncExternalStore, useRef } from "react"
+import { ScopePersistenceValidators } from "./scope-validators"
 
 const SCOPE_STORAGE_PREFIX = "synapcity:themes:"
 const LEGACY_SCOPE_STORAGE_PREFIX = "synapcity:scope:"
@@ -12,66 +11,6 @@ const LEGACY_SCOPE_STORAGE_PREFIX = "synapcity:scope:"
 export function getScopeStorageKey(scopeId: string): string {
   return `${SCOPE_STORAGE_PREFIX}${scopeId}`
 }
-
-function readPersistedOverrides(value: unknown): ThemeOverrides | undefined {
-  if (typeof value !== "object" || value === null || !("overrides" in value)) {
-    return undefined
-  }
-
-  const overrides = value.overrides
-  if (typeof overrides !== "object" || overrides === null) {
-    return undefined
-  }
-
-  if (!("primary" in overrides)) {
-    return {}
-  }
-
-  // primary field can be an oklch string or color object from the domain schema
-  if (
-    typeof overrides.primary === "string" ||
-    (typeof overrides.primary === "object" && overrides.primary !== null)
-  ) {
-    return { primary: overrides.primary as unknown as PrimaryThemeColor }
-  }
-  return {}
-}
-
-/**
- * Extract isDarkMode from persisted state, handling both current and legacy keys.
- * @param value Raw persisted state object
- * @returns Boolean if valid, undefined if missing or invalid
- */
-function readPersistedDarkMode(value: unknown): boolean | undefined {
-  if (typeof value !== "object" || value === null) return undefined
-
-  const persisted = value as {
-    isDarkMode?: unknown
-    isDarkModeEnabled?: unknown
-  }
-  const isDarkMode = persisted.isDarkMode ?? persisted.isDarkModeEnabled
-  return typeof isDarkMode === "boolean" ? isDarkMode : undefined
-}
-
-/**
- * Extract enableDarkMode from persisted state.
- * @param value Raw persisted state object
- * @returns Boolean if valid, undefined if missing or invalid
- */
-function readPersistedEnableDarkMode(value: unknown): boolean | undefined {
-  if (
-    typeof value !== "object" ||
-    value === null ||
-    !("enableDarkMode" in value)
-  ) {
-    return undefined
-  }
-
-  return typeof value.enableDarkMode === "boolean"
-    ? value.enableDarkMode
-    : undefined
-}
-
 export interface ScopeState {
   id: string
   scopeId: string
@@ -83,8 +22,7 @@ export interface ScopeState {
 
 export interface ScopeActions {
   getThemeId: () => string
-
-  // primary accepts oklch color string (e.g., "oklch(55% 0.1 200)")
+  setOverrides: (overrides: ThemeOverrides) => void
   setPrimaryColor: (primary: string) => void
   setDarkMode: (isDarkMode: boolean) => void
   setEnableDarkMode: (
@@ -111,52 +49,12 @@ export interface CreateScopeStoreOptions {
   initialOverrides?: ThemeOverrides
   initialEnableDarkMode: boolean
   initialIsDarkMode?: boolean
-  sourceId?: string;
-  /**
-   * Called when overrides change. Adapter receives the overrides to persist.
-   * Examples: localStorage write, cookie write, API call
-   */
-  persistOverrides?: (overrides: ThemeOverrides) => void | Promise<void>
-  /**
-   * Called when dark mode preference changes. Adapter receives the dark mode state.
-   */
-  persistDarkMode?: (isDarkMode: boolean | undefined) => void | Promise<void>
+  sourceId?: string
+  version?: number
   /** Explicit storage implementation, primarily for tests and non-lazy use. */
   storage?: StateStorage
   /** Lazily resolve storage at hydration time without importing browser APIs. */
   getStorage?: () => StateStorage | undefined
-}
-
-function createDeferredStorage(
-  getStorage: () => StateStorage | undefined
-): StateStorage {
-  return {
-    getItem: (name) => getStorage()?.getItem(name) ?? null,
-    setItem: (name, value) => getStorage()?.setItem(name, value),
-    removeItem: (name) => getStorage()?.removeItem(name),
-  }
-}
-
-function createMigratingScopeStorage(
-  storage: StateStorage,
-  scopeId: string
-): StateStorage {
-  const legacyKey = `${LEGACY_SCOPE_STORAGE_PREFIX}${scopeId}`
-
-  return {
-    async getItem(name) {
-      const currentValue = await storage.getItem(name)
-      if (currentValue !== null) return currentValue
-
-      const legacyValue = await storage.getItem(legacyKey)
-      if (legacyValue !== null) {
-        await storage.setItem(name, legacyValue)
-      }
-      return legacyValue
-    },
-    setItem: (name, value) => storage.setItem(name, value),
-    removeItem: (name) => storage.removeItem(name),
-  }
 }
 
 /**
@@ -188,15 +86,14 @@ function createMigratingScopeStorage(
  * 4. MIGRATION:
  *    - createMigratingScopeStorage handles legacy storage keys
  *    - If new key not found, checks legacy key and migrates automatically
- *    - version: 1 allows future schema migrations
+ *    - Versioned persistence allows future schema migrations
  *
- * PERSISTENCE CALLBACKS
- * ====================
+ * MIGRATION SUPPORT
+ * =================
  *
- * The store is pure—it doesn't know how persistence works:
- * - persistOverrides: Called when primary color changes (adapter handles write)
- * - persistDarkMode: Called when dark mode preference changes (adapter handles write)
- * - Adapters can be localStorage, cookies, API calls, etc.
+ * Legacy key migration is handled transparently via createMigratingStorage.
+ * If the new storage key is not found, the storage adapter automatically checks
+ * the legacy key and migrates data forward on first read.
  *
  * DEPENDENCY INJECTION
  * ===================
@@ -211,7 +108,6 @@ function createMigratingScopeStorage(
  *   initialOverrides: { primary: "oklch(55% 0.1 200)" },
  *   initialEnableDarkMode: true,
  *   getStorage: () => window.localStorage,
- *   persistOverrides: (overrides) => saveToServer(overrides),
  * })
  * ```
  *
@@ -224,14 +120,10 @@ export function createScopeStore({
   initialOverrides = {},
   initialEnableDarkMode,
   initialIsDarkMode,
-  persistOverrides,
-  persistDarkMode,
+  version,
   storage,
   getStorage,
 }: CreateScopeStoreOptions): ScopeStoreApi {
-  const scopeStorage = storage ?? createDeferredStorage(() => getStorage?.())
-
-
   return createStore<ScopeStore>()(
     persist<ScopeStore, [], [], Omit<ScopeState, "scopeId">>(
       (set, get) => ({
@@ -244,20 +136,24 @@ export function createScopeStore({
         isDarkMode: initialEnableDarkMode
           ? (initialIsDarkMode ?? false)
           : undefined,
+        setOverrides: (overrides) => {
+          set((state) => {
+            const newOverrides = { ...state.overrides, ...overrides }
+            return { overrides: newOverrides }
+          })
+        },
         setPrimaryColor: (primary) => {
           set((state) => {
             const newOverrides = {
               ...state.overrides,
               primary,
             } as ThemeOverrides
-            persistOverrides?.(newOverrides)
             return { overrides: newOverrides }
           })
         },
         setDarkMode: (isDarkMode) => {
           set((state) => {
             if (!state.enableDarkMode) return state
-            persistDarkMode?.(isDarkMode)
             return { isDarkMode }
           })
         },
@@ -266,7 +162,6 @@ export function createScopeStore({
             const isDarkMode = enableDarkMode
               ? (state.isDarkMode ?? fallbackIsDarkMode)
               : undefined
-            persistDarkMode?.(isDarkMode)
             return { enableDarkMode, isDarkMode }
           })
         },
@@ -278,45 +173,174 @@ export function createScopeStore({
           set((state) => {
             if (!state.enableDarkMode) return state
             const isDarkMode = !state.isDarkMode
-            persistDarkMode?.(isDarkMode)
             return { isDarkMode }
           })
         },
       }),
-      {
-        name: getScopeStorageKey(scopeId),
-        version: 1,
-        storage: createJSONStorage(() =>
-          createMigratingScopeStorage(scopeStorage, scopeId)
-        ),
-        partialize: ({ id, overrides, enableDarkMode, isDarkMode }) => ({
-          id,
-          overrides,
-          enableDarkMode,
-          ...(isDarkMode !== undefined && { isDarkMode }),
-        }),
-        merge: (persistedState, currentState) => {
-          const persistedOverrides = readPersistedOverrides(persistedState)
-          const persistedDarkMode = readPersistedDarkMode(persistedState)
-          const persistedEnableDarkMode =
-            readPersistedEnableDarkMode(persistedState)
-          const enableDarkMode =
-            persistedEnableDarkMode ?? currentState.enableDarkMode
-
-          return {
-            ...currentState,
-            enableDarkMode,
-            overrides:
-              persistedOverrides === undefined
-                ? currentState.overrides
-                : { ...currentState.overrides, ...persistedOverrides },
-            isDarkMode: enableDarkMode
-              ? (persistedDarkMode ?? currentState.isDarkMode ?? false)
-              : undefined,
-          }
-        },
-        skipHydration: true,
-      }
+      createScopePersistOptions({
+        scopeId,
+        storage,
+        getStorage,
+        version,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      }) as any
     )
+  )
+}
+
+/**
+ * Appearance selector hook for efficient subscriptions to dark mode state.
+ *
+ * Extracts only enableDarkMode and isDarkMode from the store, avoiding unnecessary
+ * rerenders when other state (overrides, sourceId, etc.) changes.
+ *
+ * Manually tracks selected state and only notifies listeners when the selected
+ * fields actually change. Memoizes the result object to maintain referential
+ * stability, preventing unnecessary React rerenders.
+ *
+ * @param store The scope store instance
+ * @returns Object with enableDarkMode and isDarkMode fields
+ *
+ * @example
+ * ```tsx
+ * function ScopeStyler({ store }: { store: ScopeStoreApi }) {
+ *   const { enableDarkMode, isDarkMode } = useScopeAppearance(store)
+ *   // Component only rerenders when dark mode state changes
+ * }
+ * ```
+ */
+export function useScopeAppearance(store: ScopeStoreApi): {
+  enableDarkMode: boolean
+  isDarkMode: boolean | undefined
+} {
+  // Cache to maintain referential stability when values haven't changed
+  const appearanceCache = useRef<{
+    enableDarkMode: boolean
+    isDarkMode: boolean | undefined
+  } | null>(null)
+
+  return useSyncExternalStore(
+    // Subscribe function: register a listener for appearance changes
+    (onStoreChange) => {
+      // Initialize with current state
+      let previousAppearance = {
+        enableDarkMode: store.getState().enableDarkMode,
+        isDarkMode: store.getState().isDarkMode,
+      }
+
+      // Subscribe to all store changes
+      return store.subscribe((state) => {
+        // Extract current appearance fields
+        const currentAppearance = {
+          enableDarkMode: state.enableDarkMode,
+          isDarkMode: state.isDarkMode,
+        }
+
+        // Only notify listener if appearance actually changed (shallow equality)
+        if (
+          previousAppearance.enableDarkMode !==
+            currentAppearance.enableDarkMode ||
+          previousAppearance.isDarkMode !== currentAppearance.isDarkMode
+        ) {
+          previousAppearance = currentAppearance
+          onStoreChange()
+        }
+      })
+    },
+    // Get snapshot (called on client): extract current appearance from store
+    // Memoized to prevent infinite rerenders from new object instances
+    () => {
+      const state = store.getState()
+      const current = {
+        enableDarkMode: state.enableDarkMode,
+        isDarkMode: state.isDarkMode,
+      }
+
+      // Return cached instance if values haven't changed (referential stability)
+      if (
+        appearanceCache.current &&
+        appearanceCache.current.enableDarkMode === current.enableDarkMode &&
+        appearanceCache.current.isDarkMode === current.isDarkMode
+      ) {
+        return appearanceCache.current
+      }
+
+      // Update cache with new instance when values change
+      appearanceCache.current = current
+      return current
+    },
+    // Get server snapshot (called on SSR): extract initial appearance from store
+    () => {
+      const state = store.getInitialState()
+      return {
+        enableDarkMode: state.enableDarkMode,
+        isDarkMode: state.isDarkMode,
+      }
+    }
+  )
+}
+
+/**
+ * Creates persist middleware options for a scope store.
+ * Wraps the generic createPersistOptions factory with scope-specific state validation and serialization.
+ */
+function createScopePersistOptions({
+  scopeId,
+  storage,
+  getStorage,
+  version = 1,
+}: Pick<CreateScopeStoreOptions, "scopeId" | "storage" | "getStorage"> & {
+  version?: number
+}) {
+  return createPersistOptions<Omit<ScopeState, "scopeId">, Partial<ScopeState>>(
+    {
+      name: getScopeStorageKey(scopeId),
+      legacyName: `${LEGACY_SCOPE_STORAGE_PREFIX}${scopeId}`,
+      version,
+      storage,
+      getStorage,
+      migrate: (persistedState: unknown) =>
+        persistedState as Omit<ScopeState, "scopeId">,
+      partialize: ({
+        id,
+        overrides,
+        enableDarkMode,
+        isDarkMode,
+      }: Partial<ScopeState>) => ({
+        id,
+        overrides,
+        enableDarkMode,
+        ...(isDarkMode !== undefined && { isDarkMode }),
+      }),
+
+      merge: (
+        persistedState: unknown,
+        currentState: Omit<ScopeState, "scopeId">
+      ) => {
+        const persistedThemeId =
+          ScopePersistenceValidators.readThemeId(persistedState)
+        const persistedOverrides =
+          ScopePersistenceValidators.readOverrides(persistedState)
+        const persistedDarkMode =
+          ScopePersistenceValidators.readDarkMode(persistedState)
+        const persistedEnableDarkMode =
+          ScopePersistenceValidators.readEnableDarkMode(persistedState)
+        const enableDarkMode =
+          persistedEnableDarkMode ?? currentState.enableDarkMode
+
+        return {
+          ...currentState,
+          id: persistedThemeId ?? currentState.id,
+          enableDarkMode,
+          overrides:
+            persistedOverrides === undefined
+              ? currentState.overrides
+              : { ...currentState.overrides, ...persistedOverrides },
+          isDarkMode: enableDarkMode
+            ? (persistedDarkMode ?? currentState.isDarkMode ?? false)
+            : undefined,
+        }
+      },
+    }
   )
 }

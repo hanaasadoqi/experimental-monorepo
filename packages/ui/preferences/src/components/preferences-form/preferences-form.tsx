@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { LanguageForm } from "./language-form"
 import { DateTimeForm } from "./date-time-form"
@@ -155,7 +155,11 @@ export function PreferencesForm() {
         </p>
       </div>
 
-      <Tabs defaultValue="preferences" className="w-full" orientation="horizontal">
+      <Tabs
+        defaultValue="preferences"
+        className="w-full"
+        orientation="horizontal"
+      >
         <TabsList className="flex w-full">
           <TabsTrigger value="appearance" className="gap-2">
             <HugeiconsIcon icon={Palette} className="size-4" />

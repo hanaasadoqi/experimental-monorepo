@@ -15,7 +15,11 @@
  */
 
 import { create } from "zustand"
-import { createThemeRegistry, type ThemeRegistry, type ThemeRegistryState } from "./theme-registry"
+import {
+  createThemeRegistry,
+  type ThemeRegistry,
+  type ThemeRegistryState,
+} from "./theme-registry"
 import type { ThemeDefinition } from "@repo/domain-theme"
 
 export interface ThemeRegistryStoreState extends ThemeRegistryState {
@@ -37,7 +41,7 @@ export function createThemeRegistryStore(
   initialThemes: Record<string, ThemeDefinition> = {},
   initialSelectedId?: string
 ) {
-  const registry = createThemeRegistry(initialThemes, initialSelectedId)
+  const registry = createThemeRegistry(initialThemes, initialSelectedId) as ThemeRegistry
 
   return create<ThemeRegistryStoreState>(() => ({
     themes: registry.state.themes,

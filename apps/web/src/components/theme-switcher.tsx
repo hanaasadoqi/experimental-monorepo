@@ -21,7 +21,7 @@ export function ThemeSwitcher() {
     <select
       value={registry.selectedThemeId}
       onChange={(e) => registry.selectTheme(e.target.value)}
-      className="px-3 py-2 rounded border"
+      className="rounded border px-3 py-2"
     >
       {themes.map((theme) => (
         <option key={theme.metadata.name} value={theme.metadata.name}>

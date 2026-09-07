@@ -92,4 +92,27 @@ describe("createPreferencesStore", () => {
       language: "es",
     })
   })
+
+  it("does not persist a server-provided initial state by default", () => {
+    const store = createPreferencesStore({
+      initialState: { appearance: "light" },
+    })
+
+    store.getState().setAppearance("dark")
+
+    expect(localStorage.getItem("preferences-store")).toBeNull()
+  })
+
+  it("allows persistence to be explicitly enabled with an initial state", () => {
+    const store = createPreferencesStore({
+      initialState: { appearance: "light" },
+      enablePersistence: true,
+    })
+
+    store.getState().setAppearance("dark")
+
+    expect(localStorage.getItem("preferences-store")).toContain(
+      '"appearance":"dark"'
+    )
+  })
 })

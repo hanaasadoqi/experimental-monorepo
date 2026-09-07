@@ -28,9 +28,9 @@ vi.mock("@repo/runtime-theme", () => ({
   useThemeScope: () => ({ setDarkMode: mockSetDarkMode }),
   useThemeStore: (
     selector: (state: {
-      setGlobalThemeDarkMode: typeof mockSetGlobalDarkMode
+      setGlobalDarkMode: typeof mockSetGlobalDarkMode
     }) => unknown
-  ) => selector({ setGlobalThemeDarkMode: mockSetGlobalDarkMode }),
+  ) => selector({ setGlobalDarkMode: mockSetGlobalDarkMode }),
 }))
 
 vi.mock("@repo/adapters-theme-browser", () => ({

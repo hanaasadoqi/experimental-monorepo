@@ -1,5 +1,11 @@
 {
   "extends": "@repo/foundation-typescript-config/base.json",
+  "include": [
+    "apps",
+    "packages",
+    "*/*.ts",
+    "*/*.tsx",
+  ],
   "exclude": [
     "node_modules",
     "dist",
@@ -8,7 +14,7 @@
     ".github",
     ".history",
     ".remember",
-    "//serena",
+    ".serena",
     ".turbo"
   ]
 }
