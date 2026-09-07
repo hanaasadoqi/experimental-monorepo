@@ -40,7 +40,7 @@ const navigation = [
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-background text-foreground min-h-svh w-full">
+    <>
       <Sidebar side="left" variant="sidebar" collapsible="icon">
         <SidebarHeader className="p-3">
           <div className="flex items-center gap-3 px-1 group-data-[collapsible=icon]:justify-center">
@@ -132,6 +132,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </header>
         <div className="flex min-h-0 flex-1 flex-col">{children}</div>
       </SidebarInset>
-    </div>
+    </>
   )
 }
