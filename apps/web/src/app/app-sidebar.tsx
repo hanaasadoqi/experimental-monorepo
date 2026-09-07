@@ -1,4 +1,4 @@
-import { Settings02Icon } from "@hugeicons/core-free-icons"
+import { Home01Icon, PaintBoardIcon, Settings02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { SidebarHeader, SidebarSeparator, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarRail, Sidebar } from "@repo/ui-components"
 import { SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, Sheet } from "@repo/ui-components/base/sheet"
