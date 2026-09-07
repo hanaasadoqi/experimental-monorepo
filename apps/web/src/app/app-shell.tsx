@@ -34,10 +34,10 @@ import {
 import { ThemeForm } from "@repo/ui-theme"
 import { AppContentHeader } from "./app-content-header"
 
-const navigation = [
-  { label: "Overview", icon: Home01Icon, href: "/" },
-  { label: "Theme system", icon: PaintBoardIcon, href: "/" },
-]
+// const navigation = [
+//   { label: "Overview", icon: Home01Icon, href: "/" },
+//   { label: "Theme system", icon: PaintBoardIcon, href: "/" },
+// ]
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (

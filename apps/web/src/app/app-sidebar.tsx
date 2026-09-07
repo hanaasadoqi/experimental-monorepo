@@ -4,6 +4,12 @@ import { SidebarHeader, SidebarSeparator, SidebarContent, SidebarGroup, SidebarG
 import { SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, Sheet } from "@repo/ui-components/base/sheet"
 import { ThemeForm } from "@repo/ui-theme"
 
+const navigation = [
+  { label: "Overview", icon: Home01Icon, href: "/" },
+  { label: "Theme system", icon: PaintBoardIcon, href: "/" },
+]
+
+
 export const AppSidebar = () => {
   return (
     <Sidebar side="left" variant="sidebar" collapsible="icon">
