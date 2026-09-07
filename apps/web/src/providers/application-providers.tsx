@@ -75,7 +75,7 @@ import {
   useThemeStore,
   ThemeRegistryProvider,
 } from "@repo/runtime-theme"
-// import { applyAppearanceToDocument } from "@repo/adapters-theme-browser"
+import { applyAppearanceToDocument } from "@repo/adapters-theme-browser"
 import { DEFAULT_PRIMARY_COLOR } from "@repo/domain-theme/colors"
 
 import { AppearanceBridge } from "./appearance-bridge"
@@ -114,6 +114,16 @@ function RootThemeScope({ children }: { children: ReactNode }) {
   useEffect(() => {
     setDarkMode(resolvedAppearance === "dark")
   }, [resolvedAppearance, setDarkMode])
+
+  // Keep <html> in sync with the resolved root appearance.
+  // The root scope element and <html> are separate elements, and base
+  // surfaces (<body>) are ancestors of the scope, so they resolve their
+  // semantic color tokens against <html>. Without this, a stale class on
+  // <html> makes <body> (and anything inheriting its color) resolve the
+  // wrong theme even though the scope itself is correct.
+  useEffect(() => {
+    applyAppearanceToDocument(resolvedAppearance)
+  }, [resolvedAppearance])
 
   return (
     <ThemeScopeProvider
