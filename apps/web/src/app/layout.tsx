@@ -105,7 +105,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       }
       suppressHydrationWarning={needsHydrationSuppression}
     >
-      <body className="max-w-screen min-h-screen size-full bg-background text-foreground antialiased">
+      <body className="max-w-screen min-h-screen size-full bg-background text-foreground antialiased overflow-x-hidden">
         <Script
           id="appearance-bootstrap"
           strategy="beforeInteractive"
