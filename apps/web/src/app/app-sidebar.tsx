@@ -37,7 +37,7 @@ export const AppSidebar = () => {
     <Sidebar side="left" variant="sidebar" collapsible="icon">
       <SidebarHeader className="border-border/70 gap-0 border-b px-3 py-4">
         <div className="flex items-center gap-3 px-1 group-data-[collapsible=icon]:justify-center">
-          <div className="bg-primary text-primary-foreground flex size-7 shrink-0 items-center justify-center rounded-xl text-sm font-semibold shadow-sm">
+          <div className="bg-primary text-primary-foreground flex size-7 shrink-0 items-center justify-center rounded-md text-sm font-semibold shadow-sm">
             T
           </div>
           <div className="min-w-0 group-data-[collapsible=icon]:hidden">
