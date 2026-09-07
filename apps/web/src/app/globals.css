@@ -21,6 +21,12 @@
   --font-body: var(--typeset-font-body, var(--font-family-sans));
   --font-heading: var(--typeset-font-heading, var(--font-family-heading, var(--font-family-serif)));
   --font-mono: var(--typeset-font-mono, var(--font-family-mono));
+  --font-body: var(--typeset-font-body);
+  --font-heading: var(--typeset-font-heading);
+  --font-mono: var(--typeset-font-mono);
+  --text-base: var(--typeset-size);
+  --text-base--line-height: var(--typeset-leading);
+  --text-base--letter-spacing: calc(var(--typeset-leading) * 0.01);
   --color-default-50: var(--default-50);
   --color-default-100: var(--default-100);
   --color-default-200: var(--default-200);
@@ -65,6 +71,26 @@
   --color-accent-800: var(--accent-800);
   --color-accent-900: var(--accent-900);
   --color-accent-950: var(--accent-950);
+
+  --color-background: var(--ds-color-background);
+  --color-foreground: var(--ds-color-foreground);
+  --color-card: var(--ds-color-surface);
+  --color-card-foreground: var(--ds-color-surface-foreground);
+  --color-popover: var(--ds-color-surface);
+  --color-popover-foreground: var(--ds-color-surface-foreground);
+  --color-primary: var(--ds-color-primary);
+  --color-primary-foreground: var(--ds-color-primary-foreground);
+  --color-secondary: var(--ds-color-secondary);
+  --color-secondary-foreground: var(--ds-color-secondary-foreground);
+  --color-muted: var(--ds-color-muted);
+  --color-muted-foreground: var(--ds-color-muted-foreground);
+  --color-accent: var(--ds-color-accent);
+  --color-accent-foreground: var(--ds-color-accent-foreground);
+  --color-destructive: var(--ds-color-destructive);
+  --color-destructive-foreground: var(--ds-color-destructive-foreground);
+  --color-border: var(--ds-color-border);
+  --color-input: var(--ds-color-input);
+  --color-ring: var(--ds-color-ring);
 }
 
 @layer base {
