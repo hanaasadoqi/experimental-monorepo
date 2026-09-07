@@ -31,9 +31,9 @@ export const AppSidebar = () => {
         <SidebarGroup>
           <SidebarGroupLabel>Workspace</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="pl-0">
               {navigation.map((item) => (
-                <SidebarMenuItem key={item.label} className="w-full list-none">
+                <SidebarMenuItem key={item.label} className="w-full list-none pl-0">
                   <SidebarMenuButton
                     render={<a href={item.href} />}
                     tooltip={item.label}
