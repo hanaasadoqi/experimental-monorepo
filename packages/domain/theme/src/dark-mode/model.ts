@@ -14,7 +14,7 @@ export const enableDarkModeSchema = z.object({
 })
 
 export const darkModeSchema = z.object({
-  enableDarkMode: enableDarkModeSchema.shape,
+  enableDarkMode: enableDarkModeSchema.shape.enableDarkMode,
   isDarkMode: z.boolean().describe("Whether theme is dark or light").optional(),
 })
 

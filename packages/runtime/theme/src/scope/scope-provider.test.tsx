@@ -1,4 +1,6 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { hydrateRoot } from "react-dom/client"
+import { renderToString } from "react-dom/server"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { StateStorage } from "zustand/middleware"
 
@@ -138,6 +140,60 @@ describe("ThemeScopeProvider", () => {
     )
     expect(screen.getByTestId("dark-mode-enabled").textContent).toBe("false")
     expect(screen.getByTestId("dark-mode").textContent).toBe("unset")
+  })
+
+  it("uses top-level provider overrides as the scope's initial state", () => {
+    render(
+      <ThemeScopeProvider
+        scopeId="preview"
+        overrides={{
+          primary: "oklch(65% 0.15 240)",
+          enableDarkMode: true,
+          isDarkMode: true,
+        }}
+      >
+        <ScopeProbe />
+      </ThemeScopeProvider>
+    )
+
+    expect(screen.getByTestId("primary").textContent).toBe(
+      "oklch(65% 0.15 240)"
+    )
+    expect(screen.getByTestId("dark-mode").textContent).toBe("true")
+  })
+
+  it("keeps the rendered theme id stable during hydration", async () => {
+    const randomUuid = vi
+      .spyOn(crypto, "randomUUID")
+      .mockReturnValueOnce("00000000-0000-4000-8000-000000000001")
+      .mockReturnValueOnce("00000000-0000-4000-8000-000000000002")
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {})
+    const element = (
+      <ThemeScopeProvider scopeId="root">
+        <span>Hydrated content</span>
+      </ThemeScopeProvider>
+    )
+    const container = document.createElement("div")
+    container.innerHTML = renderToString(element)
+    const serverThemeId = container
+      .querySelector('[data-scope-id="root"]')
+      ?.getAttribute("data-theme-id")
+
+    let root: ReturnType<typeof hydrateRoot> | undefined
+    await act(async () => {
+      root = hydrateRoot(container, element)
+    })
+
+    expect(
+      container
+        .querySelector('[data-scope-id="root"]')
+        ?.getAttribute("data-theme-id")
+    ).toBe(serverThemeId)
+    expect(consoleError).not.toHaveBeenCalled()
+
+    await act(async () => root?.unmount())
+    randomUuid.mockRestore()
+    consoleError.mockRestore()
   })
 
   it("rehydrates persisted state through the supplied storage adapter", async () => {

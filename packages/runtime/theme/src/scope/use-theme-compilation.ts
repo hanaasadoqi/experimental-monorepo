@@ -1,76 +1,75 @@
 "use client"
 
-import { useMemo, useRef } from "react"
-import { compile } from "@repo/domain-theme/compiler"
-import type { ThemeCompilationInput } from "@repo/domain-theme/compiler"
-import { useThemeScope } from "./use-theme-scope"
+import { useMemo } from "react"
+import type { ThemeDefinition, ThemeOverrides } from "@repo/domain-theme"
+import { DEFAULT_PRIMARY_COLOR } from "@repo/domain-theme/colors"
+import {
+  compile,
+  type ThemeCompilationInput,
+} from "@repo/domain-theme/compiler"
 import { useThemeRegistry } from "../registry/theme-registry-context"
-import { ThemeDefinition } from "@repo/domain-theme"
+import { useThemeScope } from "./use-theme-scope"
 
 /**
- * Merge source theme with scope overrides to get the full theme for compilation.
- *
- * Priority: overrides take precedence over source theme properties.
- * Returns the merged theme object ready for compile().
+ * Map a canonical source theme and flat scope overrides into the compiler's
+ * flat input contract. Scope values take precedence over source values.
  */
-function mergeThemeWithOverrides(
-  sourceTheme: ThemeDefinition,
-  overrides: Partial<ThemeDefinition>
-): ThemeDefinition {
+function createCompilationInput({
+  sourceTheme,
+  overrides,
+  enableDarkMode,
+  isDarkMode,
+}: {
+  sourceTheme?: ThemeDefinition
+  overrides: ThemeOverrides
+  enableDarkMode: boolean
+  isDarkMode?: boolean
+}): ThemeCompilationInput {
+  const accent = overrides.accent ?? sourceTheme?.colors.accent
+  const harmony = overrides.harmony ?? sourceTheme?.colors.harmony
+
   return {
-    ...sourceTheme,
-    ...overrides,
+    primary:
+      overrides.primary ?? sourceTheme?.colors.primary ?? DEFAULT_PRIMARY_COLOR,
+    ...(accent !== undefined && { accent }),
+    customAccent: overrides.customAccent ?? accent !== undefined,
+    ...(harmony !== undefined && { harmony }),
+    enableDarkMode,
+    isDarkMode: isDarkMode ?? sourceTheme?.darkMode.isDarkMode ?? false,
   }
 }
 
 /**
  * Compile theme with overrides and return CSS variables.
  *
- * Merges the source theme definition (colors, settings) with scope overrides
- * (user's custom primary color, dark mode toggle, etc.) and compiles to CSS.
+ * Maps the source theme definition and scope overrides into compiler input,
+ * then compiles that input to CSS.
  *
  * Returns { cssVariables, report } or null if compilation fails.
  * Logs warnings on error but does not throw.
  */
 export function useThemeCompilation() {
-  const { overrides, isDarkMode, sourceId, scopeId } = useThemeScope()
+  const { overrides, enableDarkMode, isDarkMode, sourceId } = useThemeScope()
   const { getTheme } = useThemeRegistry()
-
-  // Cache compilation results by fingerprint to avoid recomputation
-  const compilationCacheRef = useRef<
-    Record<string, ReturnType<typeof compile>>
-  >({})
 
   // Get source theme from registry if sourceId is set
   const sourceTheme = useMemo(() => {
-    if (!sourceId) return null
+    if (!sourceId) return undefined
     return getTheme(sourceId)
   }, [sourceId, getTheme])
 
-  // Merge source theme with scope overrides
-  const mergedTheme = useMemo(() => {
-    return mergeThemeWithOverrides(
-      sourceTheme ?? ({} as ThemeDefinition),
-      overrides as Partial<ThemeDefinition>
-    )
-  }, [sourceTheme, overrides])
+  const input = useMemo(
+    () =>
+      createCompilationInput({
+        sourceTheme,
+        overrides,
+        enableDarkMode,
+        isDarkMode,
+      }),
+    [sourceTheme, overrides, enableDarkMode, isDarkMode]
+  )
 
-  const cacheKey = `${scopeId ?? "default"}-${sourceId ?? "default"}`
-
-  // Return cached result if available
-  if (compilationCacheRef.current[cacheKey]) {
-    return compilationCacheRef.current[cacheKey]
-  }
   const compilationResult = useMemo(() => {
-    if (!mergedTheme.colors.primary) {
-      return null
-    }
-
-    const input: ThemeCompilationInput = {
-      primary: mergedTheme.colors.primary,
-      isDarkMode: isDarkMode ?? false,
-    }
-
     try {
       const result = compile(input)
       if (!result.report.success) {
@@ -80,17 +79,16 @@ export function useThemeCompilation() {
         )
         return null
       }
-      compilationCacheRef.current[cacheKey] = result
       return result
     } catch (error) {
       console.warn(`[ThemeCompilation] Compilation error:`, error)
       return null
     }
-  }, [mergedTheme.colors.primary, isDarkMode])
+  }, [input])
 
   return {
     cssVariables: compilationResult?.cssVariables,
-    theme: mergedTheme,
+    theme: compilationResult?.theme,
     compilationResult,
   }
 }

@@ -2,7 +2,7 @@ import { createStore, type Mutate, type StoreApi } from "zustand/vanilla"
 import { persist, type StateStorage } from "zustand/middleware"
 import { createPersistOptions } from "@repo/services-zustand"
 import { type ThemeOverrides } from "@repo/domain-theme"
-import { useSyncExternalStore, useRef } from "react"
+// import { useSyncExternalStore, useRef } from "react"
 import { ScopePersistenceValidators } from "./scope-validators"
 
 const SCOPE_STORAGE_PREFIX = "synapcity:themes:"
@@ -46,6 +46,8 @@ export type ScopeStoreApi = Mutate<
  */
 export interface CreateScopeStoreOptions {
   scopeId: string
+  /** Stable runtime identity supplied by React during SSR/hydration. */
+  initialId?: string
   initialOverrides?: ThemeOverrides
   initialEnableDarkMode: boolean
   initialIsDarkMode?: boolean
@@ -117,6 +119,7 @@ export interface CreateScopeStoreOptions {
 export function createScopeStore({
   sourceId,
   scopeId,
+  initialId,
   initialOverrides = {},
   initialEnableDarkMode,
   initialIsDarkMode,
@@ -127,7 +130,7 @@ export function createScopeStore({
   return createStore<ScopeStore>()(
     persist<ScopeStore, [], [], Omit<ScopeState, "scopeId">>(
       (set, get) => ({
-        id: crypto.randomUUID(),
+        id: initialId ?? crypto.randomUUID(),
         getThemeId: () => get().id,
         sourceId: sourceId ?? undefined,
         scopeId,
@@ -209,76 +212,76 @@ export function createScopeStore({
  * }
  * ```
  */
-export function useScopeAppearance(store: ScopeStoreApi): {
-  enableDarkMode: boolean
-  isDarkMode: boolean | undefined
-} {
-  // Cache to maintain referential stability when values haven't changed
-  const appearanceCache = useRef<{
-    enableDarkMode: boolean
-    isDarkMode: boolean | undefined
-  } | null>(null)
+// export function useScopeAppearance(store: ScopeStoreApi): {
+//   enableDarkMode: boolean
+//   isDarkMode: boolean | undefined
+// } {
+//   // Cache to maintain referential stability when values haven't changed
+//   const appearanceCache = useRef<{
+//     enableDarkMode: boolean
+//     isDarkMode: boolean | undefined
+//   } | null>(null)
 
-  return useSyncExternalStore(
-    // Subscribe function: register a listener for appearance changes
-    (onStoreChange) => {
-      // Initialize with current state
-      let previousAppearance = {
-        enableDarkMode: store.getState().enableDarkMode,
-        isDarkMode: store.getState().isDarkMode,
-      }
+//   return useSyncExternalStore(
+//     // Subscribe function: register a listener for appearance changes
+//     (onStoreChange) => {
+//       // Initialize with current state
+//       let previousAppearance = {
+//         enableDarkMode: store.getState().enableDarkMode,
+//         isDarkMode: store.getState().isDarkMode,
+//       }
 
-      // Subscribe to all store changes
-      return store.subscribe((state) => {
-        // Extract current appearance fields
-        const currentAppearance = {
-          enableDarkMode: state.enableDarkMode,
-          isDarkMode: state.isDarkMode,
-        }
+//       // Subscribe to all store changes
+//       return store.subscribe((state) => {
+//         // Extract current appearance fields
+//         const currentAppearance = {
+//           enableDarkMode: state.enableDarkMode,
+//           isDarkMode: state.isDarkMode,
+//         }
 
-        // Only notify listener if appearance actually changed (shallow equality)
-        if (
-          previousAppearance.enableDarkMode !==
-            currentAppearance.enableDarkMode ||
-          previousAppearance.isDarkMode !== currentAppearance.isDarkMode
-        ) {
-          previousAppearance = currentAppearance
-          onStoreChange()
-        }
-      })
-    },
-    // Get snapshot (called on client): extract current appearance from store
-    // Memoized to prevent infinite rerenders from new object instances
-    () => {
-      const state = store.getState()
-      const current = {
-        enableDarkMode: state.enableDarkMode,
-        isDarkMode: state.isDarkMode,
-      }
+//         // Only notify listener if appearance actually changed (shallow equality)
+//         if (
+//           previousAppearance.enableDarkMode !==
+//             currentAppearance.enableDarkMode ||
+//           previousAppearance.isDarkMode !== currentAppearance.isDarkMode
+//         ) {
+//           previousAppearance = currentAppearance
+//           onStoreChange()
+//         }
+//       })
+//     },
+//     // Get snapshot (called on client): extract current appearance from store
+//     // Memoized to prevent infinite rerenders from new object instances
+//     () => {
+//       const state = store.getState()
+//       const current = {
+//         enableDarkMode: state.enableDarkMode,
+//         isDarkMode: state.isDarkMode,
+//       }
 
-      // Return cached instance if values haven't changed (referential stability)
-      if (
-        appearanceCache.current &&
-        appearanceCache.current.enableDarkMode === current.enableDarkMode &&
-        appearanceCache.current.isDarkMode === current.isDarkMode
-      ) {
-        return appearanceCache.current
-      }
+//       // Return cached instance if values haven't changed (referential stability)
+//       if (
+//         appearanceCache.current &&
+//         appearanceCache.current.enableDarkMode === current.enableDarkMode &&
+//         appearanceCache.current.isDarkMode === current.isDarkMode
+//       ) {
+//         return appearanceCache.current
+//       }
 
-      // Update cache with new instance when values change
-      appearanceCache.current = current
-      return current
-    },
-    // Get server snapshot (called on SSR): extract initial appearance from store
-    () => {
-      const state = store.getInitialState()
-      return {
-        enableDarkMode: state.enableDarkMode,
-        isDarkMode: state.isDarkMode,
-      }
-    }
-  )
-}
+//       // Update cache with new instance when values change
+//       appearanceCache.current = current
+//       return current
+//     },
+//     // Get server snapshot (called on SSR): extract initial appearance from store
+//     () => {
+//       const state = store.getInitialState()
+//       return {
+//         enableDarkMode: state.enableDarkMode,
+//         isDarkMode: state.isDarkMode,
+//       }
+//     }
+//   )
+// }
 
 /**
  * Creates persist middleware options for a scope store.

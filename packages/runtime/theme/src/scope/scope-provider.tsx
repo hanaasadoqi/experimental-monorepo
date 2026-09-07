@@ -1,20 +1,20 @@
 "use client"
 
-import {
-  createScopeStore,
-  type CreateScopeStoreOptions,
-  useScopeAppearance,
-} from "./scope-store"
+import { createScopeStore, type CreateScopeStoreOptions } from "./scope-store"
 import { ScopeContext } from "./scope-context"
 import { applyCssToElement } from "@repo/adapters-theme-browser"
-import { useEffect, useRef, useState, type ReactNode } from "react"
+import { useEffect, useId, useRef, useState, type ReactNode } from "react"
+import { useStore } from "zustand"
 import { useThemeCompilation } from ".."
-import { ThemeOverrides } from "@repo/domain-theme"
+import type { ThemeOverrides } from "@repo/domain-theme"
 
 export interface ThemeScopeProviderProps {
   scopeId: string
   overrides?: Partial<ThemeOverrides>
-  options?: Omit<CreateScopeStoreOptions, "scopeId" | "initialEnableDarkMode">
+  options?: Omit<
+    CreateScopeStoreOptions,
+    "scopeId" | "initialId" | "initialEnableDarkMode"
+  >
   children: ReactNode
 }
 
@@ -56,13 +56,24 @@ export function ThemeScopeProvider({
   options,
   children,
 }: ThemeScopeProviderProps) {
-  const enabled = (overrides?.enableDarkMode ?? false) as boolean
+  const initialThemeId = useId()
+  const {
+    enableDarkMode: initialEnableDarkMode = false,
+    isDarkMode: initialIsDarkMode,
+    ...initialOverrides
+  } = overrides ?? {}
   const [store] = useState(() => {
     try {
       return createScopeStore({
         scopeId,
-        initialEnableDarkMode: enabled,
         ...options,
+        initialId: initialThemeId,
+        initialOverrides: {
+          ...options?.initialOverrides,
+          ...initialOverrides,
+        },
+        initialEnableDarkMode,
+        initialIsDarkMode: initialIsDarkMode ?? options?.initialIsDarkMode,
       })
     } catch (cause) {
       throw new Error(`Failed to initialize theme scope "${scopeId}"`, {
@@ -72,7 +83,8 @@ export function ThemeScopeProvider({
   })
   const [persistenceError, setPersistenceError] = useState<Error>()
 
-  const { enableDarkMode, isDarkMode } = useScopeAppearance(store)
+  const enableDarkMode = useStore(store, (state) => state.enableDarkMode)
+  const isDarkMode = useStore(store, (state) => state.isDarkMode)
 
   const scopeRef = useRef<HTMLDivElement>(null)
 
@@ -107,7 +119,7 @@ export function ThemeScopeProvider({
         data-theme={
           enableDarkMode ? (isDarkMode ? "dark" : "light") : undefined
         }
-        className="theme-scope-provider"
+        className="theme-scope-provider w-full bg-background text-foreground"
       >
         {children}
       </div>

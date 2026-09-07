@@ -6,7 +6,7 @@
 @source "../../../../packages/ui/components/src/**/*.{ts,tsx}";
 @source "../../../../packages/features/**/*.{ts,tsx}";
 
-@custom-variant dark (&:where(.dark *, [data-theme="dark"] *));
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
 
 .typeset-docs {
   --typeset-font-body: var(--font-raleway);
