@@ -119,7 +119,7 @@ export function ThemeScopeProvider({
         data-theme={
           enableDarkMode ? (isDarkMode ? "dark" : "light") : undefined
         }
-        className="theme-scope-provider w-full bg-background text-foreground"
+        className={`theme-scope-provider w-full bg-background text-foreground ${enableDarkMode ? (isDarkMode ? "dark" : "light") : ""}`}
       >
         {children}
       </div>
